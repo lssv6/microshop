@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  database:
+    image: mariadb:11-ubi
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+  api:
+    build:
+      context: ./ms-backend
+    ports:
+      - 8080:8000
+    depends_on:
+      - database
+
