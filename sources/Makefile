@@ -11,7 +11,7 @@ VERSION = 1.0
 .PHONY:run_jenkins
 run_jenkins:
 	docker run -p 8080:8080 -p 50000:50000 --restart=on-failure \
-		-l microshop_jenkins \
+		--name microshop_jenkins \
 		jenkins/jenkins:lts-jdk17
 
 .PHONY:test
