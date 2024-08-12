@@ -16,22 +16,22 @@ run_jenkins:
 
 .PHONY:test
 test:
-	./ms-backend/gradlew test
+	./ms-catalog/gradlew test
 
 .PHONY:build_jar
 build_jar:
-	./ms-backend/gradlew assembleBootDist
+	./ms-catalog/gradlew assembleBootDist
 
 
 .PHONY:build_image
 build_image:
-	docker build . -f ./docker/ms-backend/Dockerfile \
-		-t microshop_api:$(VERSION)
+	docker build . -f ./docker/ms-catalog/Dockerfile \
+		-t microshop_api:$(CATALOG_VERSION)
 
 .PHONY:run_api
 run_api:
-	docker run microshop_api:1.0 \
-		-l microshop_api \
+	docker run microshop_catalog:$(CATALOG_VERSION) \
+		-l microshop_catalog \
 		-p 8080:8000 \
 		-p 3306:3306
 
