@@ -35,6 +35,13 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
     implementation 'org.springframework.boot:spring-boot-starter-web:3.3.2'
     
+
+    /************************************************************************/
+    /** SPRING BOOT TEST                                                    */
+    /************************************************************************/
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.2'
+
     /************************************************************************/
     /** SPRING DATA JPA                                                     */
     /************************************************************************/
@@ -89,7 +96,6 @@ dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation libs.junit.jupiter
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
 
     // This dependency is used by the application.
     implementation libs.guava
