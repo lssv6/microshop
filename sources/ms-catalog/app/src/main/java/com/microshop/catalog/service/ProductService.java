@@ -1,9 +1,9 @@
-package com.microshop.api.service;
+package com.microshop.catalog.service;
 
 import java.util.Collection;
 
-import com.microshop.api.model.Category;
-import com.microshop.api.model.Product;
+import com.microshop.catalog.model.Category;
+import com.microshop.catalog.model.Product;
 
 public interface ProductService{
     public Iterable<Product> findAll();

@@ -1,4 +1,4 @@
-package com.microshop.api.service.impl;
+package com.microshop.catalog.service.impl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,10 +7,10 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.microshop.api.model.Category;
-import com.microshop.api.model.Product;
-import com.microshop.api.repository.ProductRepository;
-import com.microshop.api.service.ProductService;
+import com.microshop.catalog.model.Category;
+import com.microshop.catalog.model.Product;
+import com.microshop.catalog.repository.ProductRepository;
+import com.microshop.catalog.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService{

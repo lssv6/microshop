@@ -1,4 +1,4 @@
-package com.microshop.api.model;
+package com.microshop.catalog.model;
 
 import java.io.Serializable;
 

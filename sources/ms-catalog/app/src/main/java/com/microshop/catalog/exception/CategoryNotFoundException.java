@@ -1,5 +1,5 @@
 
-package com.microshop.api.exception;
+package com.microshop.catalog.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

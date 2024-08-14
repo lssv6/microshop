@@ -1,4 +1,4 @@
-package com.microshop.api.dto;
+package com.microshop.catalog.dto;
 
 import lombok.Data;
 

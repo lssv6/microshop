@@ -1,10 +1,10 @@
-package com.microshop.api.repository;
+package com.microshop.catalog.repository;
 
 import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.microshop.api.model.Category;
+import com.microshop.catalog.model.Category;
 
 public interface CategoryRepository extends CrudRepository<Category, Long>{
     

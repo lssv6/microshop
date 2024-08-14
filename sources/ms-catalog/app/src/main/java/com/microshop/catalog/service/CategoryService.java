@@ -1,10 +1,10 @@
-package com.microshop.api.service;
+package com.microshop.catalog.service;
 
 import java.util.Optional;
 import java.util.Set;
 
 
-import com.microshop.api.model.Category;
+import com.microshop.catalog.model.Category;
 
 public interface CategoryService{
     public Category save(Category c);

@@ -1,4 +1,4 @@
-package com.microshop.api.controller;
+package com.microshop.catalog.controller;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microshop.api.dto.ProductDTO;
-import com.microshop.api.model.Category;
-import com.microshop.api.model.Product;
-import com.microshop.api.service.CategoryService;
-import com.microshop.api.service.ProductService;
+import com.microshop.catalog.dto.ProductDTO;
+import com.microshop.catalog.model.Category;
+import com.microshop.catalog.model.Product;
+import com.microshop.catalog.service.CategoryService;
+import com.microshop.catalog.service.ProductService;
 
 @RestController
 @RequestMapping("/products")

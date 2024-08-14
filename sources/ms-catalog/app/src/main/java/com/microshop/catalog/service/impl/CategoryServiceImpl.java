@@ -1,4 +1,4 @@
-package com.microshop.api.service.impl;
+package com.microshop.catalog.service.impl;
 
 import java.util.Optional;
 import java.util.Set;
@@ -6,9 +6,9 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.microshop.api.model.Category;
-import com.microshop.api.repository.CategoryRepository;
-import com.microshop.api.service.CategoryService;
+import com.microshop.catalog.model.Category;
+import com.microshop.catalog.repository.CategoryRepository;
+import com.microshop.catalog.service.CategoryService;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{

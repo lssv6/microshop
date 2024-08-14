@@ -1,4 +1,4 @@
-package com.microshop.api.controller;
+package com.microshop.catalog.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microshop.api.dto.CategoryDTO;
-import com.microshop.api.dto.NewCategoryDTO;
-import com.microshop.api.exception.CategoryNotFoundException;
-import com.microshop.api.model.Category;
-import com.microshop.api.service.CategoryService;
+import com.microshop.catalog.dto.CategoryDTO;
+import com.microshop.catalog.dto.NewCategoryDTO;
+import com.microshop.catalog.exception.CategoryNotFoundException;
+import com.microshop.catalog.model.Category;
+import com.microshop.catalog.service.CategoryService;
 
 @RestController
 @RequestMapping("/categories")
