@@ -1,4 +1,4 @@
-package com.microshop.api;
+package com.microshop.catalog;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;

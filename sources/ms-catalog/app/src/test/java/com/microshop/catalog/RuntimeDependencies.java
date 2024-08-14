@@ -1,4 +1,4 @@
-package com.microshop.api;
+package com.microshop.catalog;
 
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.testcontainers.containers.MariaDBContainer;

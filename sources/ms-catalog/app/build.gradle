@@ -112,7 +112,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.microshop.api.CatalogApplication'
+    mainClass = 'com.microshop.catalog.CatalogApplication'
 }
 
 tasks.named('test') {

@@ -1,4 +1,4 @@
-package com.microshop.api;
+package com.microshop.catalog;
 
 import java.util.Map;
 import java.util.stream.Stream;
