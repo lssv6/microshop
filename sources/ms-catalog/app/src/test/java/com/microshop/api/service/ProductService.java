@@ -2,6 +2,8 @@ package com.microshop.api;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,9 +41,14 @@ class ProductServiceTest{
 
     @Test void productDescriptionCanBeVeryLarge(){
         Product p = new Product();
-        var description = new StringBuilder("description");
-        for(int i = 0; i < 100; i++) description.append(description);
-        assertThrows(Exception.class, () -> {p.setDescription(description.toString());});
+        var description = new StringBuilder("0123456789");
+        Stream.iterate(0, x -> x < 100, x -> x+1 ).forEach((x) -> description.append("0123456789"));
+        assertThrows(Exception.class,
+            () -> {
+                p.setDescription(description.toString());
+                productService.save(p);
+            }
+        );
     }
 
 }
