@@ -22,7 +22,11 @@ import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.post;
 import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
+
+import static io.restassured.config.EncoderConfig.encoderConfig;
 import static org.junit.Assert.assertEquals;
+
 
 class ProductControllerTest extends AbstractIntegrationTest{
 
@@ -36,28 +40,33 @@ class ProductControllerTest extends AbstractIntegrationTest{
     void setUp(){
         System.out.println("LocalServerPort=%d".formatted(port));
         RestAssured.baseURI = "http://localhost:" + port;
+        RestAssured.config = RestAssured.config().encoderConfig(encoderConfig().defaultContentCharset("UTF-8"));
         productRepository.deleteAll();
     }
 
     @Test
     void shouldPersistAndReturnAProduct(){
-        System.out.println("8=D-");
 
-        Product dummy = newDummyProduct("Product name", "CODE for product");
-        Product saved = productRepository.save(dummy);
+        //Product dummy = newDummyProduct("Product name", "CODE for product");
+        //Product saved = productRepository.save(dummy);
         var code = "100-100000908WOF";
         var name = "Processador AMD Ryzen 9 7950X3D, 5.7GHz Max Turbo, Cache 128MB, AM5, 16 Núcleos, Vídeo Integrado";
         var description = "FAKE HTML DESCRIPTION";
-        var technicalInfo = ""
+        var technicalInfo = "FAKE HTML TECHNICALINFO";
  
-Processador AMD Ryzen 9 7950X3D, 5.7GHz Max Turbo, Cache 128MB, AM5, 16 Núcleos, Vídeo Integrado - 100-100000908WOF
-    <BS>
-        var product = new NewProductDTO("KB_2378AMD", "Ryzen 5 1600 AMD CPU");
+        //Processador AMD Ryzen 9 7950X3D, 5.7GHz Max Turbo, Cache 128MB, AM5, 16 Núcleos, Vídeo Integrado - 100-100000908WOF
+        var product = new NewProductDTO(code, name, description, technicalInfo, null);
 
-        given()
-            .body(new NewProductDTO("Product name")).
-        when()
-            .post("/products");
+        given().
+            contentType("application/json").
+            body(product).
+        when().
+            post("/products").
+        then().
+            body("code", equalTo(code)).
+            body("name", equalTo(name)).
+            body("description", equalTo(description)).
+            body("technicalInfo", equalTo(technicalInfo));
     }
     
     
