@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "ms-webscrapper"
+version = "1.0"
+description = ""
+authors = ["Lucas Sousa Silva <lucassousasilva@yahoo.com>"]
+readme = "README.md"
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+selenium = "^4.23.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

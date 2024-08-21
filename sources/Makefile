@@ -12,6 +12,7 @@ CATALOG_VERSION = 1.0
 run_database:
 	docker run -p 3306:3306 \
 		--name microshop_database \
+		--volume 
 		--env MARIADB_USER=user \
 		--env MARIADB_PASSWORD=password \
 		--env MARIADB_DATABASE=microshop \
