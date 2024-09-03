@@ -158,6 +158,17 @@ files = [
 ]
 
 [[package]]
+name = "litequeue"
+version = "0.9"
+description = "Simple queue built on top of SQLite"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "litequeue-0.9-py3-none-any.whl", hash = "sha256:344312748f9d118253ecaa2fb82d432ab6f63dd3bd5c40922a63933bc47cd2e3"},
+    {file = "litequeue-0.9.tar.gz", hash = "sha256:368f56b9de5c76fc6f2adc66177e81a59f545f3b5b95a26cae8562b858914647"},
+]
+
+[[package]]
 name = "orderedmultidict"
 version = "1.0.1"
 description = "Ordered Multivalue Dictionary"
@@ -378,4 +389,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "f1d677365e2d8ce0664d9097c272a603307bceb80fb115eaabd7f60e9e522184"
+content-hash = "71b1aa4004f7955e84574d0cc69d6dc430143af6b57b3aaa040fbd70d40cf977"
