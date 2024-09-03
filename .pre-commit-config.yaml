@@ -4,7 +4,14 @@ repos:
     hooks:
       - id: black
         language_version: python3.12
-
+  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.14.0
+    hooks:
+      # AOSP means that will prettify into Android Open Source Project format.
+      # autofix means that will automatically fix encountered not-pretty-formated files.
+      - id: pretty-format-java
+        args: [--aosp, --autofix]
+# Dont use isort, it conflicts with black
 #  - repo: https://github.com/pycqa/isort
 #    rev: 5.13.2
 #    hooks:
