@@ -1,21 +1,24 @@
-import json, re
-import sqlite3, time, string
+import json
 import multiprocessing as mp
 import multiprocessing.connection as mpconn
 import multiprocessing.queues as mpq
+import re
+import sqlite3
+import string
+import time
 from typing import Any
-from tqdm import tqdm
-from urllib3.util import parse_url
-from selenium.webdriver import ActionChains, Firefox, FirefoxOptions
-from selenium.webdriver.common.by import By
+
 from furl import furl
 from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
     WebDriverException,
 )
+from selenium.webdriver import ActionChains, Firefox, FirefoxOptions
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-
+from tqdm import tqdm
+from urllib3.util import parse_url
 
 DATABASE_PATH = "data.db"
 TABLE_DEFINITION_STRING = """
