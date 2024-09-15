@@ -1,14 +1,12 @@
 import json
 import multiprocessing as mp
 import multiprocessing.connection as mpconn
-import multiprocessing.queues as mpq
 import re
 import sqlite3
-import string
 import time
-from typing import Any
 
 from furl import furl
+from litequeue import LiteQueue
 from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
@@ -17,10 +15,13 @@ from selenium.common.exceptions import (
 from selenium.webdriver import ActionChains, Firefox, FirefoxOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from tqdm import tqdm
 from urllib3.util import parse_url
 
-DATABASE_PATH = "data.db"
+CATEGORY_QUEUE_PATH = "cat_queue.sqlite3"
+PRODUCT_QUEUE_PATH = "prod_queue.sqlite3"
+
+DATABASE_PATH = "data.sqlite3"
+
 TABLE_DEFINITION_STRING = """
 CREATE TABLE IF NOT EXISTS TOP_LEVEL_CATEGORIES(
     NAME TEXT,
@@ -33,11 +34,12 @@ CREATE TABLE IF NOT EXISTS CATEGORIES(
     NAME TEXT,
     PARENT TEXT,
     BREADCRUMBS TEXT,
-    URL TEXT,
-
-    SCRAPED BOOLEAN
+    URL TEXT
 );
 
+CREATE TABLE IF NOT EXISTS SCRAPED_LINKS(
+    LINK TEXT
+);
 CREATE TABLE IF NOT EXISTS PRODUCTS(
     CATEGORY TEXT,
 
@@ -50,8 +52,7 @@ CREATE TABLE IF NOT EXISTS PRODUCTS(
     TECHINICAL_INFO TEXT,
 
     BREADCRUMBS JSON,
-    URL TEXT,
-    SCRAPED BOOLEAN
+    URL TEXT
 );
 
 CREATE TABLE IF NOT EXISTS PRODUCT_IMAGES(
@@ -146,35 +147,6 @@ def scrape_top_level_categories():
             time.sleep(0.5)
 
 
-# def scrape_categories():
-#    def scrape_subcategories():
-#        subcategories = driver.find_elements(By.CSS_SELECTOR, "a.sc-d8fd1a-4.iNdeEo")
-#        for subcategory in subcategories:
-#            name = subcategory.text
-#            url = subcategory.get_attribute("href")
-#            with database:
-#                database.execute(
-#                    "INSERT INTO CATEGORIES VALUES(:name, :url, :scraped);",
-#                    {"name": name, "url": url, "scraped": False}
-#                )
-#
-#    tlcs = database.execute(
-#        """SELECT * FROM TOP_LEVEL_CATEGORIES WHERE SCRAPED=FALSE;"""
-#    ).fetchall()
-#    print("Scraping top level categories:")
-#    for category in tqdm(tlcs):
-#        driver.get(category["URL"])
-#        scrape_subcategories()
-#    print("Finished scraping top level categories !!!")
-#
-#    print("Scraping normal categories")
-#    categories = database.execute("SELECT * FROM CATEGORIES WHERE SCRAPED=FALSE;").fetchall()
-#    for category in tqdm(categories):
-#        driver.get(category["URL"])
-#        scrape_subcategories()
-#    print("Finised scraping normal categories !!!")
-
-
 def scrape_product_links_from_category_page(url, driver: Firefox):
     try:
         driver.get(url)
@@ -196,8 +168,8 @@ def scrape_product_links_from_category_page(url, driver: Firefox):
 
     links = list(
         filter(
-            lambda x: x is not None,
-            map(lambda link: link.get_attribute("href"), prod_links),
+            bool,
+            map(lambda link: link.get_attribute("href") or "", prod_links),
         )
     )
 
@@ -210,10 +182,6 @@ def scrape_product_links_from_category_page(url, driver: Firefox):
     )
 
     return [parsed_url.tostr(), *cat_links], links
-
-
-def scrape_products():
-    pass
 
 
 def scrape_category_page_properties(driver: Firefox):
@@ -243,31 +211,39 @@ def scrape_category_page_properties(driver: Firefox):
 
 
 def category_crawler(
-    category_queue: mp.Queue,
-    prod_queue: mp.Queue,
     database_writer_conn: mpconn.Connection,
     is_headless=False,
 ):
-    driver = generate_driver(is_headless)
-    while True:
+    process_name = mp.current_process().name
 
-        link = category_queue.get()
-        print(f"Scraping {link=}")
+    driver = generate_driver(is_headless)
+    cat_queue = LiteQueue(CATEGORY_QUEUE_PATH)
+    prod_queue = LiteQueue(PRODUCT_QUEUE_PATH)
+
+    while True:
+        link = cat_queue.pop()
+        if link is None:
+            time.sleep(1)
+            continue
+        link = link.data
+
+        print(f"{process_name} :: Scraping {link=}")
+
         cat_page_links, product_links = scrape_product_links_from_category_page(
             link, driver
         )
+
         props = scrape_category_page_properties(driver)
         if not props:
-            print(f"Failed to scrape {link=}")
+            print(f"{process_name} :: Failed to scrape {link=}")
             continue
 
-        if product_links:
-            for l in product_links:
-                prod_queue.put(l)
-        if cat_page_links:
-            for l in cat_page_links:
-                print("putting", l)
-                category_queue.put(l)
+        for l in product_links:
+            print(f"{process_name} :: putting product", l)
+            prod_queue.put(l)
+        for l in cat_page_links:
+            print(f"{process_name} :: putting category", l)
+            cat_queue.put(l)
 
         save_category_task = {
             "url": link,
@@ -315,36 +291,45 @@ def scrape_product_page(link, driver: Firefox):
     ).text.removeprefix("Código: ")
     price = driver.find_element(By.TAG_NAME, "h4").text
     old_price = driver.find_element(By.CSS_SELECTOR, "span.oldPrice").text
+    description = driver.find_element(By.ID, "description").get_attribute("innerHTML")
+    technical_info = driver.find_element(
+        By.CSS_SELECTOR, "#technicalInfoSection div div"
+    ).get_attribute("innerHTML")
+    breadcrumbs = [
+        elem.text.removesuffix(" >")
+        for elem in driver.find_elements(By.CSS_SELECTOR, "section>div>div>div>a")
+    ]
+
+    product_images = (
+        [
+            get_best_quality_image_url(elem.get_attribute("src"))
+            for elem in driver.find_elements(By.CSS_SELECTOR, ".swiper-wrapper img")
+        ],
+    )
 
     return {
         "name": name,
         "code": code,
         "price": extract_price(price),
         "old_price": old_price,
-        "description": driver.find_element(By.ID, "description").get_attribute(
-            "innerHTML"
-        ),
-        "technical_info": driver.find_element(
-            By.CSS_SELECTOR, "#technicalInfoSection div div"
-        ).get_attribute("innerHTML"),
+        "description": description,
+        "technical_info": technical_info,
         "url": link,
-        "breadcrumbs": [
-            elem.text.removesuffix(" >")
-            for elem in driver.find_elements(By.CSS_SELECTOR, "section>div>div>div>a")
-        ],
-        "product_images": [
-            get_best_quality_image_url(elem.get_attribute("src"))
-            for elem in driver.find_elements(By.CSS_SELECTOR, ".swiper-wrapper img")
-        ],
+        "breadcrumbs": breadcrumbs,
+        "product_images": product_images,
     }
 
 
-def product_crawler(
-    product_queue: mp.Queue, database_writer_conn: mpconn.Connection, is_headless=False
-):
+def product_crawler(database_writer_conn: mpconn.Connection, is_headless=False):
     driver = generate_driver(is_headless)
+    product_queue = LiteQueue(PRODUCT_QUEUE_PATH)
     while True:
-        link = product_queue.get()
+        link = product_queue.pop()
+        if link is None:
+            time.sleep(1)
+            continue
+        link = link.data
+
         print(link)
         product_data = scrape_product_page(link, driver)
 
@@ -358,13 +343,18 @@ def product_crawler(
         )
 
 
-def database_writer(data_conn: mpconn.Connection, category_queue: mp.Queue):
+def database_writer(
+    data_conn: mpconn.Connection,
+):
     database = sqlite3.connect(DATABASE_PATH)
     database.executescript(TABLE_DEFINITION_STRING)
+    cat_queue = LiteQueue(CATEGORY_QUEUE_PATH)
     with database:
-        for record in database.execute("SELECT URL FROM CATEGORIES;").fetchall():
-            category_queue.put(record[0])
-
+        for url in database.execute(
+            "SELECT URL FROM CATEGORIES WHERE SCRAPED=FALSE;"
+        ).fetchall():
+            print("putting category", url[0])
+            cat_queue.put(url[0])
     while True:
         data = data_conn.recv_bytes()  # !!! BLOCKS
         task = json.loads(data)
@@ -382,13 +372,24 @@ def database_writer(data_conn: mpconn.Connection, category_queue: mp.Queue):
                             for link in task["category_links"]
                         ],
                     )
+
                     database.executemany(
                         "INSERT INTO PRODUCTS(URL, SCRAPED) VALUES(:product_link, FALSE);",
                         [{"product_link": link} for link in task["product_links"]],
                     )
 
                     database.execute(
-                        "UPDATE CATEGORIES SET NAME=:name, PARENT=:parent, BREADCRUMBS=:breadcrumbs, SCRAPED=TRUE WHERE URL=:url;",
+                        """
+                        UPDATE
+                          CATEGORIES
+                        SET
+                          NAME =:name,
+                          PARENT =:parent,
+                          BREADCRUMBS =:breadcrumbs,
+                          SCRAPED = TRUE
+                        WHERE
+                          URL =:url;
+                        """,
                         {**task["properties"], "url": task["url"]},
                     )
 
@@ -411,32 +412,25 @@ def database_writer(data_conn: mpconn.Connection, category_queue: mp.Queue):
                         task,
                     )
 
-                # with database:
-                #    database.executemany(
-                #        "INSERT INTO PRO
-
 
 if __name__ == "__main__":
     # scrape_top_level_categories();exit()
-    category_links_queue = mp.Queue()
+    # category_links_queue = mp.Queue()
 
-    product_links_queue = mp.Queue()
+    # product_links_queue = mp.Queue()
 
     data_handler_conn, worker_conn = mp.Pipe()
+
     database_writer_process = mp.Process(
         name="data_writer",
         target=database_writer,
-        args=(data_handler_conn, category_links_queue),
+        args=(data_handler_conn,),
     )
     category_crawlers = [
         mp.Process(
             name=f"category_crawler#{i}",
             target=category_crawler,
-            args=(
-                category_links_queue,
-                product_links_queue,
-                worker_conn,
-            ),
+            args=(worker_conn,),
         )
         for i in range(10)
     ]
@@ -445,7 +439,7 @@ if __name__ == "__main__":
         mp.Process(
             name=f"product_crawler#{i}",
             target=product_crawler,
-            args=(product_links_queue, worker_conn),
+            args=(worker_conn,),
         )
         for i in range(4)
     ]
