@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ms-webscrapper"
+name = "ms-webscraper"
 version = "1.0"
 description = ""
 authors = ["Lucas Sousa Silva <lucassousasilva@yahoo.com>"]
