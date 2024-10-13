@@ -5,8 +5,19 @@
 #|_|  |_|_|\___|_|  \___/____/|_| |_|\___/| .__/ 
 #                                         |_|    
 
-VERSION = 1.0
+CATALOG_VERSION = 1.0
 
+
+.PHONY:run_database
+run_database:
+	docker run -p 3306:3306 \
+		--name microshop_database \
+		--volume 
+		--env MARIADB_USER=user \
+		--env MARIADB_PASSWORD=password \
+		--env MARIADB_DATABASE=microshop \
+		--env MARIADB_ROOT_PASSWORD=root \
+		mariadb:11-ubi
 
 .PHONY:run_jenkins
 run_jenkins:
