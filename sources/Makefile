@@ -1,9 +1,9 @@
-# __  __ _               ____  _                 
-#|  \/  (_) ___ _ __ ___/ ___|| |__   ___  _ __  
-#| |\/| | |/ __| '__/ _ \___ \| '_ \ / _ \| '_ \ 
+# __  __ _               ____  _
+#|  \/  (_) ___ _ __ ___/ ___|| |__   ___  _ __
+#| |\/| | |/ __| '__/ _ \___ \| '_ \ / _ \| '_ \
 #| |  | | | (__| | | (_) |__) | | | | (_) | |_) |
-#|_|  |_|_|\___|_|  \___/____/|_| |_|\___/| .__/ 
-#                                         |_|    
+#|_|  |_|_|\___|_|  \___/____/|_| |_|\___/| .__/
+#                                         |_|
 
 CATALOG_VERSION = 1.0
 
@@ -12,7 +12,6 @@ CATALOG_VERSION = 1.0
 run_database:
 	docker run -p 3306:3306 \
 		--name microshop_database \
-		--volume 
 		--env MARIADB_USER=user \
 		--env MARIADB_PASSWORD=password \
 		--env MARIADB_DATABASE=microshop \
@@ -24,6 +23,7 @@ run_jenkins:
 	docker run -p 8080:8080 -p 50000:50000 --restart=on-failure \
 		--name microshop_jenkins \
 		jenkins/jenkins:lts-jdk17
+.PHONY: run_image-storage
 
 .PHONY:test
 test:
@@ -45,4 +45,3 @@ run_api:
 		-l microshop_catalog \
 		-p 8080:8000 \
 		-p 3306:3306
-
