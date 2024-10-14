@@ -11,13 +11,25 @@ services:
   #    - 9000:9000
   #    - 9001:9001
 
+  load_balancer:
+    build:
+      context: load_balancer
+      dockerfile: Dockerfile
+    ports:
+      - 80: 8080
+    depends_on:
+      - catalog_api
+
+
   mariadb_database:
     image: mariadb:11-ubi
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: root
-    ports:
-      - 3306:3306
+    #ports:
+    #  - 3306:3306
+    networks:
+      - backend
 
   image_store:
     build:
