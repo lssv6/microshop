@@ -1,0 +1,45 @@
+version: '3.1'
+
+services:
+  storage_service:
+    image: minio/minio:RELEASE.2024-10-02T17-50-41Z.fips
+    environment:
+      REMOTE_MANAGEMENT_DISABLE: 1
+      MINIO_ROOT_USER:     ${AWS_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_KEY}
+    ports:
+      - 9000:9000
+      - 9001:9001
+
+  database:
+    image: mariadb:11-ubi
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+
+  image_store:
+    build:
+      context: ms-image_store
+      dockerfile: docker/Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - storage_service
+    networks:
+      - backend
+
+  catalog_api:
+    build:
+      context: ms-catalog
+      dockerfile: docker/Dockerfile
+    ports:
+      - 8080:8000
+    depends_on:
+      - database
+    networks:
+      - backend
+
+networks:
+  backend:
