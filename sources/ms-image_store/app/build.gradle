@@ -16,11 +16,16 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit Jupiter for testing.
-    testImplementation libs.junit.jupiter
 
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.3.4'
     // https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-starter-s3
     implementation group: 'io.awspring.cloud', name: 'spring-cloud-aws-starter-s3', version: '3.2.0'
+    // https://mvnrepository.com/artifact/jmagick/jmagick
+    implementation group: 'jmagick', name: 'jmagick', version: '6.6.9'
+
+    // Use JUnit Jupiter for testing.
+    testImplementation libs.junit.jupiter
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
@@ -37,7 +42,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.microshop.images.App'
+    mainClass = 'com.microshop.image_store.App'
 }
 
 tasks.named('test') {
