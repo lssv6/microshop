@@ -26,17 +26,17 @@ dependencies {
     /************************************************************************/
 	compileOnly 'org.projectlombok:lombok:1.18.34'
 	annotationProcessor 'org.projectlombok:lombok:1.18.34'
-	
+
 	testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    
+
     /************************************************************************/
     /** SPRING BOOT                                                         */
     /************************************************************************/
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
     implementation 'org.springframework.boot:spring-boot-starter-web:3.3.2'
-    
+
 
     /************************************************************************/
     /** SPRING BOOT TEST                                                    */
@@ -49,7 +49,7 @@ dependencies {
     /************************************************************************/
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.2'
-    
+
     /************************************************************************/
     /** ModelMapper (Maps atributes between objects of different classes)   */
     /************************************************************************/
@@ -68,41 +68,36 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.4.1'
 
-    /************************************************************************/
-    /** SPRING BOOT TEST                                                    */
-    /************************************************************************/
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.2'
 
-    /************************************************************************/
-    /** TestContainers (Base package)                                       */
-    /************************************************************************/
-    // https://mvnrepository.com/artifact/org.testcontainers/testcontainers
-    testImplementation 'org.testcontainers:testcontainers:1.20.1'
-   
-    /************************************************************************/
-    /** TestContainers (Spring framework integration)                       */
-    /************************************************************************/
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-testcontainers
-    testImplementation 'org.springframework.boot:spring-boot-testcontainers:3.3.2'
+    ///************************************************************************/
+    ///** TestContainers (Base package)                                       */
+    ///************************************************************************/
+    //// https://mvnrepository.com/artifact/org.testcontainers/testcontainers
+    //testImplementation 'org.testcontainers:testcontainers:1.20.1'
 
-    /************************************************************************/
-    /** TestContainers (Junit Jupiter module)                               */
-    /************************************************************************/
-    // https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter
-    testImplementation 'org.testcontainers:junit-jupiter:1.20.1'
+    ///************************************************************************/
+    ///** TestContainers (Spring framework integration)                       */
+    ///************************************************************************/
+    //// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-testcontainers
+    //testImplementation 'org.springframework.boot:spring-boot-testcontainers:3.3.2'
 
-    /************************************************************************/
-    /** Testcontainers (MariaDB connection module)                          */
-    /************************************************************************/
-    // https://mvnrepository.com/artifact/org.testcontainers/mariadb
-    testImplementation 'org.testcontainers:mariadb:1.20.1'
-    
-    /************************************************************************/
-    /** REST Assured | Testing and validation of REST services              */
-    /************************************************************************/
-    // https://mvnrepository.com/artifact/io.rest-assured/rest-assured
-    testImplementation 'io.rest-assured:rest-assured:5.5.0'
+    ///************************************************************************/
+    ///** TestContainers (Junit Jupiter module)                               */
+    ///************************************************************************/
+    //// https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter
+    //testImplementation 'org.testcontainers:junit-jupiter:1.20.1'
+
+    ///************************************************************************/
+    ///** Testcontainers (MariaDB connection module)                          */
+    ///************************************************************************/
+    //// https://mvnrepository.com/artifact/org.testcontainers/mariadb
+    //testImplementation 'org.testcontainers:mariadb:1.20.1'
+    //
+    ///************************************************************************/
+    ///** REST Assured | Testing and validation of REST services              */
+    ///************************************************************************/
+    //// https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+    //testImplementation 'io.rest-assured:rest-assured:5.5.0'
 
     /************************************************************************/
     /** JUNIT                                                               */
