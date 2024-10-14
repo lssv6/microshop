@@ -11,15 +11,17 @@ services:
   #    - 9000:9000
   #    - 9001:9001
 
-  load_balancer:
+  api_gateway:
     build:
-      context: load_balancer
+      context: ms-api_gateway
       dockerfile: Dockerfile
     ports:
-      - 80: 8080
+      - 80:8080
     depends_on:
       - catalog_api
-
+      - image_store
+    networks:
+      - backend
 
   mariadb_database:
     image: mariadb:11-ubi
@@ -45,6 +47,7 @@ services:
     networks:
       - backend
 
+  ## PORT : 8080
   catalog_api:
     build:
       context: ms-catalog
@@ -54,6 +57,7 @@ services:
       MARIADB_PORT: ${MARIADB_PORT}
       MARIADB_DATABASE: ${MARIADB_DATABASE}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      HTTP_SERVE_PORT: 8080
     depends_on:
       - database
     networks:
