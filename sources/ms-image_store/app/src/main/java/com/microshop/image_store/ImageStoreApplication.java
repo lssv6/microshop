@@ -7,8 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class App {
+public class ImageStoreApplication {
     public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
+        var app = new SpringApplication(ImageStoreApplication.class);
+        app.run(args);
     }
 }

@@ -9,8 +9,8 @@ CATALOG_VERSION = 1.0
 
 .PHONY: build
 build:
-	(cd ms-catalog; ./gradlew build)
-	(cd ms-image_store; ./gradlew build)
+	(cd ms-catalog; ./gradlew clean build)
+	(cd ms-image_store; ./gradlew clean build)
 
 #.PHONY:run_database
 #run_database:
