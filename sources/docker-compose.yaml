@@ -24,7 +24,9 @@ services:
       - backend
 
   mariadb_database:
-    image: mariadb:11-ubi
+    build:
+      context: ms-database
+      dockerfile: Dockerfile
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: root

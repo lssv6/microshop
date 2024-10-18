@@ -1,0 +1,4 @@
+[mariadb]
+ssl_cert = /etc/my.cnf.d/certificates/server-cert.pem
+ssl_key = /etc/my.cnf.d/certificates/server-key.pem
+ssl_ca = /etc/my.cnf.d/certificates/ca.pem
