@@ -1,5 +1,5 @@
-version: '3.1'
 name: microshop
+
 services:
   #storage_service:
   #  image: minio/minio:RELEASE.2024-10-02T17-50-41Z.fips
@@ -16,7 +16,7 @@ services:
       context: ms-api_gateway
       dockerfile: Dockerfile
     ports:
-      - 80:8080
+      - 8080:80
     depends_on:
       - catalog_api
       - image_store
@@ -27,9 +27,8 @@ services:
     build:
       context: ms-database
       dockerfile: Dockerfile
-    restart: always
-    environment:
-      MARIADB_ROOT_PASSWORD: root
+    # environment:
+    #   MARIADB_ROOT_PASSWORD: root
     #ports:
     #  - 3306:3306
     networks:
@@ -44,8 +43,6 @@ services:
       AWS_SECRET_KEY: ${AWS_SECRET_KEY}
       #ports:
       #  - 8080:8080
-    depends_on:
-      - storage_service
     networks:
       - backend
 
@@ -61,7 +58,7 @@ services:
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       HTTP_SERVE_PORT: 8080
     depends_on:
-      - database
+      - mariadb_database
     networks:
       - backend
 

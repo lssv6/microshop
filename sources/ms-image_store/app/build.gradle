@@ -18,6 +18,15 @@ repositories {
 
 dependencies {
 
+    /************************************************************************/
+    /** LOMBOK                                                              */
+    /************************************************************************/
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+    
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.3.4'
     // https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-starter-s3
