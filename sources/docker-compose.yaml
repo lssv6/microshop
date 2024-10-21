@@ -27,8 +27,8 @@ services:
     build:
       context: ms-database
       dockerfile: Dockerfile
-    # environment:
-    #   MARIADB_ROOT_PASSWORD: root
+    environment:
+       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     #ports:
     #  - 3306:3306
     networks:
