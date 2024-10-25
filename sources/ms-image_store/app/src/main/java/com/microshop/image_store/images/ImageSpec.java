@@ -6,23 +6,29 @@ package com.microshop.image_store.images;
  */
 public class ImageSpec {
     public static enum Size {
-        EXTRA_SMALL(128),
-        SMALL(256),
-        MEDIUM(512),
-        BIG(1024),
-        EXTRA_BIG(2048);
+        EXTRA_SMALL(128, "xs"),
+        SMALL(256, "s"),
+        MEDIUM(512, "m"),
+        LARGE(1024, "g"),
+        EXTRA_LARGE(2048, "gg");
 
         private int width;
+        private String abbreviation;
 
         /**
          * @param pixel_width - the width x of the image. All the images are squares.
          */
-        private Size(int pixel_width) {
+        private Size(int pixel_width, String abbreviation) {
             this.width = pixel_width;
+            this.abbreviation = abbreviation;
         }
 
         public int getWidth() {
             return width;
+        }
+
+        public String getAbbreviation() {
+            return abbreviation;
         }
     }
 

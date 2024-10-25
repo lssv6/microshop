@@ -19,6 +19,24 @@ repositories {
 dependencies {
 
     /************************************************************************/
+    /** SPRING BOOT                                                         */
+    /************************************************************************/
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.3.4'
+
+    /************************************************************************/
+    /** SPRING CLOUD AWS STARTER S3                                         */
+    /************************************************************************/
+    // https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-starter-s3
+    implementation group: 'io.awspring.cloud', name: 'spring-cloud-aws-starter-s3', version: '3.2.0'
+
+    /************************************************************************/
+    /** ImgScalr (Imaging library, resize images)                           */
+    /************************************************************************/
+    // https://mvnrepository.com/artifact/org.imgscalr/imgscalr-lib
+    implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+
+    /************************************************************************/
     /** LOMBOK                                                              */
     /************************************************************************/
     compileOnly 'org.projectlombok:lombok:1.18.34'
@@ -26,13 +44,7 @@ dependencies {
 
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
-    
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.3.4'
-    // https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-starter-s3
-    implementation group: 'io.awspring.cloud', name: 'spring-cloud-aws-starter-s3', version: '3.2.0'
-    // https://mvnrepository.com/artifact/jmagick/jmagick
-    implementation group: 'jmagick', name: 'jmagick', version: '6.6.9'
+
 
     // Use JUnit Jupiter for testing.
     testImplementation libs.junit.jupiter

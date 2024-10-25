@@ -1,20 +1,17 @@
 package com.microshop.image_store.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import software.amazon.awssdk.annotations.NotNull;
+import lombok.NonNull;
 
-@ToString
+import org.springframework.web.multipart.MultipartFile;
+
 @Data
 @AllArgsConstructor
-public class SaveImageRequest{
-    @NotNull
-    private final Integer code;
+public class SaveImageRequest {
+    @NonNull private final Integer code;
+    @NonNull private final Integer quality;
 
-    private MultipartFile imageFile;
+    /** Can be one of any of the following file formats: - BMP - GIF - JPEG - PNG - TIFF - WBMP */
+    @NonNull private MultipartFile imageFile;
 }
