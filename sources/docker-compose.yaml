@@ -1,16 +1,15 @@
+# __  __ _               ____  _
+#|  \/  (_) ___ _ __ ___/ ___|| |__   ___  _ __
+#| |\/| | |/ __| '__/ _ \___ \| '_ \ / _ \| '_ \
+#| |  | | | (__| | | (_) |__) | | | | (_) | |_) |
+#|_|  |_|_|\___|_|  \___/____/|_| |_|\___/| .__/
+#                                         |_|
+#
+
+
 name: microshop
 
 services:
-  #storage_service:
-  #  image: minio/minio:RELEASE.2024-10-02T17-50-41Z.fips
-  #  environment:
-  #    REMOTE_MANAGEMENT_DISABLE: 1
-  #    MINIO_ROOT_USER:     ${AWS_ACCESS_KEY}
-  #    MINIO_ROOT_PASSWORD: ${AWS_SECRET_KEY}
-  #  ports:
-  #    - 9000:9000
-  #    - 9001:9001
-
   api_gateway:
     build:
       context: ms-api_gateway

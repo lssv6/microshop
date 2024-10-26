@@ -6,13 +6,15 @@
 #                                         |_|
 
 CATALOG_VERSION = 1.0
-
+.PHONY: clean
+clean:
+	(cd ms-catalog; ./gradlew clean)
+	(cd ms-image_store; ./gradlew clean)
 .PHONY: build
 build:
-	(cd ms-catalog; ./gradlew clean build)
-	(cd ms-image_store; ./gradlew clean build)
+	(cd ms-catalog; ./gradlew build)
+	(cd ms-image_store; ./gradlew build)
 
 .PHONY: run
 run:
 	docker-compose -f docker-compose.yaml --env-file production.env up --build
-

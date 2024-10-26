@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
-import software.amazon.awssdk.core.ResponseInputStream;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-
 import java.io.IOException;
+import java.io.InputStream;
 
 @Controller
 @RequestMapping("/image-store")
@@ -32,6 +30,14 @@ public class ImageController {
     @Autowired private ImageService imageService;
 
     /**
+     * Endpoint responsible for saving the image on cloud. All the images saved here are written as
+     * follows:
+     *
+     * <p>image_code/size/quality.
+     *
+     * <p>For each size: EXTRA_SMALL, SMALL, MEDIUM, LARGE, EXTRA_LARGE. All written with the
+     * quality of 100%.
+     *
      * @param saveImageRequest it's the form model that is required to save the image.
      */
     @PostMapping(
@@ -40,13 +46,15 @@ public class ImageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> uploadImage(@ModelAttribute SaveImageRequest saveImageRequest) {
         Integer imageCode = saveImageRequest.getCode();
-        Integer imageQuality = saveImageRequest.getQuality();
         MultipartFile imageFile = saveImageRequest.getImageFile();
-        ImageSpec imageSpec = new ImageSpec(ImageSpec.Size.EXTRA_LARGE, imageQuality);
 
         if (imageFile != null) {
+            logger.info("Trying to save the images to the cloud");
             try {
-                imageService.uploadJPEGImage(imageCode, imageFile, imageSpec);
+                for (ImageSpec.Size size : ImageSpec.Size.values()) {
+                    imageService.uploadJPEGImage(imageCode, imageFile, new ImageSpec(size, 100));
+                    logger.info("Saved a image to the cloud");
+                }
             } catch (IOException e) {
                 return ResponseEntity.status(500).build();
             }
@@ -59,20 +67,19 @@ public class ImageController {
     }
 
     @GetMapping("/{image_code}")
-    public ResponseEntity<Resource> getImage(
+    public ResponseEntity<Resource> downloadImage(
             @RequestBody ImageSpec spec, @PathVariable(name = "image_code") int image_code) {
-        ResponseInputStream<GetObjectResponse> ris =
-                imageService.downloadJPEGImage(image_code, spec);
-        InputStreamResource resource = new InputStreamResource(ris);
-        try {
-            var response =
-                    ResponseEntity.ok()
-                            .contentType(MediaType.IMAGE_JPEG)
-                            .contentLength(resource.contentLength())
-                            .body((Resource) resource);
-            return response;
-        } catch (IOException ex) {
-            return ResponseEntity.status(500).build();
-        }
+        InputStream ris = imageService.downloadJPEGImage(image_code, spec);
+        Resource resource = new InputStreamResource(ris);
+        var response =
+                ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        // ### HACK. You're unable to know the length of a input stream easily.
+                        // So, we'll make the client blind to the real size of the image.
+                        // it's very boring that the client cannot download on a parallel way.
+                        // BORING !!!!
+                        // .contentLength(resource.contentLength())
+                        .body(resource);
+        return response;
     }
 }

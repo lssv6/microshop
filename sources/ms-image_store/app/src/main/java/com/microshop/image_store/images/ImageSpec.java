@@ -30,26 +30,20 @@ public class ImageSpec {
         public String getAbbreviation() {
             return abbreviation;
         }
+
+        public static Size fromWidth(int width) {
+            return switch (width) {
+                case 128 -> EXTRA_SMALL;
+                case 256 -> SMALL;
+                case 512 -> MEDIUM;
+                case 1024 -> LARGE;
+                case 2048 -> EXTRA_LARGE;
+                default ->
+                        throw new IllegalArgumentException(
+                                "Cannot find a suitable Size for " + width);
+            };
+        }
     }
-
-    // public static enum Quality{
-    //    Q10(10),
-    //    Q20(20),
-    //    Q30(30),
-    //    Q40(40),
-    //    Q50(50),
-    //    Q60(60),
-    //    Q70(70),
-    //    Q80(80),
-    //    Q90(90),
-    //    Q100(100);
-
-    //    private int quality;
-
-    //    private Quality(int quality){
-    //        this.quality = quality;
-    //    }
-    // }
 
     private Size size;
     private int quality;

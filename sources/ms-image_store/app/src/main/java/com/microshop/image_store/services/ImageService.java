@@ -8,12 +8,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.awt.image.BufferedImage;
@@ -30,6 +28,7 @@ import javax.imageio.stream.ImageOutputStream;
 
 @Service
 public class ImageService {
+
     // private static final Logger log = LoggerFactory.getLogger(ImageService.class);
     private static final String bucketName = "microshop.product-images";
     private final S3Client s3Client;
@@ -52,7 +51,7 @@ public class ImageService {
         BufferedImage buffImage = ImageIO.read(imageInputStream); // Reads from any given format.
 
         // Resizes the image.
-        Scalr.resize(buffImage, spec.getSize().getWidth());
+        BufferedImage buffResizedImage = Scalr.resize(buffImage, spec.getSize().getWidth());
 
         // Create ByteArrayOutputStream in order to store the resulting image binary.
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -68,7 +67,7 @@ public class ImageService {
         params.setCompressionQuality(spec.getQuality() / 100f);
 
         // Writes the image specified by params to imageOutputStream.
-        jpegImageWriter.write(null, new IIOImage(buffImage, null, null), params);
+        jpegImageWriter.write(null, new IIOImage(buffResizedImage, null, null), params);
         jpegImageWriter.dispose();
         return baos.toByteArray();
     }
@@ -100,16 +99,13 @@ public class ImageService {
     }
 
     /** Returns the desidered image from the given specification. */
-    public ResponseInputStream<GetObjectResponse> downloadJPEGImage(
-            Integer image_code, ImageSpec spec) {
+    public InputStream downloadJPEGImage(Integer imageCode, ImageSpec imageSpec) {
         GetObjectRequest gor =
                 GetObjectRequest.builder()
                         .bucket(bucketName)
-                        .key(image_code.toString())
+                        .key("%s/%s".formatted(imageCode, imageSpec.getSize().getAbbreviation()))
                         .responseContentType(MediaType.IMAGE_JPEG_VALUE)
                         .build();
-        ResponseInputStream<GetObjectResponse> response =
-                s3Client.getObject(gor, ResponseTransformer.toInputStream());
-        return response;
+        return s3Client.getObject(gor, ResponseTransformer.toInputStream());
     }
 }
