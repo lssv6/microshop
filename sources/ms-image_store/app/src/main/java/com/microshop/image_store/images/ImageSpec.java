@@ -9,8 +9,8 @@ public class ImageSpec {
         EXTRA_SMALL(128, "xs"),
         SMALL(256, "s"),
         MEDIUM(512, "m"),
-        LARGE(1024, "g"),
-        EXTRA_LARGE(2048, "gg");
+        LARGE(1024, "l"),
+        EXTRA_LARGE(2048, "xl");
 
         private int width;
         private String abbreviation;
@@ -41,6 +41,19 @@ public class ImageSpec {
                 default ->
                         throw new IllegalArgumentException(
                                 "Cannot find a suitable Size for " + width);
+            };
+        }
+
+        public static Size fromString(String string) {
+            return switch (string.toUpperCase()) {
+                case "XS", "EXTRA_SMALL" -> EXTRA_SMALL;
+                case "S", "SMALL" -> SMALL;
+                case "M", "MEDIUM" -> MEDIUM;
+                case "L", "LARGE" -> LARGE;
+                case "XL", "EXTRA_LARGE" -> EXTRA_LARGE;
+                default ->
+                        throw new IllegalArgumentException(
+                                "Cannot find a suitable Size for " + string);
             };
         }
     }

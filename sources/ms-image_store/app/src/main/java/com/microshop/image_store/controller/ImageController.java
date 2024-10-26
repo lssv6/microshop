@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -68,17 +68,27 @@ public class ImageController {
 
     @GetMapping("/{image_code}")
     public ResponseEntity<Resource> downloadImage(
-            @RequestBody ImageSpec spec, @PathVariable(name = "image_code") int image_code) {
-        InputStream ris = imageService.downloadJPEGImage(image_code, spec);
+            @RequestParam(name = "quality", defaultValue = "100") Integer quality,
+            @RequestParam(name = "size", defaultValue = "xl") String size,
+            @PathVariable(name = "image_code") int image_code) {
+        InputStream ris;
+        try {
+            ris =
+                    imageService.downloadJPEGImage(
+                            image_code, new ImageSpec(ImageSpec.Size.fromString(size), quality));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(500).build();
+        }
         Resource resource = new InputStreamResource(ris);
         var response =
                 ResponseEntity.ok()
                         .contentType(MediaType.IMAGE_JPEG)
                         // ### HACK. You're unable to know the length of a input stream easily.
-                        // So, we'll make the client blind to the real size of the image.
+                        // So, we'll make the client to be blind to the real size of the image.
                         // it's very boring that the client cannot download on a parallel way.
                         // BORING !!!!
-                        // .contentLength(resource.contentLength())
+                        // .contentLength(resource.contentLength()) # Dumb code
                         .body(resource);
         return response;
     }
