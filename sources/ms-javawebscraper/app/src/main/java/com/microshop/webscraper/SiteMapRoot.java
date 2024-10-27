@@ -16,4 +16,8 @@ public class SiteMapRoot {
     public void addSiteMap(String type, String loc, Date lastmod) {
         entries.add(new SMEntry(type, loc, lastmod));
     }
+
+    public List<SMEntry> getSiteMaps() {
+        return entries;
+    }
 }

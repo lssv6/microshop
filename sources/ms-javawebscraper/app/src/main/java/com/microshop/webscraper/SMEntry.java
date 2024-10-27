@@ -24,4 +24,17 @@ public class SMEntry {
     public String getType() {
         return type;
     }
+
+    public void setLoc(String loc) {
+        this.loc = loc;
+    }
+
+    public void setLastmod(Date lastmod) {
+        this.lastmod = lastmod;
+    }
+
+    @Override
+    public String toString() {
+        return "{{type=%s;loc=%s;lastmod=%s}}".formatted(type, loc, lastmod);
+    }
 }
