@@ -1,0 +1,66 @@
+# __  __ _               ____  _
+#|  \/  (_) ___ _ __ ___/ ___|| |__   ___  _ __
+#| |\/| | |/ __| '__/ _ \___ \| '_ \ / _ \| '_ \
+#| |  | | | (__| | | (_) |__) | | | | (_) | |_) |
+#|_|  |_|_|\___|_|  \___/____/|_| |_|\___/| .__/
+#                                         |_|
+#
+
+
+name: microshop
+
+services:
+  api_gateway:
+    build:
+      context: ms-api_gateway
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    depends_on:
+      - catalog_api
+      - image_store
+    networks:
+      - backend
+
+  mariadb_database:
+    build:
+      context: ms-database
+      dockerfile: Dockerfile
+    environment:
+       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    #ports:
+    #  - 3306:3306
+    networks:
+      - backend
+
+  image_store:
+    build:
+      context: ms-image_store
+      dockerfile: docker/Dockerfile
+    environment:
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      #ports:
+      #  - 8080:8080
+    networks:
+      - backend
+
+  ## PORT : 8080
+  catalog_api:
+    build:
+      context: ms-catalog
+      dockerfile: docker/Dockerfile
+    environment:
+      MARIADB_HOST: ${MARIADB_HOST}
+      MARIADB_PORT: ${MARIADB_PORT}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      HTTP_SERVE_PORT: 8080
+    depends_on:
+      - mariadb_database
+    networks:
+      - backend
+
+
+networks:
+  backend:

@@ -1,48 +1,20 @@
-# __  __ _               ____  _                 
-#|  \/  (_) ___ _ __ ___/ ___|| |__   ___  _ __  
-#| |\/| | |/ __| '__/ _ \___ \| '_ \ / _ \| '_ \ 
+# __  __ _               ____  _
+#|  \/  (_) ___ _ __ ___/ ___|| |__   ___  _ __
+#| |\/| | |/ __| '__/ _ \___ \| '_ \ / _ \| '_ \
 #| |  | | | (__| | | (_) |__) | | | | (_) | |_) |
-#|_|  |_|_|\___|_|  \___/____/|_| |_|\___/| .__/ 
-#                                         |_|    
+#|_|  |_|_|\___|_|  \___/____/|_| |_|\___/| .__/
+#                                         |_|
 
 CATALOG_VERSION = 1.0
+.PHONY: clean
+clean:
+	(cd ms-catalog; ./gradlew clean)
+	(cd ms-image_store; ./gradlew clean)
+.PHONY: build
+build:
+	(cd ms-catalog; ./gradlew build)
+	(cd ms-image_store; ./gradlew build)
 
-
-.PHONY:run_database
-run_database:
-	docker run -p 3306:3306 \
-		--name microshop_database \
-		--volume 
-		--env MARIADB_USER=user \
-		--env MARIADB_PASSWORD=password \
-		--env MARIADB_DATABASE=microshop \
-		--env MARIADB_ROOT_PASSWORD=root \
-		mariadb:11-ubi
-
-.PHONY:run_jenkins
-run_jenkins:
-	docker run -p 8080:8080 -p 50000:50000 --restart=on-failure \
-		--name microshop_jenkins \
-		jenkins/jenkins:lts-jdk17
-
-.PHONY:test
-test:
-	./ms-catalog/gradlew test
-
-.PHONY:build_jar
-build_jar:
-	./ms-catalog/gradlew assembleBootDist
-
-
-.PHONY:build_image
-build_image:
-	docker build . -f ./docker/ms-catalog/Dockerfile \
-		-t microshop_api:$(CATALOG_VERSION)
-
-.PHONY:run_api
-run_api:
-	docker run microshop_catalog:$(CATALOG_VERSION) \
-		-l microshop_catalog \
-		-p 8080:8000 \
-		-p 3306:3306
-
+.PHONY: run
+run:
+	docker-compose -f docker-compose.yaml --env-file production.env up --build
