@@ -35,6 +35,6 @@ public class SMEntry {
 
     @Override
     public String toString() {
-        return "{{type=%s;loc=%s;lastmod=%s}}".formatted(type, loc, lastmod);
+        return "SMEntry[type=%s, loc=%s, lastmod=%s]".formatted(type, loc, lastmod);
     }
 }

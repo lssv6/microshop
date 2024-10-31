@@ -24,7 +24,7 @@ public class SiteMapCrawler {
         private SiteMapRoot root;
         private SMEntry head;
         private String lastQName;
-        private SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+        private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
 
         public SiteMapHandler() {
             this.root = new SiteMapRoot();
@@ -52,6 +52,8 @@ public class SiteMapCrawler {
                 // INGORE
             } else if (qName.equalsIgnoreCase("sitemap")) {
                 head = new SMEntry("sitemap", null, null);
+            } else if (qName.equalsIgnoreCase("url")) {
+                head = new SMEntry("url", null, null);
             } else if (qName.equalsIgnoreCase("loc")) {
                 lastQName = qName;
             } else if (qName.equalsIgnoreCase("lastmod")) {
@@ -62,7 +64,7 @@ public class SiteMapCrawler {
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
             log.debug("ELEMENT END: URI = {}, LOCALNAME = {}, QNAME = {}", uri, localName, qName);
-            if (qName.equalsIgnoreCase("sitemap")) {
+            if (qName.equalsIgnoreCase("sitemap") || qName.equalsIgnoreCase("url")) {
                 root.addSiteMap(head);
                 head = null;
             }
@@ -88,31 +90,39 @@ public class SiteMapCrawler {
 
     private SAXParser smParser;
     private SiteMapHandler smHandler;
-    private String siteMapURL;
 
-    public SiteMapCrawler(String siteMapURL) throws ParserConfigurationException {
-        this.siteMapURL = siteMapURL;
-        this.smHandler = new SiteMapHandler();
+    public SiteMapCrawler() {
 
         SAXParserFactory spf = SAXParserFactory.newDefaultInstance();
         try {
             this.smParser = spf.newSAXParser();
         } catch (SAXException | ParserConfigurationException e) {
-            throw new ParserConfigurationException("Unable to get a SAX parser!");
+
         }
     }
 
-    public List<SMEntry> crawl() throws SAXException, IOException, InterruptedException {
-        InputStream siteMap;
+    public List<SMEntry> crawl(InputStream siteMap) {
+        smHandler = new SiteMapHandler();
         try {
-            siteMap = SiteMapDownloader.downloadSiteMap(siteMapURL);
-        } catch (IOException | InterruptedException ex) {
-            log.debug("Failed to download website map!😵");
-            throw ex;
+            smParser.parse(siteMap, smHandler);
+        } catch (IOException | SAXException e) {
+            log.error("Unable to parse", e);
         }
 
-        smParser.parse(siteMap, smHandler);
         SiteMapRoot smRoot = smHandler.getSiteMapRoot();
-        return smRoot.getSiteMaps();
+        List<SMEntry> sitemaps = smRoot.getSiteMaps();
+        return sitemaps;
+    }
+
+    public List<SMEntry> crawl(String URL) {
+        List<SMEntry> result = List.of();
+        try (InputStream is = SiteMapDownloader.downloadSiteMap(URL); ) {
+            result = crawl(is);
+        } catch (IOException e) {
+            log.error("IO error", e);
+        } catch (InterruptedException e) {
+            log.error("Interrupted", e);
+        }
+        return result;
     }
 }
