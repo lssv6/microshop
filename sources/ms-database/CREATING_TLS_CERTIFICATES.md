@@ -58,6 +58,3 @@ Whose only the needed keys for our database are:
 ```
 openssl verify -CAfile ca.pem server-cert.pem
 ```
-
-
-

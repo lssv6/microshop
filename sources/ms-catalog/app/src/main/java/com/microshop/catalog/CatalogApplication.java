@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class CatalogApplication {
-    public static void main(String[] args) {
-        var app = new SpringApplication(CatalogApplication.class);
-        app.run(args);
-    }
+  public static void main(String[] args) {
+    var app = new SpringApplication(CatalogApplication.class);
+    app.run(args);
+  }
 }

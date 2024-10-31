@@ -15,12 +15,12 @@ Mainly, we have a microservice based archtecture:
  - [ ] ms-auth
  - [ ] ms-inventory
  - [ ] ms------
- 
+
 And a VUE.JS front-end service.
  - [ ] ms-frontend
 
 # Running the project.
-To run this project, you shoud have: 
+To run this project, you shoud have:
  - Make
  - Docker (27 or superior)
  - Gradle (8.9 or superior)
@@ -33,4 +33,3 @@ make run_microshop
 ```
 
 *TODO: DOCUMENT MORE SECTIONS*
-

@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class NewProductDTO{
-    private String code;
-    private String name;
-    private String description;
-    private String technicalInfo;
-    private Long categoryId;
+public class NewProductDTO {
+  private String code;
+  private String name;
+  private String description;
+  private String technicalInfo;
+  private Long categoryId;
 }

@@ -17,7 +17,7 @@ repos:
       # AOSP means that will prettify into Android Open Source Project format.
       # autofix means that will automatically fix encountered not-pretty-formated files.
       - id: pretty-format-java
-        args: ['--aosp', '--autofix']
+        args: ['--autofix']
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:

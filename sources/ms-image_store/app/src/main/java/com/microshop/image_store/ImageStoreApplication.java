@@ -5,12 +5,11 @@ package com.microshop.image_store;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @SpringBootApplication
 public class ImageStoreApplication {
-    public static void main(String[] args) {
-        var app = new SpringApplication(ImageStoreApplication.class);
-        app.run(args);
-    }
+  public static void main(String[] args) {
+    var app = new SpringApplication(ImageStoreApplication.class);
+    app.run(args);
+  }
 }
