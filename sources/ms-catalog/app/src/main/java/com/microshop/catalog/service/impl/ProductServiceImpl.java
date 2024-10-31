@@ -10,31 +10,32 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-  @Autowired private ProductRepository productRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
-  @Override
-  public Iterable<Product> findAll() {
-    return productRepository.findAll();
-  }
-  ;
+    @Override
+    public Iterable<Product> findAll() {
+        return productRepository.findAll();
+    }
+    ;
 
-  @Override
-  public Product save(Product p) {
-    return productRepository.save(p);
-  }
+    @Override
+    public Product save(Product p) {
+        return productRepository.save(p);
+    }
 
-  @Override
-  public Product findById(Long id) {
-    return productRepository.findById(id).get();
-  }
+    @Override
+    public Product findById(Long id) {
+        return productRepository.findById(id).get();
+    }
 
-  @Override
-  public Product findByNameLike(String likeString) {
-    return productRepository.findByNameLike(likeString);
-  }
+    @Override
+    public Product findByNameLike(String likeString) {
+        return productRepository.findByNameLike(likeString);
+    }
 
-  @Override
-  public Collection<Product> findByCategory(Category category) {
-    return productRepository.findByCategory(category);
-  }
+    @Override
+    public Collection<Product> findByCategory(Category category) {
+        return productRepository.findByCategory(category);
+    }
 }

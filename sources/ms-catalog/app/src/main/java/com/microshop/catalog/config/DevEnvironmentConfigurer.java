@@ -9,16 +9,15 @@ import org.springframework.core.env.Profiles;
 
 @Order(Integer.MIN_VALUE)
 public class DevEnvironmentConfigurer implements EnvironmentPostProcessor {
-  @Override
-  public void postProcessEnvironment(
-      ConfigurableEnvironment environment, SpringApplication application) {
-    if (environment.getActiveProfiles().length == 0) {
-      environment.addActiveProfile("dev");
+    @Override
+    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+        if (environment.getActiveProfiles().length == 0) {
+            environment.addActiveProfile("dev");
+        }
+        if (environment.acceptsProfiles(Profiles.of("dev"))) {
+            Validate.validState(
+                    environment.getActiveProfiles().length == 1,
+                    "Development profile could not be mixed with other profiles");
+        }
     }
-    if (environment.acceptsProfiles(Profiles.of("dev"))) {
-      Validate.validState(
-          environment.getActiveProfiles().length == 1,
-          "Development profile could not be mixed with other profiles");
-    }
-  }
 }

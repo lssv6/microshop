@@ -14,29 +14,32 @@ import lombok.Setter;
 
 @Entity
 public class Category implements Serializable {
-  @Getter
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Getter
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Getter
-  @Setter
-  @Column(length = 64, unique = true, nullable = false)
-  private String name;
+    @Getter
+    @Setter
+    @Column(length = 64, unique = true, nullable = false)
+    private String name;
 
-  @Getter
-  @Setter
-  @Column(nullable = false)
-  private boolean hidden = false;
+    @Getter
+    @Setter
+    @Column(nullable = false)
+    private boolean hidden = false;
 
-  @Getter @Setter @ManyToOne private Category parent;
+    @Getter
+    @Setter
+    @ManyToOne
+    private Category parent;
 
-  @Getter
-  @Setter
-  @OneToMany(mappedBy = "parent")
-  private Set<Category> children;
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "parent")
+    private Set<Category> children;
 
-  // @Getter@Setter
-  // @OneToMany
-  // private Set<Product> products;
+    // @Getter@Setter
+    // @OneToMany
+    // private Set<Product> products;
 }

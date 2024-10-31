@@ -6,9 +6,9 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface CategoryRepository extends CrudRepository<Category, Long> {
 
-  public Set<Category> findByParentIsNull();
+    public Set<Category> findByParentIsNull();
 
-  public Set<Category> findByName(String name);
+    public Set<Category> findByName(String name);
 
-  public Iterable<Category> findByParent(Category p);
+    public Iterable<Category> findByParent(Category p);
 }

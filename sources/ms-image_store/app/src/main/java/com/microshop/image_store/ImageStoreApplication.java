@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ImageStoreApplication {
-  public static void main(String[] args) {
-    var app = new SpringApplication(ImageStoreApplication.class);
-    app.run(args);
-  }
+    public static void main(String[] args) {
+        var app = new SpringApplication(ImageStoreApplication.class);
+        app.run(args);
+    }
 }

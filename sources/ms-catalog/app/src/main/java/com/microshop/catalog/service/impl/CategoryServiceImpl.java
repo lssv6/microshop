@@ -10,31 +10,32 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
-  @Autowired private CategoryRepository categoryRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
-  @Override
-  public Optional<Category> findById(Long id) {
-    return categoryRepository.findById(id);
-  }
+    @Override
+    public Optional<Category> findById(Long id) {
+        return categoryRepository.findById(id);
+    }
 
-  @Override
-  public Iterable<Category> findAll() {
-    return categoryRepository.findAll();
-  }
+    @Override
+    public Iterable<Category> findAll() {
+        return categoryRepository.findAll();
+    }
 
-  @Override
-  public Category save(Category c) {
-    return categoryRepository.save(c);
-  }
+    @Override
+    public Category save(Category c) {
+        return categoryRepository.save(c);
+    }
 
-  @Override
-  public Set<Category> findAllTopLevel() {
-    return categoryRepository.findByParentIsNull();
-  }
-  ;
+    @Override
+    public Set<Category> findAllTopLevel() {
+        return categoryRepository.findByParentIsNull();
+    }
+    ;
 
-  @Override
-  public Set<Category> findByName(String name) {
-    return categoryRepository.findByName(name);
-  }
+    @Override
+    public Set<Category> findByName(String name) {
+        return categoryRepository.findByName(name);
+    }
 }

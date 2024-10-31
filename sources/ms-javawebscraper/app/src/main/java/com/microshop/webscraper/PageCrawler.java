@@ -1,14 +1,14 @@
 package com.microshop.webscraper;
 
 public class PageCrawler {
-  private static PageCrawler instance;
+    private static PageCrawler instance;
 
-  private PageCrawler() {}
+    private PageCrawler() {}
 
-  public PageCrawler getInstance() {
-    if (instance == null) {
-      instance = new PageCrawler();
+    public PageCrawler getInstance() {
+        if (instance == null) {
+            instance = new PageCrawler();
+        }
+        return instance;
     }
-    return instance;
-  }
 }

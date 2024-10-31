@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long> {
-  public Product findByNameLike(String likeString);
+    public Product findByNameLike(String likeString);
 
-  public Set<Product> findByCategory(Category category);
+    public Set<Product> findByCategory(Category category);
 }

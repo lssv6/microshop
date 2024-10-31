@@ -21,29 +21,33 @@ import lombok.ToString;
 @ToString
 @Entity
 public class Product implements Serializable {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Getter
-  @Setter
-  @Column(nullable = false, length = 64, unique = true)
-  private String code;
+    @Getter
+    @Setter
+    @Column(nullable = false, length = 64, unique = true)
+    private String code;
 
-  @Getter
-  @Setter
-  @Column(nullable = false)
-  private String name;
+    @Getter
+    @Setter
+    @Column(nullable = false)
+    private String name;
 
-  @Getter
-  @Setter
-  @Column(nullable = false)
-  private String description;
+    @Getter
+    @Setter
+    @Column(nullable = false)
+    private String description;
 
-  @Getter
-  @Setter
-  @Column(nullable = false)
-  private String technicalInfo;
+    @Getter
+    @Setter
+    @Column(nullable = false)
+    private String technicalInfo;
 
-  @Getter @Setter @ManyToOne @JoinColumn private Category category;
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn
+    private Category category;
 }

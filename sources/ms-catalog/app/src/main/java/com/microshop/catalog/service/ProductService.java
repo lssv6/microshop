@@ -5,13 +5,13 @@ import com.microshop.catalog.model.Product;
 import java.util.Collection;
 
 public interface ProductService {
-  public Iterable<Product> findAll();
+    public Iterable<Product> findAll();
 
-  public Product save(Product p);
+    public Product save(Product p);
 
-  public Product findById(Long id);
+    public Product findById(Long id);
 
-  public Product findByNameLike(String likeString);
+    public Product findByNameLike(String likeString);
 
-  public Collection<Product> findByCategory(Category category);
+    public Collection<Product> findByCategory(Category category);
 }

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class NewCategoryDTO {
-  private String name;
-  private Long parentId;
+    private String name;
+    private Long parentId;
 }
