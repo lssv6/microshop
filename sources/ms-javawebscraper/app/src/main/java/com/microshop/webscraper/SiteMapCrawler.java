@@ -1,5 +1,6 @@
 package com.microshop.webscraper;
 
+import com.microshop.webscraper.downloader.DownloadException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -112,13 +113,13 @@ public class SiteMapCrawler {
         return sitemaps;
     }
 
-    public List<SMEntry> crawl(String URL) {
+    public List<SMEntry> crawl(String URL) throws DownloadException {
         List<SMEntry> result = List.of();
         try (InputStream is = SiteMapDownloader.downloadSiteMap(URL); ) {
             result = crawl(is);
+        } catch (DownloadException e) {
+            log.error("Failed to download", e);
         } catch (IOException e) {
-            log.error("IO error", e);
-        } catch (InterruptedException e) {
             log.error("Interrupted", e);
         }
         return result;

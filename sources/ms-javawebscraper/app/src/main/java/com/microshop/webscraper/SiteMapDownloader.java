@@ -1,5 +1,6 @@
 package com.microshop.webscraper;
 
+import com.microshop.webscraper.downloader.DownloadException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -14,11 +15,15 @@ public class SiteMapDownloader {
     private static Logger log = LoggerFactory.getLogger(SiteMapDownloader.class);
     private static HttpClient client = HttpClient.newHttpClient();
 
-    public static InputStream downloadSiteMap(String siteMapUrl) throws InterruptedException, IOException {
+    public static InputStream downloadSiteMap(String siteMapUrl) throws DownloadException {
         HttpRequest request =
                 HttpRequest.newBuilder().uri(URI.create(siteMapUrl)).build();
-        HttpResponse<InputStream> response = client.send(request, BodyHandlers.ofInputStream());
-        log.info("Requested url={} with status={}", siteMapUrl, response.statusCode());
-        return response.body();
+        try {
+            HttpResponse<InputStream> response = client.send(request, BodyHandlers.ofInputStream());
+            log.info("Requested url={} with status={}", siteMapUrl, response.statusCode());
+            return response.body();
+        } catch (IOException | InterruptedException e) {
+            throw new DownloadException("Download failed. Because of ", e);
+        }
     }
 }
