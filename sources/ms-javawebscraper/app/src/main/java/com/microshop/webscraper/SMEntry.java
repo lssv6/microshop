@@ -1,5 +1,7 @@
 package com.microshop.webscraper;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 
 public class SMEntry {
@@ -7,10 +9,15 @@ public class SMEntry {
     private String loc;
     private Date lastmod;
 
-    public SMEntry(String type, String loc, Date lastmod) {
+    private SMEntry(String type, String loc, Date lastmod) {
         this.type = type;
         this.loc = loc;
         this.lastmod = lastmod;
+        try {
+            loc = URLEncoder.encode(loc, "UTF-8");
+        } catch (UnsupportedEncodingException uee) {
+        }
+        setLoc(loc);
     }
 
     public String getLoc() {
