@@ -2,9 +2,6 @@ package com.microshop.webscraper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -20,9 +17,9 @@ public class SiteMapCrawler {
 
     private static final class SiteMapHandler extends DefaultHandler {
         private SiteMapRoot root;
-        private SMEntry head;
+        private SMEntry.Builder builder;
         private String lastQName;
-        private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+        private StringBuilder stringBuilder = new StringBuilder();
 
         public SiteMapHandler() {
             this.root = new SiteMapRoot();
@@ -49,9 +46,9 @@ public class SiteMapCrawler {
             if (qName.equalsIgnoreCase("sitemapindex")) {
                 // INGORE
             } else if (qName.equalsIgnoreCase("sitemap")) {
-                head = new SMEntry("sitemap", null, null);
+                builder = new SMEntry.Builder().setType("sitemap");
             } else if (qName.equalsIgnoreCase("url")) {
-                head = new SMEntry("url", null, null);
+                builder = new SMEntry.Builder().setType("url");
             } else if (qName.equalsIgnoreCase("loc")) {
                 lastQName = qName;
             } else if (qName.equalsIgnoreCase("lastmod")) {
@@ -63,26 +60,25 @@ public class SiteMapCrawler {
         public void endElement(String uri, String localName, String qName) throws SAXException {
             log.debug("ELEMENT END: URI = {}, LOCALNAME = {}, QNAME = {}", uri, localName, qName);
             if (qName.equalsIgnoreCase("sitemap") || qName.equalsIgnoreCase("url")) {
-                root.addSiteMap(head);
-                head = null;
+                root.addSiteMap(builder.build());
+            }
+
+            if (qName.equalsIgnoreCase("loc") || qName.equalsIgnoreCase("lastmod")) {
+                String string = stringBuilder.toString();
+                if (qName.equalsIgnoreCase("loc")) {
+                    builder.setLoc(string);
+                } else if (qName.equalsIgnoreCase("lastmod")) {
+                    builder.setLastmod(string);
+                }
+                stringBuilder = new StringBuilder();
             }
         }
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             String string = new String(ch, start, length);
-            log.debug("CHARACTERS FOUND: {}", string);
-            if (lastQName == "loc") {
-                head.setLoc(string);
-            } else if (lastQName == "lastmod") {
-                Date lastmod;
-                try {
-                    lastmod = df.parse(string);
-                } catch (ParseException pe) {
-                    return;
-                }
-                head.setLastmod(lastmod);
-            }
+            log.debug("CHARACTERS FOUND: {}, START={}, LENGTH={}", string, start, length);
+            stringBuilder.append(ch, start, length);
         }
     }
 
@@ -105,7 +101,6 @@ public class SiteMapCrawler {
         } catch (SAXException e) {
             throw new SitemapCrawlingException("Unable to crawl ");
         }
-
         SiteMapRoot smRoot = smHandler.getSiteMapRoot();
         List<SMEntry> sitemaps = smRoot.getSiteMaps();
         return sitemaps;
