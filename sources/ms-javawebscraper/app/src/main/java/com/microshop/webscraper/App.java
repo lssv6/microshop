@@ -7,10 +7,8 @@ import com.microshop.webscraper.downloader.DownloadException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -21,31 +19,48 @@ public class App {
 
     private static final URI URL = URI.create("https://www.kabum.com.br/sitemap.xml");
     private static final SiteMapCrawler smc = new SiteMapCrawler();
-    private static final Gson gson = new GsonBuilder().create();
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    private static boolean isCategoryLink(String path) {
-        try {
-            path = URLDecoder.decode(path, "UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            log.error("UTF-8 isn't supported");
-            // This error will never be thrown
-        }
-        try {
-            return isCategoryLink(new URI(path));
-        } catch (URISyntaxException use) {
-            log.error("Malformed URI", use);
-        }
-        return false;
+    private static boolean isSale(URI uri) {
+        String path = uri.getPath();
+        return path.contains("/promocao/");
     }
 
-    private static boolean isCategoryLink(URI link) {
-        String path = link.getPath();
-        log.info("link={}", link);
-        log.info("path={}", path);
+    private static boolean isShops(URI uri) {
+        String path = uri.getPath();
+        return path.contains("/lojas/");
+    }
 
-        String[] pathArray = path.split("/");
-        if (pathArray[0].equalsIgnoreCase("produto")) return false;
-        return true;
+    private static boolean isSearch(URI uri) {
+        String path = uri.getPath();
+        return path.contains("/busca/");
+    }
+
+    private static boolean isHotsiteLink(URI uri) {
+        String path = uri.getPath();
+        return path.contains("/hotsite/");
+    }
+
+    private static boolean isBrandLink(URI uri) {
+        String path = uri.getPath();
+        return path.contains("/marcas/");
+    }
+
+    private static boolean isCategoryLink(URI uri) {
+        List<String> pathBlacklist = List.of(
+                "", "/login", "/carrinho", "/sobre", "/politicas", "/privacidade", "/portaldeprivacidade", "/faq");
+        if (pathBlacklist.contains(uri.getPath())) return false;
+        if (isHotsiteLink(uri)) return false;
+        if (isBrandLink(uri)) return false;
+        if (isSearch(uri)) return false;
+        if (isShops(uri)) return false;
+        if (isSale(uri)) return false;
+        return !isProductLink(uri);
+    }
+
+    private static boolean isProductLink(URI uri) {
+        String path = uri.getPath();
+        return path.contains("/produto/");
     }
 
     private static InputStream downloadSiteMap(URI URL) {
@@ -84,7 +99,16 @@ public class App {
         return result;
     }
 
-    public static void main(String[] args) {
+    private static void writeResults(Object result, Type type, String path) throws IOException {
+        log.info("Starting to write file in path={}", path);
+        FileWriter fileWriter = new FileWriter(path);
+        JsonWriter jsonWriter = gson.newJsonWriter(fileWriter);
+        gson.toJson(result, type, jsonWriter);
+        fileWriter.close();
+        log.info("Finished writing file in path={}", path);
+    }
+
+    public static void main(String[] args) throws IOException {
         InputStream sitemapIS = downloadSiteMap(URL);
         List<SMEntry> sitemaps = List.of();
         try {
@@ -95,23 +119,21 @@ public class App {
 
         sitemaps = crawlInnerSitemaps(sitemaps);
 
-        List<URI> sitemapsStringList = sitemaps.stream().map(SMEntry::getLoc).toList();
-        List<String> categoryURLList = sitemapsStringList.stream()
+        List<URI> sitemapsURIs = sitemaps.stream().map(SMEntry::getLoc).toList();
+        List<String> categoryURLs = sitemapsURIs.stream()
                 .filter(App::isCategoryLink)
                 .map(URI::toString)
                 .toList();
+        List<String> productURLs = sitemapsURIs.stream()
+                .filter(App::isProductLink)
+                .map(URI::toString)
+                .toList();
         log.info(
-                "number of urls obtained = {}; categories = {}; products = {}",
-                sitemapsStringList.size(),
-                categoryURLList.size(),
-                sitemapsStringList.size() - categoryURLList.size());
-
-        try (FileWriter fos = new FileWriter("./output.json")) {
-            JsonWriter jw = gson.newJsonWriter(fos);
-            gson.toJson(sitemapsStringList, sitemapsStringList.getClass(), jw);
-
-        } catch (IOException e) {
-            log.error("ioexception ", e);
-        }
+                "all_uris = {}; categories = {}; products = {}",
+                sitemapsURIs.size(),
+                categoryURLs.size(),
+                productURLs.size());
+        writeResults(categoryURLs, categoryURLs.getClass(), "categories.json");
+        writeResults(productURLs, productURLs.getClass(), "products.json");
     }
 }

@@ -1,11 +1,6 @@
 package com.microshop.webscraper;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -77,23 +72,7 @@ public class SMEntry {
     }
 
     public void setLoc(String loc) throws IllegalArgumentException {
-        URL locURL = null;
-        String path = "";
-        try {
-            locURL = new URL(loc); // fodase
-            System.out.println(locURL);
-            path = URLEncoder.encode(locURL.getPath(), "UTF-8");
-            System.out.println(path);
-            this.loc = new URI(
-                    locURL.getProtocol(),
-                    locURL.getAuthority(),
-                    locURL.getPath().replaceAll(" ", "%20"),
-                    locURL.getQuery(),
-                    null);
-        } catch (MalformedURLException | UnsupportedEncodingException | URISyntaxException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("Unable to parse the given loc", e);
-        }
+        this.loc = URI.create(loc.replaceAll(" ", "%20"));
     }
 
     public void setLastmod(Date lastmod) {

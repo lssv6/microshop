@@ -14,23 +14,17 @@ import org.w3c.dom.html.HTMLScriptElement;
 
 public class CategoryCrawler {
 
-    private HTMLDocument dom;
+    private static final Gson gson = new GsonBuilder().create();
 
-    private Gson gson = new GsonBuilder().create();
-
-    public CategoryCrawler(HTMLDocument dom) {
-        this.dom = dom;
-    }
-
-    private JsonElement getProps() { // Gambiarra code, hardcoded.
+    private static JsonElement getProps(HTMLDocument dom) { // Gambiarra code, hardcoded.
         HTMLScriptElement scriptElement = (HTMLScriptElement) dom.getElementById("__NEXT_DATA__");
         String rawJson = scriptElement.getText();
         var root = JsonParser.parseString(rawJson).getAsJsonObject().asMap();
         return root.get("props");
     }
 
-    private String getCategoryRawData() {
-        JsonElement props = getProps();
+    private static String getCategoryRawData(HTMLDocument dom) {
+        JsonElement props = getProps(dom);
         String data = props.getAsJsonObject()
                 .get("pageProps")
                 .getAsJsonObject()
@@ -39,8 +33,8 @@ public class CategoryCrawler {
         return data;
     }
 
-    public List<Product> getProducts() {
-        String rawData = getCategoryRawData();
+    public static List<Product> getProducts(HTMLDocument dom) {
+        String rawData = getCategoryRawData(dom);
         String jsonString = StringEscapeUtils.escapeJson(rawData);
         JsonElement jsonElement = JsonParser.parseString(jsonString);
         JsonArray products = jsonElement
