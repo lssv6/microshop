@@ -1,4 +1,4 @@
-package com.microshop.webscraper;
+package com.microshop.webscraper.sitemap;
 
 import java.util.LinkedList;
 import java.util.List;

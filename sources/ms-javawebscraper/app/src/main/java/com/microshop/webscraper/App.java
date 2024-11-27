@@ -3,14 +3,23 @@ package com.microshop.webscraper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
+import com.microshop.webscraper.category.CategoryCrawler;
 import com.microshop.webscraper.downloader.DownloadException;
+import com.microshop.webscraper.downloader.PageDownloader;
+import com.microshop.webscraper.models.Product;
+import com.microshop.webscraper.sitemap.SMEntry;
+import com.microshop.webscraper.sitemap.SiteMapCrawler;
+import com.microshop.webscraper.sitemap.SiteMapDownloader;
+import com.microshop.webscraper.sitemap.SitemapCrawlingException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +29,8 @@ public class App {
     private static final URI URL = URI.create("https://www.kabum.com.br/sitemap.xml");
     private static final SiteMapCrawler smc = new SiteMapCrawler();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final PageDownloader pageDownloader = PageDownloader.getInstance();
 
     private static boolean isSale(URI uri) {
         String path = uri.getPath();
@@ -120,20 +131,20 @@ public class App {
         sitemaps = crawlInnerSitemaps(sitemaps);
 
         List<URI> sitemapsURIs = sitemaps.stream().map(SMEntry::getLoc).toList();
-        List<String> categoryURLs = sitemapsURIs.stream()
-                .filter(App::isCategoryLink)
-                .map(URI::toString)
-                .toList();
-        List<String> productURLs = sitemapsURIs.stream()
-                .filter(App::isProductLink)
-                .map(URI::toString)
-                .toList();
-        log.info(
-                "all_uris = {}; categories = {}; products = {}",
-                sitemapsURIs.size(),
-                categoryURLs.size(),
-                productURLs.size());
-        writeResults(categoryURLs, categoryURLs.getClass(), "categories.json");
-        writeResults(productURLs, productURLs.getClass(), "products.json");
+        List<URI> categoryURIs =
+                sitemapsURIs.stream().filter(App::isCategoryLink).toList();
+        List<URI> productURIs = sitemapsURIs.stream().filter(App::isProductLink).toList();
+        int counter = 0;
+        for (URI categoryURI : categoryURIs) {
+            try {
+                log.info("Crawling category={}", categoryURI);
+                Document categoryPageDocument = pageDownloader.downloadPage(categoryURI);
+                List<Product> products = CategoryCrawler.getProducts(categoryPageDocument);
+                writeResults(products, products.getClass(), "%d.json".formatted(counter));
+            } catch (DownloadException interruptedException) {
+                log.error("Download was failed", interruptedException);
+            }
+            counter++;
+        }
     }
 }

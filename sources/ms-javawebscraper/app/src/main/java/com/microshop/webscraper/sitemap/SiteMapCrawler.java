@@ -1,4 +1,4 @@
-package com.microshop.webscraper;
+package com.microshop.webscraper.sitemap;
 
 import java.io.IOException;
 import java.io.InputStream;

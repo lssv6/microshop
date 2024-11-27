@@ -1,4 +1,4 @@
-package com.microshop.webscraper;
+package com.microshop.webscraper.sitemap;
 
 import com.microshop.webscraper.downloader.DownloadException;
 import java.io.IOException;
