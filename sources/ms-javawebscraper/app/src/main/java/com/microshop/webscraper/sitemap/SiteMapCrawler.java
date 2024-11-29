@@ -94,12 +94,14 @@ public class SiteMapCrawler {
         }
     }
 
-    public List<SMEntry> crawl(InputStream siteMap) throws SitemapCrawlingException, IOException {
+    public List<SMEntry> crawl(InputStream siteMap) throws SitemapCrawlingException {
         smHandler = new SiteMapHandler();
         try {
             smParser.parse(siteMap, smHandler);
         } catch (SAXException e) {
-            throw new SitemapCrawlingException("Unable to crawl ");
+            throw new SitemapCrawlingException("Unable to crawl, SAX parsing error!");
+        } catch (IOException e) {
+            throw new SitemapCrawlingException("Unable to crawl, IO error!");
         }
         SiteMapRoot smRoot = smHandler.getSiteMapRoot();
         List<SMEntry> sitemaps = smRoot.getSiteMaps();

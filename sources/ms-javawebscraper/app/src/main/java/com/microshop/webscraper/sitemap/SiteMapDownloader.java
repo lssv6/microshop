@@ -15,9 +15,13 @@ import org.slf4j.LoggerFactory;
 
 public class SiteMapDownloader {
     private static Logger log = LoggerFactory.getLogger(SiteMapDownloader.class);
-    private static HttpClient client = HttpClient.newHttpClient();
+    private HttpClient client;
 
-    public static InputStream downloadSiteMap(URI uri) throws DownloadException {
+    public SiteMapDownloader() {
+        client = HttpClient.newHttpClient();
+    }
+
+    public InputStream downloadSiteMap(URI uri) throws DownloadException {
         log.info("Trying to download sitemap from uri={}", uri.toString());
         HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
 
@@ -30,7 +34,7 @@ public class SiteMapDownloader {
         }
     }
 
-    public static InputStream downloadSiteMap(String uri) throws DownloadException {
+    public InputStream downloadSiteMap(String uri) throws DownloadException {
         try {
             uri = URLDecoder.decode(uri, "UTF-8");
             log.info("{}", uri.toString());

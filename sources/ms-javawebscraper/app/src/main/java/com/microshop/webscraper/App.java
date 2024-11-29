@@ -7,6 +7,7 @@ import com.microshop.webscraper.category.CategoryCrawler;
 import com.microshop.webscraper.downloader.DownloadException;
 import com.microshop.webscraper.downloader.PageDownloader;
 import com.microshop.webscraper.models.Product;
+import com.microshop.webscraper.models.category.CategoryPageData;
 import com.microshop.webscraper.sitemap.SMEntry;
 import com.microshop.webscraper.sitemap.SiteMapCrawler;
 import com.microshop.webscraper.sitemap.SiteMapDownloader;
@@ -31,6 +32,7 @@ public class App {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final PageDownloader pageDownloader = PageDownloader.getInstance();
+    private static final SiteMapDownloader smDownloader = new SiteMapDownloader();
 
     private static boolean isSale(URI uri) {
         String path = uri.getPath();
@@ -77,7 +79,7 @@ public class App {
     private static InputStream downloadSiteMap(URI URL) {
         try {
             log.info("trying to download url={}", URL);
-            return SiteMapDownloader.downloadSiteMap(URL);
+            return smDownloader.downloadSiteMap(URL);
         } catch (DownloadException e) {
             log.error("cannot download sitemap from url={}", URL);
             return null;
@@ -85,14 +87,7 @@ public class App {
     }
 
     private static List<SMEntry> crawlSitemap(InputStream sitemapIS) throws SitemapCrawlingException {
-        if (sitemapIS == null) {
-            return List.of();
-        }
-        try {
-            return smc.crawl(sitemapIS);
-        } catch (IOException e) {
-            return List.of();
-        }
+        return smc.crawl(sitemapIS);
     }
 
     private static List<SMEntry> crawlInnerSitemaps(List<SMEntry> sitemaps) {
@@ -140,7 +135,10 @@ public class App {
                 log.info("Crawling category={}", categoryURI);
                 Document categoryPageDocument = pageDownloader.downloadPage(categoryURI);
                 List<Product> products = CategoryCrawler.getProducts(categoryPageDocument);
-                writeResults(products, products.getClass(), "%d.json".formatted(counter));
+                CategoryPageData categoryPageData = CategoryCrawler.getCategoryPageData(categoryPageDocument);
+
+                writeResults(products, products.getClass(), "prod-%d.json".formatted(counter));
+                writeResults(categoryPageData, categoryPageData.getClass(), "cate-%d.json".formatted(counter));
             } catch (DownloadException interruptedException) {
                 log.error("Download was failed", interruptedException);
             }
