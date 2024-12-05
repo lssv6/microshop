@@ -1,8 +1,11 @@
 package com.microshop.webscraper.downloader;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse.BodyHandlers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 // import org.slf4j.Logger;
@@ -10,23 +13,26 @@ import org.jsoup.nodes.Document;
 
 public class PageDownloader {
     // private static final Logger log = LoggerFactory.getLogger(PageDownloader.class);
-    private static PageDownloader instance;
     private HttpClient client = HttpClient.newBuilder().build();
 
-    private PageDownloader() {}
-
-    public static PageDownloader getInstance() {
-        if (instance == null) instance = new PageDownloader();
-        return instance;
-    }
+    public PageDownloader() {}
 
     public Document downloadPage(URI uri) throws DownloadException {
-        try {
-            int TIMEOUT = 10 * 1000; // 10 Seconds
-            Document document = Jsoup.parse(uri.toURL(), TIMEOUT);
-            return document;
+        HttpRequest request = HttpRequest.newBuilder(uri).GET().build();
+        Document document;
+        try (InputStream pageInputStream =
+                client.send(request, BodyHandlers.ofInputStream()).body(); ) {
+
+            document = Jsoup.parse(pageInputStream, "UTF-8", uri.toString());
         } catch (IOException e) {
-            throw new DownloadException("Couldn't parse. We have a problem while downloading ");
+            throw new DownloadException("Couldn't parse. We have a problem while downloading.");
+
+        } catch (InterruptedException interruptedException) {
+            throw new DownloadException("Couldn't parse. Download has been interrupted.");
         }
+        if (document == null) {
+            throw new DownloadException("Couldnt download the page");
+        }
+        return document;
     }
 }

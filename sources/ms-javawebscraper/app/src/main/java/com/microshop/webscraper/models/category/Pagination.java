@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class Pagination {
-    private int number;
-    private int size;
-    private String cursor;
-    private boolean isCurrentPage;
+    private int prev;
+    private int current;
+    private int next;
+    private int total;
 }

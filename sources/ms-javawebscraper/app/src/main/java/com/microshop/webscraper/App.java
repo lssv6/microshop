@@ -1,26 +1,16 @@
 package com.microshop.webscraper;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
-import com.microshop.webscraper.category.CategoryCrawler;
+import com.microshop.webscraper.category.ParallelCategoryCrawler;
 import com.microshop.webscraper.downloader.DownloadException;
-import com.microshop.webscraper.downloader.PageDownloader;
-import com.microshop.webscraper.models.Product;
-import com.microshop.webscraper.models.category.CategoryPageData;
 import com.microshop.webscraper.sitemap.SMEntry;
 import com.microshop.webscraper.sitemap.SiteMapCrawler;
 import com.microshop.webscraper.sitemap.SiteMapDownloader;
 import com.microshop.webscraper.sitemap.SitemapCrawlingException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
-import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +19,6 @@ public class App {
 
     private static final URI URL = URI.create("https://www.kabum.com.br/sitemap.xml");
     private static final SiteMapCrawler smc = new SiteMapCrawler();
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private static final HttpClient client = HttpClient.newHttpClient();
-    private static final PageDownloader pageDownloader = PageDownloader.getInstance();
     private static final SiteMapDownloader smDownloader = new SiteMapDownloader();
 
     private static boolean isSale(URI uri) {
@@ -61,7 +48,15 @@ public class App {
 
     private static boolean isCategoryLink(URI uri) {
         List<String> pathBlacklist = List.of(
-                "", "/login", "/carrinho", "/sobre", "/politicas", "/privacidade", "/portaldeprivacidade", "/faq");
+                "",
+                "/login",
+                "/carrinho",
+                "/sobre",
+                "/politicas",
+                "/privacidade",
+                "/portaldeprivacidade",
+                "/faq",
+                "/monte-seu-pc");
         if (pathBlacklist.contains(uri.getPath())) return false;
         if (isHotsiteLink(uri)) return false;
         if (isBrandLink(uri)) return false;
@@ -105,16 +100,7 @@ public class App {
         return result;
     }
 
-    private static void writeResults(Object result, Type type, String path) throws IOException {
-        log.info("Starting to write file in path={}", path);
-        FileWriter fileWriter = new FileWriter(path);
-        JsonWriter jsonWriter = gson.newJsonWriter(fileWriter);
-        gson.toJson(result, type, jsonWriter);
-        fileWriter.close();
-        log.info("Finished writing file in path={}", path);
-    }
-
-    public static void main(String[] args) throws IOException {
+    private static List<URI> crawlAllCategoryURIs() {
         InputStream sitemapIS = downloadSiteMap(URL);
         List<SMEntry> sitemaps = List.of();
         try {
@@ -128,21 +114,48 @@ public class App {
         List<URI> sitemapsURIs = sitemaps.stream().map(SMEntry::getLoc).toList();
         List<URI> categoryURIs =
                 sitemapsURIs.stream().filter(App::isCategoryLink).toList();
-        List<URI> productURIs = sitemapsURIs.stream().filter(App::isProductLink).toList();
-        int counter = 0;
-        for (URI categoryURI : categoryURIs) {
-            try {
-                log.info("Crawling category={}", categoryURI);
-                Document categoryPageDocument = pageDownloader.downloadPage(categoryURI);
-                List<Product> products = CategoryCrawler.getProducts(categoryPageDocument);
-                CategoryPageData categoryPageData = CategoryCrawler.getCategoryPageData(categoryPageDocument);
+        return categoryURIs;
+    }
 
-                writeResults(products, products.getClass(), "prod-%d.json".formatted(counter));
-                writeResults(categoryPageData, categoryPageData.getClass(), "cate-%d.json".formatted(counter));
-            } catch (DownloadException interruptedException) {
-                log.error("Download was failed", interruptedException);
-            }
-            counter++;
-        }
+    public static void main(String[] args) throws IOException, InterruptedException { // Mingau delicioso!!!
+        List<URI> categoryURIs = crawlAllCategoryURIs();
+        log.info("Found {} category pages", categoryURIs.size());
+        // BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<CategoryCrawlerTask>();
+        ParallelCategoryCrawler pcc = new ParallelCategoryCrawler();
+        pcc.crawlCategories(categoryURIs);
+
+        // List<URI> productURIs = sitemapsURIs.stream().filter(App::isProductLink).toList();
+        // log.info("Started crawl...");
+        // int count = 0;
+        // int catCount = categoryURIs.size();
+        // for (URI categoryURI : categoryURIs) {
+        //    count++;
+        //    try {
+        //        log.info("Crawling category={}, {}/{}", categoryURI, count, catCount);
+        //        Document categoryPageDocument = pageDownloader.downloadPage(categoryURI);
+        //        List<Product> products = CategoryCrawler.getProducts(categoryPageDocument);
+        //        CategoryPageData categoryPageData = CategoryCrawler.getCategoryPageData(categoryPageDocument);
+        //        String catName = categoryPageData.getBreadcrumb().getLast().getName();
+
+        //        int pageNumber = categoryPageData.getPagination().getCurrent();
+        //        int totalNumberOfPages = categoryPageData.getPagination().getTotal();
+        //        log.info("Crawling subcategories.");
+        //        for(int i = 0; i <= totalNumberOfPages; i++){
+        //            log.info("");
+        //            Document nextCategoryPageDocument = pageDownloader.downloadPage(categoryURI);
+        //            List<Product> nextProducts = CategoryCrawler.getProducts(categoryPageDocument)
+        //            CategoryPageData nextCategoryPageData = CategoryCrawler.getCategoryPageData(categoryPageDocument);
+
+        //        }
+        //        writeResults(products, products.getClass(), "products/%s/%i.json".formatted(catName, pageNumber));
+        //        writeResults(categoryPageData, categoryPageData.getClass(),
+        // "categories/%s/%i".formatted(catName,pageNumber));
+        //        log.info("Finished crawling category={}");
+        //    } catch (DownloadException interruptedException) {
+        //        log.error("Download was failed", interruptedException);
+        //    }
+        // }
+        // log.info("Finished surface crawl!!!");
+
     }
 }

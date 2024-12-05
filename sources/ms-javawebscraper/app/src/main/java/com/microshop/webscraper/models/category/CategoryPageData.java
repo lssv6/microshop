@@ -9,4 +9,5 @@ public class CategoryPageData {
     private Seo seo;
     private PageLinks pageLinks;
     private Pagination pagination;
+    private PageInfo pageInfo;
 }

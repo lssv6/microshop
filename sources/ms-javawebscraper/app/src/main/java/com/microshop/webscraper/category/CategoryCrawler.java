@@ -10,6 +10,7 @@ import com.google.gson.Strictness;
 import com.microshop.webscraper.models.Product;
 import com.microshop.webscraper.models.category.Breadcrumb;
 import com.microshop.webscraper.models.category.CategoryPageData;
+import com.microshop.webscraper.models.category.PageInfo;
 import com.microshop.webscraper.models.category.PageLinks;
 import com.microshop.webscraper.models.category.Pagination;
 import com.microshop.webscraper.models.category.Seo;
@@ -17,11 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CategoryCrawler {
 
     private static final Gson gson =
             new GsonBuilder().setStrictness(Strictness.LENIENT).create();
+    private static final Logger log = LoggerFactory.getLogger(CategoryCrawler.class);
 
     private static JsonElement getProps(Document dom) { // Gambiarra code, hardcoded.
         Element scriptElement = dom.getElementById("__NEXT_DATA__");
@@ -80,35 +84,40 @@ public class CategoryCrawler {
     }
 
     private static JsonObject getCategoryParsedPagination(Document dom) {
-        JsonObject pagination = getProps(dom)
-                .getAsJsonObject()
-                .getAsJsonObject("pageProps")
-                .getAsJsonObject("catalogServer")
-                .getAsJsonObject("pagination");
+        String rawData = getCategoryRawData(dom);
+        String jsonString = rawData.replaceAll("\\\"", "\"");
+        JsonElement jsonElement = JsonParser.parseString(jsonString);
+        JsonObject pagination =
+                jsonElement.getAsJsonObject().getAsJsonObject("catalogServer").getAsJsonObject("pagination");
         // String jsonString = rawData.replaceAll("\\\"", "\"");
         // JsonObject jsonElement = JsonParser.parseString(jsonString).getAsJsonObject();
         // JsonObject pagination = jsonElement.getAsJsonObject("pagination");
-        // System.out.println(pagination);
         return pagination;
     }
 
-    public static Seo getSeo(Document dom) {
+    private static PageInfo getPageInfo(Document dom) {
+        JsonObject meta = getCategoryParsedMeta(dom);
+        JsonObject pageInfo = meta.getAsJsonObject("page");
+        return gson.fromJson(pageInfo, PageInfo.class);
+    }
+
+    private static Seo getSeo(Document dom) {
         JsonObject meta = getCategoryParsedMeta(dom);
         JsonObject seo = meta.getAsJsonObject("seo");
         return gson.fromJson(seo, Seo.class);
     }
 
-    public static Pagination getPagination(Document dom) {
+    private static Pagination getPagination(Document dom) {
         JsonObject pagination = getCategoryParsedPagination(dom);
         return gson.fromJson(pagination, Pagination.class);
     }
 
-    public static PageLinks getPageLinks(Document dom) {
+    private static PageLinks getPageLinks(Document dom) {
         JsonObject linksJsonObject = getCategoryParsedLinks(dom);
         return gson.fromJson(linksJsonObject, PageLinks.class);
     }
 
-    public static List<Breadcrumb> getBreadcrumbs(Document dom) {
+    private static List<Breadcrumb> getBreadcrumbs(Document dom) {
         JsonObject meta = getCategoryParsedMeta(dom);
         JsonArray breadcrumbs = meta.getAsJsonArray("breadcrumb");
         List<Breadcrumb> breadcrumbsList = new ArrayList<Breadcrumb>();
@@ -122,6 +131,7 @@ public class CategoryCrawler {
         result.setSeo(getSeo(dom));
         result.setPagination(getPagination(dom));
         result.setPageLinks(getPageLinks(dom));
+        result.setPageInfo(getPageInfo(dom));
         return result;
     }
 
@@ -132,12 +142,17 @@ public class CategoryCrawler {
     // jsonString = jsonString.replaceAll("([^.])(\"\")", "$1\\\""); // Seems that is broken.
 
     public static List<Product> getProducts(Document dom) {
-        JsonArray products = getCategoryParsedData(dom);
-        List<Product> result = new ArrayList<Product>();
-        products.forEach(prod -> {
-            // Serialize from JsonObject to Product. Product is a POJO.
-            result.add(gson.fromJson(prod, Product.class));
-        });
-        return result;
+        if (dom == null) throw new NullPointerException("dom is null");
+        try {
+            JsonArray products = getCategoryParsedData(dom);
+            List<Product> result = new ArrayList<Product>();
+            products.forEach(prod -> {
+                // Serialize from JsonObject to Product. Product is a POJO.
+                result.add(gson.fromJson(prod, Product.class));
+            });
+            return result;
+        } catch (NullPointerException nullPointerException) {
+            return null;
+        }
     }
 }
