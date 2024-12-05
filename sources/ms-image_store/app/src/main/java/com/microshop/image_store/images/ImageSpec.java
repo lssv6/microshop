@@ -38,9 +38,7 @@ public class ImageSpec {
                 case 512 -> MEDIUM;
                 case 1024 -> LARGE;
                 case 2048 -> EXTRA_LARGE;
-                default ->
-                        throw new IllegalArgumentException(
-                                "Cannot find a suitable Size for " + width);
+                default -> throw new IllegalArgumentException("Cannot find a suitable Size for " + width);
             };
         }
 
@@ -51,9 +49,7 @@ public class ImageSpec {
                 case "M", "MEDIUM" -> MEDIUM;
                 case "L", "LARGE" -> LARGE;
                 case "XL", "EXTRA_LARGE" -> EXTRA_LARGE;
-                default ->
-                        throw new IllegalArgumentException(
-                                "Cannot find a suitable Size for " + string);
+                default -> throw new IllegalArgumentException("Cannot find a suitable Size for " + string);
             };
         }
     }
@@ -70,8 +66,7 @@ public class ImageSpec {
         this.size = size;
         if (quality <= 0 || quality > 100) {
             throw new IllegalArgumentException(
-                    "quality should be between 1 (inclusive) and 100 (inclusive). given = "
-                            + quality);
+                    "quality should be between 1 (inclusive) and 100 (inclusive). given = " + quality);
         }
         this.quality = quality;
     }

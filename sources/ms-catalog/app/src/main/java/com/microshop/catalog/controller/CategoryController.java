@@ -5,7 +5,9 @@ import com.microshop.catalog.dto.NewCategoryDTO;
 import com.microshop.catalog.exception.CategoryNotFoundException;
 import com.microshop.catalog.model.Category;
 import com.microshop.catalog.service.CategoryService;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,16 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
-    @Autowired private ModelMapper mapper;
+    @Autowired
+    private ModelMapper mapper;
 
-    @Autowired private CategoryService categoryService;
+    @Autowired
+    private CategoryService categoryService;
 
     ////////////////////////////////////////////////////////////////////////////
     // CREATE
@@ -41,11 +41,9 @@ public class CategoryController {
             Optional<Category> parent = categoryService.findById(parentId);
             // If the parent exists.
             // Then try to set the parent for the new category
-            parent.ifPresentOrElse(
-                    p -> newCat.setParent(p),
-                    () -> {
-                        throw new CategoryNotFoundException("");
-                    });
+            parent.ifPresentOrElse(p -> newCat.setParent(p), () -> {
+                throw new CategoryNotFoundException("");
+            });
         }
         categoryService.save(newCat);
         return mapper.map(newCat, CategoryDTO.class);
@@ -65,10 +63,8 @@ public class CategoryController {
 
     @GetMapping
     public Iterable<CategoryDTO> getCategories(
-            @RequestParam(name = "only-top-level", defaultValue = "false", required = false)
-                    boolean onlyTopLevel) {
-        Iterable<Category> cats =
-                onlyTopLevel ? categoryService.findAllTopLevel() : categoryService.findAll();
+            @RequestParam(name = "only-top-level", defaultValue = "false", required = false) boolean onlyTopLevel) {
+        Iterable<Category> cats = onlyTopLevel ? categoryService.findAllTopLevel() : categoryService.findAll();
         List<CategoryDTO> convertedCats = new ArrayList<CategoryDTO>();
         cats.forEach(c -> convertedCats.add(mapper.map(c, CategoryDTO.class)));
 
@@ -78,13 +74,9 @@ public class CategoryController {
     @GetMapping("/{id}")
     public CategoryDTO getCategoryById(@PathVariable("id") Long id) {
         // Transform Category to CategoryDTO
-        var cat =
-                categoryService
-                        .findById(id)
-                        .orElseThrow(
-                                () ->
-                                        new CategoryNotFoundException(
-                                                "Category id=%d not found".formatted(id)));
+        var cat = categoryService
+                .findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category id=%d not found".formatted(id)));
         return mapper.map(cat, CategoryDTO.class);
     }
 
@@ -98,15 +90,10 @@ public class CategoryController {
      * @param category
      */
     @PutMapping("/{id}")
-    public CategoryDTO updateCategory(
-            @PathVariable("id") Long id, @RequestBody CategoryDTO category) {
-        Category cat =
-                categoryService
-                        .findById(id)
-                        .orElseThrow(
-                                () ->
-                                        new CategoryNotFoundException(
-                                                "Category id=%d not found".formatted(id)));
+    public CategoryDTO updateCategory(@PathVariable("id") Long id, @RequestBody CategoryDTO category) {
+        Category cat = categoryService
+                .findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category id=%d not found".formatted(id)));
         mapper.map(category, cat); // Will copy all the fields to be changed. Eg. name.
         return mapper.map(categoryService.save(cat), CategoryDTO.class);
     }

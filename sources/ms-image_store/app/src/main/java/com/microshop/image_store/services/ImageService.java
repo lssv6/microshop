@@ -1,30 +1,26 @@
 package com.microshop.image_store.services;
 
 import com.microshop.image_store.images.ImageSpec;
-
-import org.imgscalr.Scalr;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.core.sync.ResponseTransformer;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+import org.imgscalr.Scalr;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.core.sync.ResponseTransformer;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Service
 public class ImageService {
@@ -39,8 +35,7 @@ public class ImageService {
     }
 
     private ImageWriter createJpegImageWriter() {
-        Iterator<ImageWriter> writers =
-                ImageIO.getImageWritersByMIMEType(MediaType.IMAGE_JPEG_VALUE);
+        Iterator<ImageWriter> writers = ImageIO.getImageWritersByMIMEType(MediaType.IMAGE_JPEG_VALUE);
         ImageWriter jpegImageWriter = writers.next();
         return jpegImageWriter;
     }
@@ -72,8 +67,7 @@ public class ImageService {
         return baos.toByteArray();
     }
 
-    public void uploadJPEGImage(Integer imageCode, MultipartFile imageFile, ImageSpec imageSpec)
-            throws IOException {
+    public void uploadJPEGImage(Integer imageCode, MultipartFile imageFile, ImageSpec imageSpec) throws IOException {
         uploadJPEGImage(imageCode, imageFile.getInputStream(), imageFile.getSize(), imageSpec);
     }
 
@@ -84,28 +78,25 @@ public class ImageService {
      * @param imageCode - is the code of the image
      * @param imageInputStream - is the binary of the image (must be jpeg)
      */
-    public void uploadJPEGImage(
-            Integer imageCode, InputStream imageInputStream, Long length, ImageSpec imageSpec)
+    public void uploadJPEGImage(Integer imageCode, InputStream imageInputStream, Long length, ImageSpec imageSpec)
             throws IOException {
         byte[] imageBytes = compressImage(imageInputStream, imageSpec);
-        PutObjectRequest por =
-                PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key("%s/%s".formatted(imageCode, imageSpec.getSize().getAbbreviation()))
-                        .contentType(MediaType.IMAGE_JPEG_VALUE)
-                        .build();
+        PutObjectRequest por = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key("%s/%s".formatted(imageCode, imageSpec.getSize().getAbbreviation()))
+                .contentType(MediaType.IMAGE_JPEG_VALUE)
+                .build();
         RequestBody rb = RequestBody.fromBytes(imageBytes);
         s3Client.putObject(por, rb);
     }
 
     /** Returns the desidered image from the given specification. */
     public InputStream downloadJPEGImage(Integer imageCode, ImageSpec imageSpec) {
-        GetObjectRequest gor =
-                GetObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key("%s/%s".formatted(imageCode, imageSpec.getSize().getAbbreviation()))
-                        .responseContentType(MediaType.IMAGE_JPEG_VALUE)
-                        .build();
+        GetObjectRequest gor = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key("%s/%s".formatted(imageCode, imageSpec.getSize().getAbbreviation()))
+                .responseContentType(MediaType.IMAGE_JPEG_VALUE)
+                .build();
         return s3Client.getObject(gor, ResponseTransformer.toInputStream());
     }
 }

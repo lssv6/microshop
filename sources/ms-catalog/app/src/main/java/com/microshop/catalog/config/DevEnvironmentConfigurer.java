@@ -15,7 +15,8 @@ public class DevEnvironmentConfigurer implements EnvironmentPostProcessor {
             environment.addActiveProfile("dev");
         }
         if (environment.acceptsProfiles(Profiles.of("dev"))) {
-            Validate.validState(environment.getActiveProfiles().length == 1,
+            Validate.validState(
+                    environment.getActiveProfiles().length == 1,
                     "Development profile could not be mixed with other profiles");
         }
     }
