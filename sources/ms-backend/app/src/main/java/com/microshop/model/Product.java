@@ -28,6 +28,7 @@ public class Product {
     private Seller seller;
 
     @ManyToOne(optional = false)
+    @JoinColumn
     private Category category;
 
     @Column(nullable = false)

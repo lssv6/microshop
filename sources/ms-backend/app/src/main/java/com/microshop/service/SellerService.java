@@ -1,7 +1,7 @@
 package com.microshop.service;
 
-import com.microshop.model.Seller;
+import com.microshop.dto.NewSellerDTO;
 
 public interface SellerService {
-    public Seller create(Seller seller);
+    public void create(NewSellerDTO newSellerDTO);
 }

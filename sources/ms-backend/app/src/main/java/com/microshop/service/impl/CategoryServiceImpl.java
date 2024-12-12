@@ -1,11 +1,13 @@
 package com.microshop.service.impl;
 
 import com.microshop.dto.CategoryDTO;
+import com.microshop.dto.NewCategoryDTO;
 import com.microshop.model.Category;
 import com.microshop.repository.CategoryRepository;
 import com.microshop.service.CategoryService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.modelmapper.ModelMapper;
@@ -21,35 +23,53 @@ public class CategoryServiceImpl implements CategoryService {
     private ModelMapper modelMapper;
 
     @Override
-    public CategoryDTO findById(Long id) {
-        return modelMapper.map(categoryRepository.findById(id).get(), CategoryDTO.class);
+    public Optional<CategoryDTO> findById(Long id) {
+        Category category = categoryRepository.findById(id).orElseThrow();
+        return Optional.of(modelMapper.map(category, CategoryDTO.class));
     }
 
     @Override
-    public void createNested(CategoryDTO... categoryDTOs) {
-        Stream<CategoryDTO> categoryStream = Stream.of(categoryDTOs);
+    public CategoryDTO createNested(NewCategoryDTO categoryDTO, Long parentId) {
+        Category parentCategory = categoryRepository.findById(parentId).orElseThrow();
+        Category childCategory = modelMapper.map(categoryDTO, Category.class);
+        childCategory.setParentCategory(parentCategory);
+        Category savedCategory = categoryRepository.save(childCategory);
+        return modelMapper.map(savedCategory, CategoryDTO.class);
+    }
+
+    @Override
+    public List<CategoryDTO> createNested(NewCategoryDTO... categoryDTOs) {
+        Stream<NewCategoryDTO> categoryStream = Stream.of(categoryDTOs);
 
         // Recursivelly adds the childs to their parents.
+        // The sisters: Map and Reduce. I love them!!!
+        List<CategoryDTO> categories = new ArrayList<CategoryDTO>();
         Category category = categoryStream
                 .map(dto -> modelMapper.map(dto, Category.class))
                 .reduce((parent, child) -> {
                     child.setParentCategory(parent);
-                    categoryRepository.save(parent);
+                    Category cat = categoryRepository.save(parent);
+                    categories.add(modelMapper.map(cat, CategoryDTO.class));
                     return child;
                 })
                 .get();
-        categoryRepository.save(category);
+        Category cat = categoryRepository.save(category);
+        categories.add(modelMapper.map(cat, CategoryDTO.class));
+        return categories;
     }
 
     /**
      * Saves the Categories without a category hierarchy.
      */
     @Override
-    public void create(CategoryDTO... categoryDTOs) {
-        for (CategoryDTO categoryDTO : categoryDTOs) {
+    public List<CategoryDTO> create(NewCategoryDTO... categoryDTOs) {
+        List<CategoryDTO> categories = new ArrayList<CategoryDTO>();
+        for (NewCategoryDTO categoryDTO : categoryDTOs) {
             Category entity = modelMapper.map(categoryDTO, Category.class);
-            categoryRepository.save(entity);
+            CategoryDTO savedEntity = modelMapper.map(categoryRepository.save(entity), CategoryDTO.class);
+            categories.add(savedEntity);
         }
+        return categories;
     }
 
     /**

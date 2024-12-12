@@ -14,14 +14,15 @@ public class CategoryServiceImplTest {
     @Test
     void shouldSaveAndReadCategory() {
         var category = new NewCategoryDTO("Canetas", "/canetas");
+        categoryService.create(category);
     }
 
     @Test
-    void successFullyRetrieveAnBreadcrumb() {
+    void createAndRetrieveBreadcrumbs() {
         NewCategoryDTO category1 = new NewCategoryDTO("cat1", "/cat1");
         NewCategoryDTO category2 = new NewCategoryDTO("cat2", "/cat2");
         NewCategoryDTO category3 = new NewCategoryDTO("cat1", "/cat3");
         categoryService.createNested(category1, category2, category3);
-        // assertEquals(List.of(category1, category2, category3), categoryService.getBreadcrumb());
+        categoryService.getBreadcrumb("/cat3");
     }
 }

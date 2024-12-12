@@ -1,7 +1,15 @@
 package com.microshop.service;
 
-import com.microshop.model.Product;
+import com.microshop.dto.NewProductDTO;
+import com.microshop.dto.ProductDTO;
+import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
-    public Product create(Product p);
+    public ProductDTO create(NewProductDTO p);
+
+    public Optional<ProductDTO> findById(Long id);
+
+    public Page<ProductDTO> findByCategory(Long categoryId, Pageable pageable);
 }
