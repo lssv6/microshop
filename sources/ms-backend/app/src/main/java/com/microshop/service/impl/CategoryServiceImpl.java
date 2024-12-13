@@ -58,6 +58,13 @@ public class CategoryServiceImpl implements CategoryService {
         return categories;
     }
 
+    @Override
+    public CategoryDTO create(NewCategoryDTO newCategoryDTO) {
+        Category category = modelMapper.map(newCategoryDTO, Category.class);
+        Category saved = categoryRepository.save(category);
+        return modelMapper.map(saved, CategoryDTO.class);
+    }
+
     /**
      * Saves the Categories without a category hierarchy.
      */
@@ -65,9 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDTO> create(NewCategoryDTO... categoryDTOs) {
         List<CategoryDTO> categories = new ArrayList<CategoryDTO>();
         for (NewCategoryDTO categoryDTO : categoryDTOs) {
-            Category entity = modelMapper.map(categoryDTO, Category.class);
-            CategoryDTO savedEntity = modelMapper.map(categoryRepository.save(entity), CategoryDTO.class);
-            categories.add(savedEntity);
+            categories.add(this.create(categoryDTO));
         }
         return categories;
     }

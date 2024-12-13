@@ -8,6 +8,8 @@ import java.util.Optional;
 public interface CategoryService {
     public List<CategoryDTO> create(NewCategoryDTO... categoryDTOs);
 
+    public CategoryDTO create(NewCategoryDTO categoryDTOs);
+
     public CategoryDTO createNested(NewCategoryDTO categoryDTO, Long parentId);
 
     public List<CategoryDTO> createNested(NewCategoryDTO... categoryDTOs);
