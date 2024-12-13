@@ -1,32 +1,38 @@
 package com.microshop.controller;
 
+// import static org.assertj.core.api.BDDAssumptions.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.microshop.service.CategoryService;
-import org.junit.jupiter.api.DisplayName;
+import com.microshop.dto.NewCategoryDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-@WebMvcTest(CategoryController.class)
+@AutoConfigureMockMvc
+@SpringBootTest
 class CategoryControllerTest extends AbstractControllerTest {
-
-    @Autowired
-    private MockMvcTester mvc;
-
-    @MockitoBean
-    private CategoryService categoryService;
+    // @MockitoBean
+    // private CategoryService categoryService;
 
     @Test
-    @DisplayName("Integration test for saving a new unnested category")
-    void shouldPersistACategory() throws Exception {
-        assertThat(this.mvc.post().uri("/categories").accept(MediaType.APPLICATION_JSON))
+    void shouldPersistACategory(@Autowired MockMvcTester mvc) throws Exception {
+        // given(this.categoryService.create(new NewCategoryDTO("Canetas", "/canetas"))).willReturn(new CategoryDTO(1L,
+        // "Canetas", "/canetas"));
+        NewCategoryDTO newCategoryDTO = new NewCategoryDTO("cat1", "/cat1");
+        assertThat(mvc.post()
+                        .uri("/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(newCategoryDTO)))
                 .hasStatus(HttpStatus.CREATED)
-                .bodyJson();
+                .bodyJson()
+                .extractingPath("$.name")
+                .asString()
+                .isEqualTo("cat1");
+
         // String newCatJson = asJsonString(new NewCategoryDTO("Canetas", "/canetas"));
         // mvc.perform(post("/categories").content(newCatJson.getBytes("UTF-8")).contentType(MediaType.APPLICATION_JSON))
         //        .andExpect(status().isCreated())
