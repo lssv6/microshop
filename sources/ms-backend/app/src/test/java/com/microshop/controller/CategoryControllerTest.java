@@ -1,9 +1,9 @@
 package com.microshop.controller;
 
-// import static org.assertj.core.api.BDDAssumptions.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.microshop.dto.NewCategoryDTO;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,12 +14,15 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 @AutoConfigureMockMvc
 @SpringBootTest
+// @WebMvcTest(CategoryController.class)
 class CategoryControllerTest extends AbstractControllerTest {
     // @MockitoBean
     // private CategoryService categoryService;
+    @Autowired
+    private MockMvcTester mvc;
 
     @Test
-    void shouldPersistACategory(@Autowired MockMvcTester mvc) throws Exception {
+    void shouldPersistACategory() throws Exception {
         // given(this.categoryService.create(new NewCategoryDTO("Canetas", "/canetas"))).willReturn(new CategoryDTO(1L,
         // "Canetas", "/canetas"));
         NewCategoryDTO newCategoryDTO = new NewCategoryDTO("cat1", "/cat1");
@@ -32,31 +35,42 @@ class CategoryControllerTest extends AbstractControllerTest {
                 .extractingPath("$.name")
                 .asString()
                 .isEqualTo("cat1");
-
-        // String newCatJson = asJsonString(new NewCategoryDTO("Canetas", "/canetas"));
-        // mvc.perform(post("/categories").content(newCatJson.getBytes("UTF-8")).contentType(MediaType.APPLICATION_JSON))
-        //        .andExpect(status().isCreated())
-        //        .andExpect(content().json);
     }
 
     @Test
     void shouldPersistNestedCategories() throws Exception {
-        // String cat1 = asJsonString(new NewCategoryDTO("cat1", "/cat1"));
-        // String cat2 = asJsonString(new NewCategoryDTO("cat2", "/cat2"));
-        // String cat3 = asJsonString(new NewCategoryDTO("cat3", "/cat3"));
-        //
-        // String saved1 = asJsonString(new CategoryDTO(1L, "cat1", "/cat1"));
-        // String saved2 = asJsonString(new CategoryDTO(2L, "cat2", "/cat2"));
-        // String saved3 = asJsonString(new CategoryDTO(3L, "cat3", "/cat3"));
-        //
-        // mvc.perform(post("/categories").content(cat1).contentType(MediaType.APPLICATION_JSON))
-        //    .andExpect(status().isCreated())
-        //    .andExpect(content().json(saved1));
-        // mvc.perform(post("/categories/1").content(cat2).contentType(MediaType.APPLICATION_JSON))
-        //    .andExpect(status().isCreated())
-        //    .andExpect(content().json(saved2));
-        // mvc.perform(post("/categories/2").content(cat3).contentType(MediaType.APPLICATION_JSON))
-        //    .andExpect(status().isCreated())
-        //    .andExpect(content().json(saved3));
+        NewCategoryDTO cat1 = new NewCategoryDTO("cat1", "/cat1");
+        NewCategoryDTO cat2 = new NewCategoryDTO("cat2", "/cat2");
+        NewCategoryDTO cat3 = new NewCategoryDTO("cat3", "/cat3");
+
+        assertThat(mvc.post()
+                        .uri("/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(cat1)))
+                .hasStatus(HttpStatus.CREATED)
+                .bodyJson()
+                .extractingPath("$.name")
+                .isEqualTo("cat1");
+        assertThat(mvc.put()
+                        .uri("/categories/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(cat2)))
+                .hasStatus(HttpStatus.CREATED)
+                .bodyJson()
+                .extractingPath("$.name")
+                .isEqualTo("cat2");
+        assertThat(mvc.put()
+                        .uri("/categories/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(cat3)))
+                .hasStatus(HttpStatus.CREATED)
+                .bodyJson()
+                .extractingPath("$.name")
+                .isEqualTo("cat3");
+        assertThat(mvc.get().uri("/categories/3/breadcrumb").contentType(MediaType.APPLICATION_JSON))
+                .bodyJson()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .size()
+                .isEqualTo(3);
     }
 }

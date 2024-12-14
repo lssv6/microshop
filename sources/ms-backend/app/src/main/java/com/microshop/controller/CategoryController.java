@@ -46,7 +46,7 @@ public class CategoryController {
         return ResponseEntity.of(categoryService.findById(id));
     }
 
-    @GetMapping("/{id}/breadcrumbs")
+    @GetMapping("/{id}/breadcrumb")
     public ResponseEntity<List<CategoryDTO>> getBreadcrumbs(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.getBreadcrumb(id));
     }
