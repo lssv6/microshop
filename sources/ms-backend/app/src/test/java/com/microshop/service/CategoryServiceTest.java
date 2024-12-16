@@ -1,20 +1,26 @@
-package com.microshop.service.impl;
+package com.microshop.service;
 
 import com.microshop.dto.NewCategoryDTO;
-import com.microshop.service.CategoryService;
+import com.microshop.service.impl.CategoryServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
-public class CategoryServiceImplTest {
-    @Autowired
+@ExtendWith(MockitoExtension.class)
+public class CategoryServiceTest {
+
     private CategoryService categoryService;
 
+    @BeforeEach
+    void setup() {
+        categoryService = new CategoryServiceImpl();
+    }
+
     @Test
-    void shouldSaveAndReadCategory() {
-        var category = new NewCategoryDTO("Canetas", "/canetas");
-        categoryService.create(category);
+    void cannotCreateASellerWithNullName() {
+        var toSave = new NewCategoryDTO();
+        categoryService.create(toSave);
     }
 
     @Test

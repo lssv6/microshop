@@ -24,10 +24,34 @@ dependencies {
 
 
     /*****************************************************************************************************************/
-    /** SPRING DATA JPA                                                                                              */
+    /** SPRING BOOT STARTER DATA JPA                                                                                 */
     /*****************************************************************************************************************/
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.4.0'
+
+    ///*****************************************************************************************************************/
+    ///** SPRING BOOT STARTER SECURITY                                                                                 */
+    ///*****************************************************************************************************************/
+    //// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
+    //implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.4.0'
+
+    ///*****************************************************************************************************************/
+    ///** SPRING SECURITY OAUTH2 JOSE (FOR JWT PROCESSING)                                                             */
+    ///*****************************************************************************************************************/
+    //// https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-jose
+    //implementation group: 'org.springframework.security', name: 'spring-security-oauth2-jose', version: '6.4.1'
+
+    ///*****************************************************************************************************************/
+    ///** SPRING SECURITY OAUTH2 RESOURCE SERVER                                                                       */
+    ///*****************************************************************************************************************/
+    //// https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-resource-server
+    //implementation group: 'org.springframework.security', name: 'spring-security-oauth2-resource-server', version: '6.4.1'
+
+    /*****************************************************************************************************************/
+    /** JARKATA VALIDATION API  (Brings NotNull to DTOs and Size to fields that require min/max size)                */
+    /*****************************************************************************************************************/
+    // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
+    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.1.0'
 
     /*****************************************************************************************************************/
     /** MariaDB driver                                                                                               */
@@ -87,6 +111,9 @@ application {
     mainClass = 'com.microshop.App'
 }
 
+tasks.named('compileJava'){
+    options.compilerArgs = ["-parameters"]
+}
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()

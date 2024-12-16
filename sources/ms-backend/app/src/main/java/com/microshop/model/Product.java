@@ -28,12 +28,13 @@ public class Product {
     private Seller seller;
 
     @ManyToOne(optional = false)
-    @JoinColumn
+    @JoinColumn(name = "categoryId")
     private Category category;
 
     @Column(nullable = false)
     private Double price;
 
     private Double oldPrice;
+
     private String warranty;
 }

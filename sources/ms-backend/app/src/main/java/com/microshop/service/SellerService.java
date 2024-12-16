@@ -1,7 +1,10 @@
 package com.microshop.service;
 
 import com.microshop.dto.NewSellerDTO;
+import com.microshop.dto.SellerDTO;
 
 public interface SellerService {
-    public void create(NewSellerDTO newSellerDTO);
+    public SellerDTO create(NewSellerDTO newSellerDTO);
+
+    public SellerDTO findById(Long id);
 }

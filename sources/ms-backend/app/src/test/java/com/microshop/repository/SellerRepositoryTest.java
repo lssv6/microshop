@@ -20,4 +20,7 @@ public class SellerRepositoryTest {
 
         assertEquals(seller, sellerRepository.findByName("Manoel Gomes Inc.").get());
     }
+
+    @Test
+    void sellerNameMustBeNotBlank() {}
 }
