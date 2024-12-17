@@ -14,20 +14,25 @@ import lombok.Data;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
     private Long code;
 
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(unique = true)
     private String friendlyName;
+
     private String description;
     private String tagDescription;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "sellerId")
     private Seller seller;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "categoryId")
     private Category category;
 

@@ -5,12 +5,14 @@ import com.microshop.dto.NewCategoryDTO;
 import com.microshop.dto.ProductDTO;
 import com.microshop.service.CategoryService;
 import com.microshop.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/categories")
 @RestController
+@Validated
 public class CategoryController {
-
     @Autowired
     private CategoryService categoryService;
 
@@ -29,7 +31,8 @@ public class CategoryController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> postNewCategory(@RequestBody NewCategoryDTO nCategoryDTO) {
+    public ResponseEntity<CategoryDTO> postNewCategory(@Valid @RequestBody NewCategoryDTO nCategoryDTO) {
+        System.out.println(nCategoryDTO);
         CategoryDTO categoryDTO = categoryService.create(nCategoryDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTO);
     }
