@@ -22,7 +22,7 @@ public class MainControllerAdvice {
 
         Map<String, String> errorMap = errors.stream()
                 .map(error -> Map.entry(error.getField(), error.getDefaultMessage()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> x));
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, _) -> x));
         problemDetail.setProperty("errors", errorMap);
         return problemDetail;
     }
