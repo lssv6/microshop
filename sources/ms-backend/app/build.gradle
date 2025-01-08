@@ -9,7 +9,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'org.springframework.boot' version '3.4.0'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'io.spring.dependency-management' version '1.1.7' // Automatically manages spring versions
 }
 
 repositories {
@@ -24,6 +24,12 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-validation')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
+    /*****************************************************************************************************************/
+    /** LIGHTADMIN (CRUD UI)                                                                                         */
+    /*****************************************************************************************************************/
+    // https://mvnrepository.com/artifact/org.lightadmin/lightadmin
+    implementation group: 'org.lightadmin', name: 'lightadmin', version: '1.2.0.RC1'
+    
     /*****************************************************************************************************************/
     /** MariaDB driver                                                                                               */
     /*****************************************************************************************************************/
@@ -84,3 +90,4 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+

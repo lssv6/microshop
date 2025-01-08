@@ -19,16 +19,10 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id){
-       return ResponseEntity.of(productService.findById(id));
+    @GetMapping("/{code}")
+    public ResponseEntity<ProductDTO> getProductByCode(@PathVariable Long code){
+       return ResponseEntity.of(productService.findByCode(code));
     }
-    
-
-    //@GetMapping("/{id}")
-    //public ResponseEntity<Page<ProductDTO>> getProductsAsPageable(@PathVariable Long id, Pageable pageable) {
-    //    return ResponseEntity.ofNullable(productService.findByCategory(id, pageable));
-    //}
 
     @PostMapping
     public ResponseEntity<ProductDTO> createNewProduct(@RequestBody NewProductDTO product) {

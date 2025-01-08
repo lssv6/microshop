@@ -10,6 +10,7 @@ public interface ProductService {
     public ProductDTO create(NewProductDTO p);
 
     public Optional<ProductDTO> findById(Long id);
+    public Optional<ProductDTO> findByCode(Long code);
 
     public Page<ProductDTO> findByCategory(Long categoryId, Pageable pageable);
 }
