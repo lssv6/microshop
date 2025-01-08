@@ -25,12 +25,6 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
     /*****************************************************************************************************************/
-    /** LIGHTADMIN (CRUD UI)                                                                                         */
-    /*****************************************************************************************************************/
-    // https://mvnrepository.com/artifact/org.lightadmin/lightadmin
-    implementation group: 'org.lightadmin', name: 'lightadmin', version: '1.2.0.RC1'
-    
-    /*****************************************************************************************************************/
     /** MariaDB driver                                                                                               */
     /*****************************************************************************************************************/
     // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
