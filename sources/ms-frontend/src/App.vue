@@ -81,7 +81,5 @@ const products: Ref<Product[]> = ref(sampleProducts);
     <SubcategorySelection></SubcategorySelection>
     <ProductShelf :products="products"></ProductShelf>
   </main>
-  <footer>
-    Copyright © 2024-2025 Microshop comércio digital de componentes eletrônicos LTDA.
-  </footer>
+  <footer>Copyright © 2024-2025 Microshop comércio digital de componentes eletrônicos LTDA.</footer>
 </template>
