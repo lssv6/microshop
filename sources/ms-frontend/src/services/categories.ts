@@ -9,8 +9,3 @@ export async function getProductsFromCategory(categoryId: number): Promise<Produ
         });
 
 }
-
-// export {
-//     getProductsFromCategory,
-
-// }
