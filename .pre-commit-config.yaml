@@ -25,11 +25,14 @@ repos:
       - id: isort
         args: ["--profile", "black", "--filter-files", "--src", './sources/ms-webscrapper']
 
-  - repo: https://github.com/biomejs/pre-commit
-    rev: v0.6.1
+  - repo: local
     hooks:
-      - id: biome-format
-        additional_dependencies: ["@biomejs/biome@1.4.1"]
+      - id: local-biome-check
+        name: biome check
+        entry: npx @biomejs/biome check --write --files-ignore-unknown=true --no-errors-on-unmatched
+        language: system
+        types: [text]
+        files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?)$"
 
         #- repo: https://github.com/pre-commit/mirrors-eslint
         #  rev: 'a135949'  # Use the sha / tag you want to point at
