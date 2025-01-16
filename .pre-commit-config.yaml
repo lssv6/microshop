@@ -18,12 +18,27 @@ repos:
       # autofix means that will automatically fix encountered not-pretty-formated files.
       - id: pretty-format-java
         args: ["--palantir", "--autofix"]
+
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files", "--src", './sources/ms-webscrapper']
 
+  - repo: local
+    hooks:
+      - id: local-biome-check
+        name: biome check
+        entry: npx @biomejs/biome check --write --files-ignore-unknown=true --no-errors-on-unmatched
+        language: system
+        types: [text]
+        files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?)$"
+
+        #- repo: https://github.com/pre-commit/mirrors-eslint
+        #  rev: 'a135949'  # Use the sha / tag you want to point at
+        #  hooks:
+        #    - id: eslint
+        #      files: \.[jt]sx?$
         #- repo: https://github.com/gherynos/pre-commit-java
         #  rev: v0.6.3  # Use the ref you want to point at
         #  hooks:

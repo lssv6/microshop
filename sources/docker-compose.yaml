@@ -33,33 +33,39 @@ services:
     networks:
       - backend
 
-  image_store:
+      #image_store:
+      #  build:
+      #    context: ms-image_store
+      #    dockerfile: docker/Dockerfile
+      #  environment:
+      #    AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      #    AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      #    #ports:
+      #    #  - 8080:8080
+      #  networks:
+      #    - backend
+  backend:
     build:
-      context: ms-image_store
+      context: ms-backend
       dockerfile: docker/Dockerfile
-    environment:
-      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
-      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
-      #ports:
-      #  - 8080:8080
-    networks:
-      - backend
+    env_file: ./development.env
+
 
   ## PORT : 8080
-  catalog_api:
-    build:
-      context: ms-catalog
-      dockerfile: docker/Dockerfile
-    environment:
-      MARIADB_HOST: ${MARIADB_HOST}
-      MARIADB_PORT: ${MARIADB_PORT}
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-      HTTP_SERVE_PORT: 8080
-    depends_on:
-      - mariadb_database
-    networks:
-      - backend
+  #catalog_api:
+  #  build:
+  #    context: ms-catalog
+  #    dockerfile: docker/Dockerfile
+  #  environment:
+  #    MARIADB_HOST: ${MARIADB_HOST}
+  #    MARIADB_PORT: ${MARIADB_PORT}
+  #    MARIADB_DATABASE: ${MARIADB_DATABASE}
+  #    MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+  #    HTTP_SERVE_PORT: 8080
+  #  depends_on:
+  #    - mariadb_database
+  #  networks:
+  #    - backend
 
 
 networks:
