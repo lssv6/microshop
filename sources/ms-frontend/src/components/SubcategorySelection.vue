@@ -1,35 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import PricetagIcon from './icons/PricetagIcon.vue';
+import { ref } from "vue";
+import PricetagIcon from "./icons/PricetagIcon.vue";
 
-const rootCategory = ref(
-    {
-        id: 5,
-        name: "Hardware",
-        path: "/hardware",
-    }
-);
+const rootCategory = ref({
+	id: 5,
+	name: "Hardware",
+	path: "/hardware",
+});
 const subCategories = ref([
-    {
-        id: 23,
-        name: "Placas de vídeo",
-        path: "/hardware/placas-de-video"
-    },
-    {
-        id: 27,
-        name: "Placas de vídeo Nvidia",
-        path: "/hardware/placas-de-video/nvidia"
-    },
-    {
-        id: 52,
-        name: "Placas de vídeo AMD",
-        path: "/hardware/placas-de-video/amd"
-    },
-    {
-        id: 2323,
-        name: "Placas de vídeo Intel",
-        path: "/hardware/placas-de-video/intel"
-    },
+	{
+		id: 23,
+		name: "Placas de vídeo",
+		path: "/hardware/placas-de-video",
+	},
+	{
+		id: 27,
+		name: "Placas de vídeo Nvidia",
+		path: "/hardware/placas-de-video/nvidia",
+	},
+	{
+		id: 52,
+		name: "Placas de vídeo AMD",
+		path: "/hardware/placas-de-video/amd",
+	},
+	{
+		id: 2323,
+		name: "Placas de vídeo Intel",
+		path: "/hardware/placas-de-video/intel",
+	},
 ]);
 </script>
 

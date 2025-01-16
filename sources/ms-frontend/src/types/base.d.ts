@@ -1,29 +1,29 @@
 type Category = {
-    id: number,
-    name: string,
-    path: string
-}
+	id: number;
+	name: string;
+	path: string;
+};
 
 type Seller = {
-    id: number,
-    name: string,
-}
+	id: number;
+	name: string;
+};
 
 type Product = {
-    code: number,
-    name: string,
-    friendlyName: string,
-    description?: string,
-    tagDescription?: string,
+	code: number;
+	name: string;
+	friendlyName: string;
+	description?: string;
+	tagDescription?: string;
 
-    seller?: Seller,
-    category?: Category,
+	seller?: Seller;
+	category?: Category;
 
-    price: number,
-    oldPrice?: number,
+	price: number;
+	oldPrice?: number;
 
-    warranty?: string,
+	warranty?: string;
 
-    thumbnail: string,
-    images?: string[],
-}
+	thumbnail: string;
+	images?: string[];
+};

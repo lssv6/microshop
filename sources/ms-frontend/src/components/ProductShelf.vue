@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import ProductBox from './ProductBox.vue';
+import ProductBox from "./ProductBox.vue";
 
 const { products } = defineProps<{ products: Product[] }>();
-
 </script>
 
 <template>

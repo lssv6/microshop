@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 const { product } = defineProps<{ product: Product }>();
-
 </script>
 
 <template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import SortingIcon from './icons/SortingIcon.vue';
-
+import SortingIcon from "./icons/SortingIcon.vue";
 </script>
 
 <template>
