@@ -74,12 +74,7 @@ const products: Ref<Product[]> = ref(sampleProducts);
     <CartIcon></CartIcon>
   </header>
 
-  <main>
-    <BreadcrumbsComponent :categories="subcategories"></BreadcrumbsComponent>
-    <CategoryTitle :title="categoryTitle"></CategoryTitle>
-    <SortingBar></SortingBar>
-    <SubcategorySelection></SubcategorySelection>
-    <ProductShelf :products="products"></ProductShelf>
+  <main><BreadcrumbsComponent :categories="subcategories"></BreadcrumbsComponent><CategoryTitle :title="categoryTitle"></CategoryTitle><SortingBar></SortingBar><SubcategorySelection></SubcategorySelection><ProductShelf :products="products"></ProductShelf>
   </main>
   <footer>Copyright © 2024-2025 Microshop comércio digital de componentes eletrônicos LTDA.</footer>
 </template>
