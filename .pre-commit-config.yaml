@@ -24,12 +24,20 @@ repos:
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files", "--src", './sources/ms-webscrapper']
-
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: 'a135949'  # Use the sha / tag you want to point at
+  - repo: local
     hooks:
-      - id: eslint
-        files: \.[jt]sx?$
+      - id: local-biome-check
+        name: biome check
+        entry: npx biome check --write --files-ignore-unknown=true --no-errors-on-unmatched
+        language: system
+        types: [text]
+        files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|jsonc?|css|svelte|vue|astro|graphql|gql)$"
+
+        #- repo: https://github.com/pre-commit/mirrors-eslint
+        #  rev: 'a135949'  # Use the sha / tag you want to point at
+        #  hooks:
+        #    - id: eslint
+        #      files: \.[jt]sx?$
         #- repo: https://github.com/gherynos/pre-commit-java
         #  rev: v0.6.3  # Use the ref you want to point at
         #  hooks:
