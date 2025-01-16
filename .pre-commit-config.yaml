@@ -29,7 +29,7 @@ repos:
     rev: v0.6.1
     hooks:
       - id: biome-check
-        additional_dependencies: ["@biomejs/biome@1.4.1"]
+      #additional_dependencies: ["@biomejs/biome@1.4.1"]
 
         #- repo: https://github.com/pre-commit/mirrors-eslint
         #  rev: 'a135949'  # Use the sha / tag you want to point at
