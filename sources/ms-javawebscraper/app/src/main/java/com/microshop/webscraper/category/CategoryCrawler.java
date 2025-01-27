@@ -132,6 +132,7 @@ public class CategoryCrawler {
         result.setPagination(getPagination(dom));
         result.setPageLinks(getPageLinks(dom));
         result.setPageInfo(getPageInfo(dom));
+        result.setProducts(getProducts(dom));
         return result;
     }
 

@@ -85,7 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
      * */
     @Override
     public List<CategoryDTO> getBreadcrumb(String path) {
-        Category category = categoryRepository.findByPath(path).get();
+        Category category = categoryRepository.findByFullPath(path).get();
         return getBreadcrumb(category).stream()
                 .map(entity -> modelMapper.map(entity, CategoryDTO.class))
                 .collect(Collectors.toList());

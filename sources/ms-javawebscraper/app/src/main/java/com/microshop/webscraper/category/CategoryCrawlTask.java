@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.microshop.webscraper.downloader.DownloadException;
 import com.microshop.webscraper.downloader.PageDownloader;
-import com.microshop.webscraper.models.Product;
 import com.microshop.webscraper.models.category.CategoryPageData;
 import java.io.File;
 import java.io.FileWriter;
@@ -15,7 +14,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.List;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +65,7 @@ public class CategoryCrawlTask implements Runnable {
                 // This will never happen
             }
             // If the query has page_number query, try to modify the number after the '='
-        } else { // Dark magic. Why do Java doesn't has any URL/URI query parsing methods like JavaScript?
+        } else { // Dark magic. Why do Java doesn't have any URL/URI query parsing methods like JavaScript?
             String nextPageQuery = queryParams[foundPageNumberIndex];
             String pageNumber = nextPageQuery.split("=")[1];
             pageNumber = (Integer.parseInt(pageNumber) + 1) + "";
@@ -134,25 +132,29 @@ public class CategoryCrawlTask implements Runnable {
             log.error("Failed to download the page.");
             return;
         }
+
         CategoryPageData categoryPageData;
-        List<Product> products;
 
         try {
-            products = CategoryCrawler.getProducts(doc);
             categoryPageData = CategoryCrawler.getCategoryPageData(doc);
         } catch (NullPointerException nullPointerException) {
             log.error("Could not get the category data for url={%s}".formatted(uri.toString()));
             return;
         }
 
-        String catName = categoryPageData.getBreadcrumb().getLast().getName();
+        // Make a catName to be the fullCatname of the category. Being 1TB not anymore ambiguous category.
+        // Currently, catName will be or "Hardware>HDD>1TB" or "Hardware>SSD>1TB" instead of "1TB".
+        String catName = categoryPageData.getBreadcrumb().stream()
+                .map(b -> b.getName())
+                .reduce((b1, b2) -> b1 + ">" + b2)
+                .get();
+        catName = catName.replace('/', '\u2044');
         int pageNumber = categoryPageData.getPagination().getCurrent();
 
         hasNextPage = pageNumber < categoryPageData.getPagination().getTotal();
 
         try {
-            writeData(products, products.getClass(), "products", catName, pageNumber);
-            writeData(categoryPageData, categoryPageData.getClass(), "categories", catName, pageNumber);
+            writeData(categoryPageData, CategoryPageData.class, "categories", catName, pageNumber);
         } catch (IOException e) {
             log.error("Error while saving the crawled data.", e);
             e.printStackTrace();
@@ -165,7 +167,7 @@ public class CategoryCrawlTask implements Runnable {
                 "Crawled uri={} . {}",
                 uri,
                 hasNextPage
-                        ? "We are crawling the page number %d.".formatted(pageNumber + 1)
-                        : "No more pages to crawl.");
+                        ? "Going to crawl the page number %d.".formatted(pageNumber + 1)
+                        : "No more pages to crawl in this category");
     }
 }

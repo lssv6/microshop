@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class NewProductDTO {
-    private Long code;
     private String name;
     private String friendlyName;
     private String description;
