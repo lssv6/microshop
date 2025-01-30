@@ -123,7 +123,6 @@ public class App {
         // BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<CategoryCrawlerTask>();
         ParallelCategoryCrawler pcc = new ParallelCategoryCrawler();
         pcc.crawlCategories(categoryURIs);
-
         // List<URI> productURIs = sitemapsURIs.stream().filter(App::isProductLink).toList();
         // log.info("Started crawl...");
         // int count = 0;

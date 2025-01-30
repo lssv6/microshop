@@ -6,26 +6,29 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 @Entity
 @Data
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Setter(value = AccessLevel.NONE)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private Long code;
-
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String name;
 
-    @Column(unique = true)
     private String friendlyName;
 
+    @Lob // Lob means Large OBject. It's just a varchar without size restrictions.
     private String description;
+
+    @Lob
     private String tagDescription;
 
     @ManyToOne(optional = true)
@@ -40,6 +43,5 @@ public class Product {
     private Double price;
 
     private Double oldPrice;
-
     private String warranty;
 }

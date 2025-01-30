@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    public Optional<Category> findByName(String name);
+    // public Optional<Category> findByName(String name);
+    // public Optional<Category> findByPath(String path);
+    public Optional<Category> findByFullPath(String fullPath);
 
-    public Optional<Category> findByPath(String path);
+    public Optional<Category> findByPrettyPath(String prettyPath);
 }
