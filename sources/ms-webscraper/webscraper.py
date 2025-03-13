@@ -124,11 +124,12 @@ async def main():
         return "/produto/" in url
 
     def is_category_url(url):
-        return (
-            (not is_product_url(url))
-            and url not in BLACKLIST
-            and all(map(lambda start: not url.startswith(start), START_BLACKLIST))
+        isnt_a_product = not is_product_url(url)
+        not_blacklisted = url not in BLACKLIST
+        not_start_blacklisted = all(
+            map(lambda start: not url.startswith(start), START_BLACKLIST)
         )
+        return isnt_a_product and not_blacklisted and not_start_blacklisted
 
     queue: asyncio.Queue = asyncio.Queue()
     await queue.put(SITEMAP_URL)
