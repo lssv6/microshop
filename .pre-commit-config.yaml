@@ -12,6 +12,8 @@ repos:
   hooks:
     # Run the linter.
     - id: ruff
-      args: [ --fix ]
+      args: ["sources/ms-webscraper", --fix ]
+      types_or: [ python, pyi ]
     # Run the formatter.
     - id: ruff-format
+      types_or: [ python, pyi ]
