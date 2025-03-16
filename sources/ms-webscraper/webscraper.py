@@ -3,8 +3,10 @@ import aiohttp
 import asyncio
 from bs4 import BeautifulSoup
 import json
+import pathlib
 from urllib.parse import urlparse, parse_qs
 
+BASE_DIR = "DUMP"
 SITEMAP_URL = "https://www.kabum.com.br/sitemap.xml"
 rootWasCrawled = False
 
@@ -59,7 +61,10 @@ async def sitemap_worker(queue: asyncio.Queue, name: str):
 
 
 def write_category_data(category_path: str, page_number: int, category_data: dict):
-    with open(f"{category_path}/{page_number}.json", "w") as file:
+    global BASE_DIR
+    path = pathlib.Path(BASE_DIR + "/" + category_path.replace("/", "|"))
+    pathlib.Path.mkdir(path, exist_ok=True)
+    with open(f"{path}/{page_number}.json", "w") as file:
         json.dump(category_data, file)
 
 
@@ -69,6 +74,7 @@ async def category_worker(queue: asyncio.Queue, name: str):
             url = await queue.get()
             async with session.get(url) as response:
                 if not response.ok:
+                    print(f"{name} --> {response.status}")
                     queue.task_done()
 
                 text = await response.text()
@@ -80,6 +86,7 @@ async def category_worker(queue: asyncio.Queue, name: str):
 
                 if script_element is None:
                     queue.task_done()
+                    print(f"{name} --> {url=} unable to find script_element")
                     continue
 
                 # Trickiest part of the code.
@@ -87,18 +94,23 @@ async def category_worker(queue: asyncio.Queue, name: str):
                 # It's related to mining the data from the page via nasty methods.
                 innerJson = script_element.text
                 json_data = json.loads(innerJson)
-                dataString: str = json_data["props"]["pageProps"]["data"]
-                dataString = dataString.replace('\\"', '"').replace("\\\\", "\\")
-                data = json.loads(dataString[1:-1])
-                meta = data["catalogServer"]["meta"]
+                try:
+                    dataString: str = json_data["props"]["pageProps"]["data"]
+                except KeyError:
+                    print(f"{name} --> {url=} unable to find data.")
+                    queue.task_done()
+                    continue
 
-                # breadcrumb = meta["breadcrumb"]
-                # seo = meta["seo"]
-                # products = meta["data"]
-                # links = meta["links"]
-                # category_path = meta["slug"]
+                data = json.loads(dataString)
 
-                current_page = meta["pagination"]["current"]
+                try:
+                    meta = data["catalogServer"]["meta"]
+                except KeyError:
+                    print(f"{name} --> {url=} unable to find meta")
+                    queue.task_done()
+                    continue
+
+                current_page = meta["page"]["number"]
                 totalPagesCount = meta["totalPagesCount"]
                 category_path = data["slug"]
 
@@ -107,15 +119,22 @@ async def category_worker(queue: asyncio.Queue, name: str):
                 parsed_url = urlparse(url)
                 query = parsed_url.query
                 parsed_query = parse_qs(query)
+                if "page_number" not in parsed_query:
+                    parsed_query["page_number"] = [1]
                 page_number = int(parsed_query["page_number"][0])
 
                 if current_page < totalPagesCount:
                     # Perhaps _replace was supposed to be a private method.
                     # Using anyway
                     next_page_url = parsed_url._replace(
-                        "query", f"page_number={page_number + 1}"
+                        query=f"page_number={page_number + 1}"
                     ).geturl()
+                    print(f"{name} --> {url=} crawled a new url has been found.")
                     await queue.put(next_page_url)
+                else:
+                    print(f"{name} --> {url=} crawled. No more pages")
+
+            print(f"{name} --> {url=} crawled")
             queue.task_done()
 
 
@@ -145,6 +164,7 @@ async def main():
 
     BLACKLIST = [
         "https://www.kabum.com.br",
+        "https://www.kabum.com.br/hardware/servicos/servico-de-montagem",
         "https://www.kabum.com.br/login",
         "https://www.kabum.com.br/carrinho",
         "https://www.kabum.com.br/sobre",
@@ -171,7 +191,7 @@ async def main():
 
     workers = [
         asyncio.create_task(category_worker(queue, f"cworker-{i}"), name=f"cworker-{i}")
-        for i in range(128)
+        for i in range(10)
     ]
 
     for category in category_list:
