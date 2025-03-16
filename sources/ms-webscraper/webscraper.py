@@ -63,7 +63,7 @@ async def sitemap_worker(queue: asyncio.Queue, name: str):
 def write_category_data(category_path: str, page_number: int, category_data: dict):
     global BASE_DIR
     path = pathlib.Path(BASE_DIR + "/" + category_path.replace("/", "|"))
-    pathlib.Path.mkdir(path, exist_ok=True)
+    pathlib.Path.mkdir(path, parents=True, exist_ok=True)
     with open(f"{path}/{page_number}.json", "w") as file:
         json.dump(category_data, file)
 
