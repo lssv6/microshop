@@ -3,7 +3,7 @@ package com.microshop.dto;
 import lombok.Data;
 
 @Data
-public class ManufacturerDTO{
+public class ManufacturerDTO {
     private Long id;
     private String name;
     private String img;

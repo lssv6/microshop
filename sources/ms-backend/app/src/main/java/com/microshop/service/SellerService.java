@@ -1,9 +1,9 @@
 package com.microshop.service;
 
-import java.util.Optional;
-
 import com.microshop.dto.SellerDTO;
 
-public interface SellerService{
+import java.util.Optional;
+
+public interface SellerService {
     public Optional<SellerDTO> findById(Long id);
 }
