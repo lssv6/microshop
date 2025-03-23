@@ -12,12 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microshop.Mappings;
 import com.microshop.dto.ManufacturerDTO;
 import com.microshop.service.ManufacturerService;
 
 @RestController
-@RequestMapping(Mappings.MANUFACTURER)
+@RequestMapping("/manufacturer")
 public class ManufacturerController{
 
     @Autowired

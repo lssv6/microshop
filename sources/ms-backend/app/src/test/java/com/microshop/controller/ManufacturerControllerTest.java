@@ -11,7 +11,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microshop.Mappings;
 import com.microshop.dto.ManufacturerDTO;
 import com.microshop.service.ManufacturerService;
 
@@ -50,7 +49,7 @@ class ManufacturerControllerTest{
         String postBody = objectMapper.writeValueAsString(manufacturer);
 
         mvc.perform(
-                post(Mappings.MANUFACTURER)
+                post("/manufacturer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .content(postBody))
@@ -71,7 +70,7 @@ class ManufacturerControllerTest{
             .thenReturn(Optional.of(responseObj));
 
         mvc.perform(
-                get(Mappings.MANUFACTURER + "/11").accept(MediaType.APPLICATION_JSON))
+                get("/manufacturer/{id}", 11L).accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(11));
@@ -83,7 +82,7 @@ class ManufacturerControllerTest{
             .thenReturn(Optional.empty());
 
         mvc.perform(
-                get(Mappings.MANUFACTURER + "/{}", 99L).accept(MediaType.APPLICATION_JSON))
+                get("/manufacturer/{id}", 99L).accept(MediaType.APPLICATION_JSON))
             .andExpect(status().is4xxClientError());
     }
 }
