@@ -1,19 +1,25 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
     -   id: check-yaml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
 
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  # Ruff version.
-  rev: v0.10.0
-  hooks:
-    # Run the linter.
-    - id: ruff
-      args: ["sources/ms-webscraper", --fix ]
-      types_or: [ python, pyi ]
-    # Run the formatter.
-    - id: ruff-format
-      types_or: [ python, pyi ]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.10.0
+    hooks:
+      # Run the linter.
+      - id: ruff
+        args: ["sources/ms-webscraper", --fix ]
+        types_or: [ python, pyi ]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [ python, pyi ]
+
+  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.14.0
+    hooks:
+      - id: pretty-format-java
+        args: [--aosp,--autofix]
