@@ -9,27 +9,20 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.microshop.model.Manufacturer;
 
-@DataJpaTest
+// Actually these tests are not needed.
+// Although you can test JPA repositories, they already work out of the box;
+@DataJpaTest(showSql = true)
 class ManufacturerRepositoryTest{
 
     @Autowired
     private ManufacturerRepository manufacturerRepository;
 
-    private static Manufacturer manufacturer;
-
-    @BeforeAll
-    static void setUp(){
-        manufacturer = new Manufacturer();
-        manufacturer.setId(99L);
-        manufacturer.setName("Bic");
-        manufacturer.setImg("https://www.example.com/mLogo.png");
-    }
-
     @Test
     void testFindById(){
-         Manufacturer man = manufacturerRepository.findById(99L).get();
-         assertEquals(manufacturer.getImg(), man.getImg());
-         assertEquals(manufacturer.getName(), man.getName());
-
+        Manufacturer man = manufacturerRepository.findById(99L).get();
+        assertEquals(99L, man.getId());
+        assertEquals("https://www.example.com/mLogo.png", man.getImg());
+        assertEquals("BIC", man.getName());
+        assertEquals(2L, man.getVersion());
     }
 }

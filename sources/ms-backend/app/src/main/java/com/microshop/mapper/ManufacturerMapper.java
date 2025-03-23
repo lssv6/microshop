@@ -1,14 +1,13 @@
 package com.microshop.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants.ComponentModel;
 
 import com.microshop.dto.ManufacturerDTO;
 import com.microshop.model.Manufacturer;
 
-@Mapper
+@Mapper(componentModel = ComponentModel.SPRING)
 public interface ManufacturerMapper{
-    public ManufacturerMapper INSTANCE = Mappers.getMapper(ManufacturerMapper.class);
-    public ManufacturerDTO manufacturerToManufacturerDTO(Manufacturer manufacturer);
-    public Manufacturer manufacturerDTOToManufacturer(ManufacturerDTO manufacturer);
+    public ManufacturerDTO toDTO(Manufacturer manufacturer);
+    public Manufacturer toEntity(ManufacturerDTO manufacturer);
 }

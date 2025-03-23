@@ -14,6 +14,7 @@ import com.microshop.service.ManufacturerService;
 
 @Service
 public class ManufacturerServiceImpl implements ManufacturerService{
+
     @Autowired
     private ManufacturerMapper mapper;
 
@@ -21,20 +22,14 @@ public class ManufacturerServiceImpl implements ManufacturerService{
     private ManufacturerRepository manufacturerRepository;
 
     public Optional<ManufacturerDTO> findById(Long id){
-        Optional<ManufacturerDTO> dto= manufacturerRepository.findById(id)
-            .map(m -> mapper.manufacturerToManufacturerDTO(m));
-        return dto;
-    }
-
-    public Optional<ManufacturerDTO> findByName(String name){
-        Optional<ManufacturerDTO> dto = manufacturerRepository.findByName(name)
-            .map(m -> mapper.manufacturerToManufacturerDTO(m));
+        Optional<ManufacturerDTO> dto = manufacturerRepository.findById(id)
+            .map(m -> mapper.toDTO(m));
         return dto;
     }
 
     public ManufacturerDTO save(ManufacturerDTO manufacturerDTO){
-        Manufacturer entity = mapper.manufacturerDTOToManufacturer(manufacturerDTO);
+        Manufacturer entity = mapper.toEntity(manufacturerDTO);
         Manufacturer saved = manufacturerRepository.save(entity);
-        return mapper.manufacturerToManufacturerDTO(saved);
+        return mapper.toDTO(saved);
     }
 }
