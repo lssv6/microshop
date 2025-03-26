@@ -1,9 +1,12 @@
 package com.microshop.service;
 
-import com.microshop.model.Product;
+import com.microshop.dto.ProductDTO;
+import com.microshop.dto.request.NewProduct;
 
 import java.util.Optional;
 
 public interface ProductService {
-    public Optional<Product> findById(Long id);
+    public ProductDTO save(NewProduct product);
+
+    public Optional<ProductDTO> findById(Long id);
 }

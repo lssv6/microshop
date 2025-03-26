@@ -58,7 +58,7 @@ public class CategoryControllerTest {
         // When
         mvc.perform(post("/category").contentType(MediaType.APPLICATION_JSON).content(postBody))
                 // Then
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(10L))
                 .andExpect(jsonPath("$.parentId").value(99L));
     }

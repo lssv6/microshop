@@ -5,6 +5,7 @@ import com.microshop.dto.request.NewCategory;
 import com.microshop.service.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,6 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryDTO> save(@RequestBody NewCategory newCategory) {
         CategoryDTO categoryDTO = categoryService.save(newCategory);
-        return ResponseEntity.ofNullable(categoryDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTO);
     }
 }

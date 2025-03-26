@@ -22,8 +22,8 @@ public class Product {
     @Column private String description;
     @Column private String tagDescription;
     @Column private String friendlyName;
-    @Column private Integer price;
-    @Column private Integer oldPrice;
+    @Column private Long price;
+    @Column private Long oldPrice;
 
     // @MapsId means that the id of the imageData is the same as this product.
     // @OneToOne(optional = true)
