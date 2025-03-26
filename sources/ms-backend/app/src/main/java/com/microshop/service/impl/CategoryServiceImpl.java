@@ -20,6 +20,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired private CategoryRepository categoryRepository;
 
     @Override
+    public Optional<CategoryDTO> findByFullName(String fullName) {
+        return categoryRepository.findByFullName(fullName).map(c -> mapper.toDTO(c));
+    }
+
+    @Override
     public Optional<CategoryDTO> findById(Long id) {
         return categoryRepository.findById(id).map(c -> mapper.toDTO(c));
     }

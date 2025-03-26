@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,6 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
 
     @Autowired private CategoryService categoryService;
+
+    @GetMapping
+    public ResponseEntity<CategoryDTO> findByFullName(
+            @RequestParam(name = "full-name", required = true) String fullName) {
+        return ResponseEntity.of(categoryService.findByFullName(fullName));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {

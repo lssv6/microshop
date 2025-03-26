@@ -19,7 +19,9 @@ public class Category {
 
     @Column private String name;
 
-    @Column private String fullName;
+    @Column(unique = true)
+    private String fullName;
+
     @Column private String path;
     @Column private String fullPath;
 

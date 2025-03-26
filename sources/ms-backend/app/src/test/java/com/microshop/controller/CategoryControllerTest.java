@@ -1,5 +1,6 @@
 package com.microshop.controller;
 
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -75,5 +76,22 @@ public class CategoryControllerTest {
                 .andExpect(jsonPath("$.id").value(10L))
                 .andExpect(jsonPath("$.parentId").value(99L))
                 .andExpect(jsonPath("$.fullPath").value("/computadores/notebooks"));
+    }
+
+    @Test
+    void testFindByFullName() throws Exception {
+        given(categoryService.findByFullName("Computadores/Notebooks"))
+                .willReturn(Optional.of(categoryDTO));
+        mvc.perform(
+                        get("/category?full-name=Computadores/Notebooks")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fullName").value("Computadores/Notebooks"));
+    }
+
+    @Test
+    void shouldNotBeAbleToAcceptEmptyQuery() throws Exception {
+        mvc.perform(get("/category").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
