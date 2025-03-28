@@ -1,5 +1,6 @@
+from typing import Callable
 import requests
-import os
+import os, sys
 import json
 
 
@@ -35,23 +36,60 @@ def extract_products(data):
             "oldPrice": old_price,
             "sellerId": product["sellerId"],
             "categoryId": category_id,
+            "manufacturer": product["manufacturer"]["id"],
         }
 
     return map(extract_product, data["catalogServer"]["data"])
 
 
-def process_file(data):
-    seller = extract_seller(data)
-    products = extract_products(data)
-    category = extract_categories(data)
-
-    pass
-
-
-def get_categories(path):
+def get_files(path):
     directories = os.listdir(path)
     for d in directories:
         for f in os.listdir(d):
-            with open(f"{d}/{f}") as file:
-                data = json.load(file)
-                process_file(data)
+            yield f"{d}/{f}"
+
+
+def process_files(path, *callbacks: Callable):
+    for f in get_files(path):
+        with open(f) as file:
+            data = json.load(file)
+            for cb in callbacks:
+                cb(data)
+
+
+def get_products(data):
+    return data["catalogServer"]["data"]
+
+
+def save_sellers(data):
+    products = get_products(data)
+    for product in products:
+        seller = {"name": product["sellerName"]}
+        req = requests.post("localhost:8080/sellers", seller)
+        if not req.ok:
+            print(f"Error while saving seller with {seller["name"]=}")
+
+
+def save_manufacturers(data):
+    products = get_products(data)
+    for product in products:
+        manufacturer = {
+            "name": product["manufacturer"]["name"],
+            "img": product["manufacturer"]["img"],
+        }
+        req = requests.post("localhost:8080/manufacturer", manufacturer)
+        if not req.ok:
+            print(f"Error while saving manufacturer with {manufacturer["name"]=}")
+
+
+def save_products(data):
+    products = get_products(data)
+    for product in extract_products(products):
+        req = requests.post("localhost:8080/product", product)
+        if not req.ok:
+            print(f"Error while saving product with {product["name"]=}")
+
+
+if __name__ == "__main__":
+    process_files(sys.argv[1], save_sellers, save_manufacturers)
+    process_files(sys.argv[1], save_products)
