@@ -1,7 +1,8 @@
 from typing import Callable
 import requests
-import os, sys
+import sys
 import json
+import pathlib
 
 
 def extract_categories(data):
@@ -16,7 +17,9 @@ def extract_categories(data):
 
 
 def get_category(fullCategoryName):
-    return requests.get(f"localhost:8080/category/?full_name={fullCategoryName}").json()
+    return requests.get(
+        f"http://localhost:8080/category/?full_name={fullCategoryName}"
+    ).json()
 
 
 def extract_products(data):
@@ -43,10 +46,10 @@ def extract_products(data):
 
 
 def get_files(path):
-    directories = os.listdir(path)
+    directories = pathlib.Path(path).iterdir()
     for d in directories:
-        for f in os.listdir(d):
-            yield f"{d}/{f}"
+        for f in d.iterdir():
+            yield f
 
 
 def process_files(path, *callbacks: Callable):
@@ -65,7 +68,7 @@ def save_sellers(data):
     products = get_products(data)
     for product in products:
         seller = {"name": product["sellerName"]}
-        req = requests.post("localhost:8080/sellers", seller)
+        req = requests.post("http://localhost:8080/sellers", json=seller)
         if not req.ok:
             print(f"Error while saving seller with {seller["name"]=}")
 
@@ -77,7 +80,7 @@ def save_manufacturers(data):
             "name": product["manufacturer"]["name"],
             "img": product["manufacturer"]["img"],
         }
-        req = requests.post("localhost:8080/manufacturer", manufacturer)
+        req = requests.post("http://localhost:8080/manufacturer", json=manufacturer)
         if not req.ok:
             print(f"Error while saving manufacturer with {manufacturer["name"]=}")
 
@@ -85,7 +88,7 @@ def save_manufacturers(data):
 def save_products(data):
     products = get_products(data)
     for product in extract_products(products):
-        req = requests.post("localhost:8080/product", product)
+        req = requests.post("http://localhost:8080/product", json=product)
         if not req.ok:
             print(f"Error while saving product with {product["name"]=}")
 

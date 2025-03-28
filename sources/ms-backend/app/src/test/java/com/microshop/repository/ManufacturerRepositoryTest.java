@@ -1,12 +1,14 @@
 package com.microshop.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.microshop.model.Manufacturer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 // Actually these tests are not needed.
 // Although you can test JPA repositories, they already work out of the box;
@@ -22,5 +24,20 @@ class ManufacturerRepositoryTest {
         assertEquals("https://www.example.com/mLogo.png", man.getImg());
         assertEquals("BIC", man.getName());
         assertEquals(2L, man.getVersion());
+    }
+
+    @Test
+    void shouldThrowErrorWithinDuplicates() {
+        Manufacturer manufacturer = new Manufacturer();
+        manufacturer.setName("BIC");
+        manufacturer.setImg("https://www.example.com/mLogo.png");
+        manufacturerRepository.save(manufacturer);
+        manufacturerRepository.save(manufacturer);
+        manufacturerRepository.save(manufacturer);
+        manufacturerRepository.save(manufacturer);
+        manufacturerRepository.save(manufacturer);
+        assertThrows(
+                DataIntegrityViolationException.class,
+                () -> manufacturerRepository.save(manufacturer));
     }
 }
