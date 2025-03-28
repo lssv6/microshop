@@ -15,13 +15,19 @@ import lombok.Data;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
     private Long id;
 
     @Column private String name;
-    @Column private String description;
-    @Column private String tagDescription;
+
+    @Column(length = 50_000)
+    private String description;
+
+    @Column(length = 50_000)
+    private String tagDescription;
+
     @Column private String friendlyName;
+
     @Column private Long price;
     @Column private Long oldPrice;
 

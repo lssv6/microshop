@@ -6,11 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
 import lombok.Data;
 
 @Entity
+@Table(name = "category")
 @Data
 public class Category {
     @Id
@@ -23,7 +25,9 @@ public class Category {
     private String fullName;
 
     @Column private String path;
-    @Column private String fullPath;
+
+    @Column(unique = true)
+    private String fullPath;
 
     @ManyToOne(optional = true)
     private Category parent;

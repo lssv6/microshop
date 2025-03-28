@@ -15,12 +15,14 @@ import lombok.Data;
 @Data
 public class Manufacturer {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "manufacturer_seq")
     private Long id;
 
     @Column(unique = true)
     private String name;
 
-    @Column private String img;
+    @Column(length = 2048)
+    private String img;
+
     @Version @Column private Long version;
 }
