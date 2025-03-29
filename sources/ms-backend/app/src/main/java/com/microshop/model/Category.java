@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
     private Long id;
 
     @Column private String name;
