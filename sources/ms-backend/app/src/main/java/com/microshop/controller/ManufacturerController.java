@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/manufacturer")
+@RequestMapping("/manufacturers")
 public class ManufacturerController {
 
     @Autowired private ManufacturerService manufacturerService;

@@ -130,3 +130,5 @@ app/.settings
 app/.classpath
 app/.project
 app/.factorypath
+
+app/database*
