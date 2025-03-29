@@ -70,7 +70,7 @@ def save_sellers(data):
         seller = {"name": product["sellerName"]}
         req = requests.post("http://localhost:8080/sellers", json=seller)
         if not req.ok:
-            print(f"Error while saving seller with {seller["name"]=}")
+            print(f"Error while saving seller with {seller["name"]=}", req.json())
 
 
 def save_manufacturers(data):
@@ -82,7 +82,10 @@ def save_manufacturers(data):
         }
         req = requests.post("http://localhost:8080/manufacturer", json=manufacturer)
         if not req.ok:
-            print(f"Error while saving manufacturer with {manufacturer["name"]=}")
+            print(
+                f"Error while saving manufacturer with {manufacturer["name"]=}",
+                req.json(),
+            )
 
 
 def save_products(data):
@@ -90,7 +93,7 @@ def save_products(data):
     for product in extract_products(products):
         req = requests.post("http://localhost:8080/product", json=product)
         if not req.ok:
-            print(f"Error while saving product with {product["name"]=}")
+            print(f"Error while saving product with {product["name"]=}", req.json())
 
 
 if __name__ == "__main__":
