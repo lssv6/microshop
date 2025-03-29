@@ -57,7 +57,7 @@ public class CategoryControllerTest {
         String postBody = objectMapper.writeValueAsString(newCategory);
 
         // When
-        mvc.perform(post("/category").contentType(MediaType.APPLICATION_JSON).content(postBody))
+        mvc.perform(post("/categories").contentType(MediaType.APPLICATION_JSON).content(postBody))
                 // Then
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(10L))
@@ -70,7 +70,7 @@ public class CategoryControllerTest {
         Mockito.when(categoryService.findById(5L)).thenReturn(Optional.of(categoryDTO));
 
         // When
-        mvc.perform(get("/category/5"))
+        mvc.perform(get("/categories/5"))
                 // Then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(10L))
@@ -83,7 +83,7 @@ public class CategoryControllerTest {
         given(categoryService.findByFullName("Computadores/Notebooks"))
                 .willReturn(Optional.of(categoryDTO));
         mvc.perform(
-                        get("/category?full-name=Computadores/Notebooks")
+                        get("/categories?full-name=Computadores/Notebooks")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fullName").value("Computadores/Notebooks"));
@@ -91,7 +91,7 @@ public class CategoryControllerTest {
 
     @Test
     void shouldNotBeAbleToAcceptEmptyQuery() throws Exception {
-        mvc.perform(get("/category").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/categories").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 }

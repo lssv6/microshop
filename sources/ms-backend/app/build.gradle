@@ -17,8 +17,6 @@ repositories {
     mavenCentral()
 }
 
-
-
 dependencies {
     // Spring dependencies
     implementation 'org.springframework.boot:spring-boot-starter-web:3.4.3'
@@ -73,13 +71,14 @@ application {
     // Define the main class for the application.
     mainClass = 'com.microshop.App'
 }
-compileJava {
-    options.compilerArgs += [
-        '-Amapstruct.suppressGeneratorTimestamp=true',
-        '-Amapstruct.suppressGeneratorVersionInfoComment=true',
-        '-Amapstruct.verbose=true'
-    ]
-}
+
+// compileJava {
+//     options.compilerArgs += [
+//         '-Amapstruct.suppressGeneratorTimestamp=true',
+//         '-Amapstruct.suppressGeneratorVersionInfoComment=true',
+//         '-Amapstruct.verbose=true'
+//     ]
+// }
 
 tasks.named('test') {
     // Use JUnit Platform for unit tests.

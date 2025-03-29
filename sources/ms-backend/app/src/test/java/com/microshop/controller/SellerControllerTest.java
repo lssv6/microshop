@@ -32,7 +32,7 @@ public class SellerControllerTest {
         Mockito.when(sellerService.findById(8L)).thenReturn(Optional.of(seller));
 
         // When - Then
-        mvc.perform(get("/seller/{id}", 8L))
+        mvc.perform(get("/sellers/{id}", 8L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(8L));
     }
@@ -44,7 +44,7 @@ public class SellerControllerTest {
 
         // When - Then
         mvc.perform(
-                        get("/seller/{id}", 10L) // Wrong Id
+                        get("/sellers/{id}", 10L) // Wrong Id
                         )
                 .andExpect(status().is4xxClientError());
     }

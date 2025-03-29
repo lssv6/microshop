@@ -87,7 +87,7 @@ public class ProductControllerTest {
         given(productService.save(any())).willReturn(productDTO);
         // When
         String body = objectMapper.writeValueAsString(newProduct);
-        mvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON).content(body))
+        mvc.perform(post("/products").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath(".price").value(3981));
     }
@@ -96,7 +96,7 @@ public class ProductControllerTest {
     void testFindById() throws Exception {
         given(productService.findById(666L)).willReturn(Optional.of(productDTO));
 
-        mvc.perform(get("/product/{id}", 666L))
+        mvc.perform(get("/products/{id}", 666L))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(666))

@@ -44,7 +44,7 @@ class ManufacturerControllerTest {
         String postBody = objectMapper.writeValueAsString(manufacturer);
 
         mvc.perform(
-                        post("/manufacturer")
+                        post("/manufacturers")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .content(postBody))
@@ -62,7 +62,7 @@ class ManufacturerControllerTest {
 
         Mockito.when(manufacturerService.findById(11L)).thenReturn(Optional.of(responseObj));
 
-        mvc.perform(get("/manufacturer/{id}", 11L).accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/manufacturers/{id}", 11L).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(11));
@@ -72,7 +72,7 @@ class ManufacturerControllerTest {
     void shouldReturn400WhenNotFound() throws Exception {
         Mockito.when(manufacturerService.findById(99L)).thenReturn(Optional.empty());
 
-        mvc.perform(get("/manufacturer/{id}", 99L).accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/manufacturers/{id}", 99L).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 }
