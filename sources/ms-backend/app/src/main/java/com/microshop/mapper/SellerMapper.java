@@ -8,7 +8,7 @@ import org.mapstruct.MappingConstants.ComponentModel;
 
 @Mapper(componentModel = ComponentModel.SPRING)
 public interface SellerMapper {
-    public SellerDTO stoDTO(Seller seller);
+    public SellerDTO toDTO(Seller seller);
 
-    public Seller stoEntity(SellerDTO seller);
+    public Seller toEntity(SellerDTO seller);
 }

@@ -4,6 +4,8 @@ import com.microshop.dto.CategoryDTO;
 import com.microshop.dto.request.NewCategory;
 import com.microshop.service.CategoryService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
-
     @Autowired private CategoryService categoryService;
 
     @GetMapping
@@ -33,7 +34,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> save(@RequestBody NewCategory newCategory) {
+    public ResponseEntity<CategoryDTO> save(@Valid @RequestBody NewCategory newCategory) {
         CategoryDTO categoryDTO = categoryService.save(newCategory);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTO);
     }

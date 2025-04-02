@@ -131,4 +131,6 @@ app/.classpath
 app/.project
 app/.factorypath
 
+
+database*
 app/database*
