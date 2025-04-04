@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microshop.dto.ManufacturerDTO;
+import com.microshop.dto.request.NewManufacturer;
 import com.microshop.service.ManufacturerService;
 
 import org.junit.jupiter.api.Test;
@@ -34,8 +35,7 @@ class ManufacturerControllerTest {
 
     @Test
     void testSaveManufacturer() throws Exception {
-        ManufacturerDTO manufacturer = new ManufacturerDTO();
-        manufacturer.setId(10L);
+        NewManufacturer manufacturer = new NewManufacturer();
         manufacturer.setName("Bic Inc.");
         manufacturer.setImg("https://sdfkhj.com/img.png");
 

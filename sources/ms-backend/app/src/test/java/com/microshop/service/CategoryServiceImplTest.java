@@ -10,6 +10,7 @@ import com.microshop.dto.request.NewCategory;
 import com.microshop.model.Category;
 import com.microshop.repository.CategoryRepository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,13 +20,16 @@ import java.util.Optional;
 
 @SpringBootTest
 class CategoryServiceImplTest {
+
     @MockitoBean private CategoryRepository categoryRepository;
 
     @Autowired private CategoryService categoryService;
 
-    @Test
-    void testFindById() {
-        Category category = new Category();
+    private static Category category;
+
+    @BeforeEach
+    void setUp() {
+        category = new Category();
         category.setId(888L);
         category.setName("Hardware");
         category.setFullName("Hardware");
@@ -33,6 +37,10 @@ class CategoryServiceImplTest {
         category.setFullPath("/hardware");
         category.setParent(null);
         category.setVersion(9L);
+    }
+
+    @Test
+    void testFindById() {
 
         // Given
         given(categoryRepository.findById(2L)).willReturn(Optional.of(category));

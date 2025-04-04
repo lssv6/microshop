@@ -2,12 +2,15 @@ package com.microshop.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import com.microshop.dto.ManufacturerDTO;
+import com.microshop.dto.request.NewManufacturer;
 import com.microshop.model.Manufacturer;
 import com.microshop.repository.ManufacturerRepository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +28,18 @@ class ManufacturerServiceImplTest {
     @MockitoBean private ManufacturerRepository manufacturerRepository;
     @Autowired private ManufacturerService manufacturerService;
 
-    @Test
-    void testFindById() {
+    private Manufacturer manufacturer;
+
+    @BeforeEach
+    void setup() {
         Manufacturer manufacturer = new Manufacturer();
         manufacturer.setId(88L);
         manufacturer.setName("Apple Inc.");
         manufacturer.setImg("aaa.png");
+    }
 
+    @Test
+    void testFindById() {
         given(manufacturerRepository.findById(88L)).willReturn(Optional.of(manufacturer));
 
         ManufacturerDTO manufacturerDTO = manufacturerService.findById(88L).get();
@@ -40,5 +48,22 @@ class ManufacturerServiceImplTest {
         assertNotNull(manufacturerDTO);
         assertEquals(88L, manufacturerDTO.getId());
         assertEquals("Apple Inc.", manufacturerDTO.getName());
+    }
+
+    @Test
+    void testSave() {
+        // Arrange
+        given(manufacturerRepository.save(any(Manufacturer.class))).willReturn(manufacturer);
+
+        // Act
+        NewManufacturer newManufacturer = new NewManufacturer();
+        newManufacturer.setName("Apple Inc.");
+        newManufacturer.setImg("aaa.png");
+        ManufacturerDTO manufacturerDTO = manufacturerService.save(newManufacturer);
+
+        // Assert
+        assertNotNull(manufacturerDTO);
+        assertEquals("Apple Inc.", manufacturerDTO.getName());
+        assertEquals("aaa.png", manufacturerDTO.getName());
     }
 }

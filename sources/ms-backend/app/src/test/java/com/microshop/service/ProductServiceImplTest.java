@@ -21,8 +21,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -34,6 +41,7 @@ class ProductServiceImplTest {
 
     @Autowired private ProductService productService;
     @Autowired private Slugify slugify;
+
     private NewProduct product;
 
     @BeforeEach
@@ -120,5 +128,28 @@ class ProductServiceImplTest {
         assertEquals(2210L, productDTO.getSellerId());
         assertEquals(20895L, productDTO.getCategoryId());
         assertEquals(606L, productDTO.getManufacturerId());
+    }
+
+    @Test
+    void testGetPageOfProducts() {
+        List<Product> products = new ArrayList<Product>();
+        for (int i = 0; i < 50; i++) {
+            Product p = new Product();
+            p.setName("Prod %d".formatted(i));
+            products.add(p);
+        }
+
+        PageImpl<Product> page = new PageImpl<>(products);
+        given(productRepository.findByCategoryId(99L, any(Pageable.class)))
+                .willReturn((Page<Product>) page);
+
+        Pageable pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("name")));
+        Page<Product> page = productService.findByCategoryId(99L, pageRequest);
+
+        List<Product> pageProducts = page.getContent();
+
+        assertNotNull(pageProducts);
+        assertEquals("Prod 0", pageProducts.get(0).getName());
+        assertEquals("Prod 1", pageProducts.get(1).getName());
     }
 }
