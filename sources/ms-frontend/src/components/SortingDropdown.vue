@@ -1,29 +1,35 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
+import { BFormSelect} from 'bootstrap-vue-next';
 
-let choice:Ref<string> = ref("ddd");
+interface Option{
+    value: number;
+    text: string;
+}
 
-let options:Ref<string[]>  = ref(["Option 1", "Option 2", "Option3"]);
+let defaultChoice: Option = {
+    value: 2,
+    text: "text default"
+}
+
+let choice:Ref<Option> = ref(defaultChoice);
+let options:Ref<Option[]>= ref([defaultChoice, {value: 4, text: "mytext2kdsk"}]);
 
 </script>
 <template>
-  <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      {{choice}}
-    </button>
-    <ul class="dropdown-menu">
-      <li v-for="option in options"><a class="dropdown-item" href="#">{{option}}</a></li>
-    </ul>
-  </div>
-
-  <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Dropdown button
-  </button>
-  <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
-  </ul>
-</div>
+    <div class="sele">
+    <div>djak</div>
+    <div>djak</div>
+    <div>djak</div>
+    <div>djak</div>
+    <BFormSelect v-model="choice" :options="options"/>
+    </div>
 </template>
+
+<style lang="css" scoped>
+.sele{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+</style>
