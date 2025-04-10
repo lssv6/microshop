@@ -1,15 +1,49 @@
 <script setup lang="ts">
-import HeaderComponent from './components/HeaderComponent.vue';
-import SortingDropdown from './components/SortingDropdown.vue';
+import HotlinkBar from './components/HotlinkBar.vue';
 </script>
 
+
 <template>
-  <HeaderComponent></HeaderComponent>
-  <SortingDropdown></SortingDropdown>
+  <header>
+  <HotlinkBar></HotlinkBar>
+  </header>
   <main>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
+    <h1>Here's how to code in Vue</h1>
     <h1>Here's how to code in Vue</h1>
   </main>
 </template>
 
-<style scoped>
+<style lang="css">
+
 </style>

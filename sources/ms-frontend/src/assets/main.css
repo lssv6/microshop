@@ -1,4 +1,7 @@
-@import './css/bs-customized.css';
 #app {
   margin: 0 auto;
+}
+.on-center{
+    display: flex;
+    padding: 0px 116px;
 }
