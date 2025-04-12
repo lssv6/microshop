@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { BAvatar } from 'bootstrap-vue-next';
-import { RouterLink } from 'vue-router';
-
+import { BAvatar } from "bootstrap-vue-next";
+import { RouterLink } from "vue-router";
 </script>
 
 <template>

@@ -1,24 +1,23 @@
 <script setup lang="ts">
-import { BNavbar } from 'bootstrap-vue-next';
-import { BNavbarNav } from 'bootstrap-vue-next';
-import { BNavbarBrand } from 'bootstrap-vue-next';
+import { BNavbar } from "bootstrap-vue-next";
+import { BNavbarNav } from "bootstrap-vue-next";
+import { BNavbarBrand } from "bootstrap-vue-next";
 
-import { BNavForm } from 'bootstrap-vue-next';
-import { BFormInput } from 'bootstrap-vue-next';
-import { BOffcanvas } from 'bootstrap-vue-next';
+import { BNavForm } from "bootstrap-vue-next";
+import { BFormInput } from "bootstrap-vue-next";
+import { BOffcanvas } from "bootstrap-vue-next";
 
-import { ref, type Ref } from 'vue';
+import { type Ref, ref } from "vue";
 
-import ProfileComponent from './ProfileComponent.vue';
-import HotlinkBar from './HotlinkBar.vue';
+import HotlinkBar from "./HotlinkBar.vue";
+import ProfileComponent from "./ProfileComponent.vue";
 
-let isLateralPanelOpen: Ref<boolean> = ref(false);
-let query: Ref<string> = ref("");
+const isLateralPanelOpen: Ref<boolean> = ref(false);
+const query: Ref<string> = ref("");
 
-function toggleLateralMenu(){
-  isLateralPanelOpen.value = !isLateralPanelOpen.value;
+function toggleLateralMenu() {
+	isLateralPanelOpen.value = !isLateralPanelOpen.value;
 }
-
 </script>
 <template>
   <BNavbar class="ms-colored-background centered">
