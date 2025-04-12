@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { BNavbar, BNavItem} from 'bootstrap-vue-next';
-import { ref, type Ref } from 'vue'
+import { BNavbar, BNavbarNav, BNavItem} from 'bootstrap-vue-next';
 
 interface Hotlink{
   text: string;
@@ -42,13 +41,28 @@ let hotlinks: Hotlink[] = [
   }
 ]
 
-let hotlinkRefs: Ref<Hotlink[]> = ref(hotlinks)
-
 </script>
 <template>
-  <BNavbar variant="primary">
-    <BNavItem v-for="hl in hotlinkRefs" style="color: fff;">
-        {{hl.text}}
-    </BNavItem>
+  <BNavbar class="centered" variant="primary">
+    <BNavbarNav v-for="hl in hotlinks">
+      <BNavItem :to="hl.href" ><span class="hotlink-text">{{hl.text}}</span></BNavItem>
+    </BNavbarNav>
   </BNavbar>
 </template>
+
+<style lang="css" scoped>
+.separator{
+  background-color: white;
+  width: 1px;
+}
+.hotlink{
+  display: flex;
+  border-style: solid;
+  border-color: black;
+  border-width: 10px;
+}
+.hotlink-text{
+  color: white;
+  font-weight:800;
+}
+</style>

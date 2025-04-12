@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="5.7632709mm"
+   height="5.7053318mm"
+   viewBox="0 0 5.7632709 5.7053318"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.1 (93de688d07, 2025-03-30)"
+   sodipodi:docname="searchArrow.svg"
+   inkscape:export-filename="searchArrow.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:clip-to-page="false"
+     inkscape:zoom="16"
+     inkscape:cx="10.03125"
+     inkscape:cy="12.3125"
+     inkscape:window-width="956"
+     inkscape:window-height="1033"
+     inkscape:window-x="960"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="160.44908"
+       y="208.86864"
+       width="236.40131"
+       height="214.56505"
+       id="rect1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-35.444493,-53.459361)">
+    <path
+       style="font-weight:bold;font-size:32px;font-family:'ComicShannsMono Nerd Font';-inkscape-font-specification:'ComicShannsMono Nerd Font, Bold';white-space:pre;fill:#ff6500;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.095;stroke-dasharray:none;stroke-opacity:1"
+       d="m 35.491993,53.811954 c 0,0.230885 0.156672,0.412294 0.428786,0.610195 0.676162,0.412294 1.410045,1.212144 2.374813,1.954273 -0.461769,0.354573 -0.915292,0.709146 -1.096702,0.849326 -0.453523,0.329835 -0.882309,0.618441 -1.228636,0.84108 -0.181409,0.148426 -0.428785,0.354572 -0.428785,0.643178 0,0.123688 0.0907,0.239131 0.28036,0.346327 0.06597,0.03298 0.131934,0.04948 0.206147,0.04948 0.107196,0 0.214392,-0.04123 0.321589,-0.09895 0.874063,-0.502999 1.843323,-1.362749 3.121434,-2.278041 0.14018,-0.08246 0.268991,-0.188013 0.383936,-0.294472 0.07545,-0.06988 -0.371941,-0.387758 -0.50387,-0.486708 -0.725637,-0.511245 -1.484258,-1.294603 -2.407797,-2.011995 -0.412294,-0.321589 -0.717391,-0.428786 -0.948276,-0.428786 -0.296852,0 -0.502999,0.148426 -0.502999,0.305098 z m 1.62779,0.01138 c 0,0.230885 0.156672,0.412294 0.428786,0.610195 0.676162,0.412294 1.410046,1.212145 2.374813,1.954274 -0.461769,0.354572 -0.915292,0.709145 -1.096702,0.849325 -0.453523,0.329835 -0.882309,0.618441 -1.228636,0.84108 -0.181409,0.148426 -0.428785,0.354573 -0.428785,0.643179 0,0.123688 0.0907,0.23913 0.28036,0.346326 0.06597,0.03298 0.131934,0.04948 0.206147,0.04948 0.107196,0 0.214392,-0.04123 0.321589,-0.09895 0.874063,-0.502998 1.706897,-1.31934 2.985008,-2.234633 0.14018,-0.08246 0.197901,-0.255622 0.197901,-0.412294 0,-0.148426 -0.04947,-0.313343 -0.181409,-0.412294 -0.725637,-0.511245 -1.484258,-1.294603 -2.407797,-2.011995 -0.412294,-0.321589 -0.717391,-0.428785 -0.948276,-0.428785 -0.296852,0 -0.502999,0.148425 -0.502999,0.305097 z"
+       id="text1"
+       aria-label="&gt;&gt;"
+       sodipodi:nodetypes="sccccscsccsccsssccccscsccsccsscc" />
+  </g>
+</svg>

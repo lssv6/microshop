@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import HotlinkBar from './components/HotlinkBar.vue';
+import HeaderComponent from './components/HeaderComponent.vue';
 </script>
 
 
 <template>
   <header>
-  <HotlinkBar></HotlinkBar>
+      <HeaderComponent></HeaderComponent>
   </header>
   <main>
     <h1>Here's how to code in Vue</h1>
@@ -43,7 +43,3 @@ import HotlinkBar from './components/HotlinkBar.vue';
     <h1>Here's how to code in Vue</h1>
   </main>
 </template>
-
-<style lang="css">
-
-</style>
