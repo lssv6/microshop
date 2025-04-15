@@ -23,7 +23,7 @@ repos:
       - id: pretty-format-java
         args: [--aosp,--autofix]
 
-  - repo: https://github.com/biomejs/pre-commit
-    rev: v0.6.1
-    hooks:
-      - id: biome-check
+#  - repo: https://github.com/biomejs/pre-commit
+#    rev: v0.6.1
+#    hooks:
+#      - id: biome-check

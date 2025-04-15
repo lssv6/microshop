@@ -5,3 +5,13 @@
 .centered > * {
 	padding: 0px 60px;
 }
+
+main {
+	padding-top: 10px;
+}
+
+.header-container {
+	display: flex;
+	justify-content: center;
+	margin: 0px 8px;
+}
