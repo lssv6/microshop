@@ -14,6 +14,7 @@ declare module 'vue' {
     HotlinkBar: typeof import('./src/components/HotlinkBar.vue')['default']
     HotlinkButton: typeof import(
     IBi0Circle: typeof import("~icons/bi/0-circle")["default"]
+    IBiArrowDownUp: typeof import('~icons/bi/arrow-down-up')['default']
     IBiList: typeof import('~icons/bi/list')['default']
     IBiPersonCircle: typeof import("~icons/bi/person-circle")["default"]
     IBiSearch: typeof import("~icons/bi/search")["default"]
@@ -21,6 +22,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import("./src/components/SearchBar.vue")["default"]
+    SortingBar: typeof import('./src/components/SortingBar.vue')['default']
     SortingDropdown: typeof import(
   }
 }
