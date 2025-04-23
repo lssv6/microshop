@@ -15,7 +15,9 @@ declare module 'vue' {
     HotlinkButton: typeof import(
     IBi0Circle: typeof import("~icons/bi/0-circle")["default"]
     IBiArrowDownUp: typeof import('~icons/bi/arrow-down-up')['default']
+    IBiGrid: typeof import('~icons/bi/grid')['default']
     IBiList: typeof import('~icons/bi/list')['default']
+    IBiListUl: typeof import('~icons/bi/list-ul')['default']
     IBiPersonCircle: typeof import("~icons/bi/person-circle")["default"]
     IBiSearch: typeof import("~icons/bi/search")["default"]
     ProfileComponent: typeof import('./src/components/ProfileComponent.vue')['default']
