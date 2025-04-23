@@ -6,35 +6,34 @@ import { RouterLink } from "vue-router";
 <template>
   <div class="container">
     <div class="profile-icon">
-      <BAvatar size="lg"/>
+      <BAvatar size="lg" />
     </div>
     <div class="login-options">
-      <RouterLink to="/login"><b>ENTRE</b></RouterLink> ou<br>
-      <b style="text-wrap-mode: nowrap;">CADASTRE-SE</b>
+      <RouterLink to="/login"><b>ENTRE</b></RouterLink> ou<br />
+      <b style="text-wrap-mode: nowrap">CADASTRE-SE</b>
     </div>
   </div>
 </template>
 
-
 <style lang="css" scoped>
-.login-options{
+.login-options {
   color: white;
 }
-.login-options *{
+.login-options * {
   text-decoration: white;
   color: white;
 }
-.login-options b:hover{
+.login-options b:hover {
   text-decoration: underline;
 }
 
-.container{
+.container {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.profile-icon{
+.profile-icon {
   padding: 0px 10px;
 }
 </style>

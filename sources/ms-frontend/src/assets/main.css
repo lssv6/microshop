@@ -1,17 +1,17 @@
 #app {
-	margin: 0 auto;
+  margin: 0 auto;
 }
 
 .centered > * {
-	padding: 0px 60px;
+  padding: 0px 60px;
 }
 
 main {
-	padding-top: 10px;
+  padding-top: 10px;
 }
 
 .header-container {
-	display: flex;
-	justify-content: center;
-	margin: 0px 8px;
+  display: flex;
+  justify-content: center;
+  margin: 0px 8px;
 }

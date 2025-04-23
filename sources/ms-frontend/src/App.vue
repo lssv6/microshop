@@ -5,10 +5,9 @@ import HeaderComponent from "./components/HeaderComponent.vue";
 import SortingBar from "./components/SortingBar.vue";
 </script>
 
-
 <template>
   <header>
-      <HeaderComponent></HeaderComponent>
+    <HeaderComponent></HeaderComponent>
   </header>
   <main class="centered">
     <BreadcrumbBar></BreadcrumbBar>
