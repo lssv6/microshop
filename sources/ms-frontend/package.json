@@ -13,6 +13,7 @@
   "dependencies": {
     "bootstrap": "^5.3.5",
     "bootstrap-vue-next": "^0.28.5",
+    "format-money-js": "^1.6.3",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },

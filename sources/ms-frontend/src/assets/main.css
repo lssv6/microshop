@@ -2,10 +2,6 @@
   margin: 0 auto;
 }
 
-.centered > * {
-  padding: 0px 60px;
-}
-
 main {
   padding-top: 10px;
 }
@@ -14,4 +10,9 @@ main {
   display: flex;
   justify-content: center;
   margin: 0px 8px;
+}
+
+.product-image {
+  height: 130px;
+  width: 130px;
 }

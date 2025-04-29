@@ -20,43 +20,50 @@ function toggleLateralMenu() {
 }
 </script>
 <template>
-  <BNavbar class="ms-colored-background centered">
-    <BNavbarNav>
-      <BNavbarBrand style="display: flex; flex-direction: row" to="/">
-        <div class="menu-icon" @click="toggleLateralMenu">
-          <IBiList style="font-size: 42px; color: white" />
-        </div>
-        <BOffcanvas v-model="isLateralPanelOpen" title="Olá acesse sua conta.">
-          Texto secreto
-        </BOffcanvas>
+  <div class="ms-colored-background">
+    <BNavbar class="container-xxl">
+      <BNavbarNav>
+        <BNavbarBrand style="display: flex; flex-direction: row" to="/">
+          <div class="menu-icon" @click="toggleLateralMenu">
+            <IBiList style="font-size: 42px; color: white" />
+          </div>
+          <BOffcanvas
+            v-model="isLateralPanelOpen"
+            title="Olá acesse sua conta."
+          >
+            Texto secreto
+          </BOffcanvas>
 
-        <img
-          style="padding-left: 20px"
-          src="../assets/img/logo.svg"
-          alt="Logo Microshop"
-          class="logo"
-        />
-      </BNavbarBrand>
-    </BNavbarNav>
-    <BFormInput
-      placeholder="Aperte o M e busque aqui"
-      v-model="query"
-      class="searchInput"
-    />
-    <RouterLink :to="'search?=' + query">
-      <img class="searchArrow" src="../assets/img/searchArrow.svg" />
-    </RouterLink>
+          <img
+            style="padding-left: 20px"
+            src="../assets/img/logo.svg"
+            alt="Logo Microshop"
+            class="logo"
+          />
+        </BNavbarBrand>
+      </BNavbarNav>
+      <BFormInput
+        placeholder="Aperte o M e busque aqui"
+        v-model="query"
+        class="searchInput"
+      />
+      <RouterLink :to="'search?=' + query">
+        <img class="searchArrow" src="../assets/img/searchArrow.svg" />
+      </RouterLink>
 
-    <BNavbarNav>
-      <ProfileComponent />
-    </BNavbarNav>
-  </BNavbar>
+      <BNavbarNav>
+        <ProfileComponent />
+      </BNavbarNav>
+    </BNavbar>
+  </div>
 
-  <HotlinkBar></HotlinkBar>
+  <div class="bg-primary">
+    <HotlinkBar></HotlinkBar>
+  </div>
 </template>
 
 <style lang="css" scoped>
-/* This following code countains a lot of workarounds. */
+/* This following code has a lot of workarounds. */
 .searchInput {
   width: 100%;
 }

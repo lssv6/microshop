@@ -42,7 +42,7 @@ const hotlinks: Hotlink[] = [
 ];
 </script>
 <template>
-  <BNavbar class="centered" variant="primary">
+  <BNavbar class="container-xxl" variant="primary">
     <BNavbarNav v-for="hl in hotlinks">
       <BNavItem :to="hl.href"
         ><span class="hotlink-text">{{ hl.text }}</span></BNavItem

@@ -45,28 +45,16 @@ breadcrumbs = addFullPathToBreadcrumbs(breadcrumbs);
 </script>
 
 <template>
-  <div class="breadcrumb-container">
-    <div class="breadcrumb-label">Você está em:</div>
-    <div>
-      <BBreadcrumb class="bread">
-        <BBreadcrumbItem
-          v-for="(breadcrumb, index) in breadcrumbs"
-          :href="breadcrumb.path"
-          :active="index == breadcrumbs.length - 1"
-        >
-          {{ breadcrumb.name }}
-        </BBreadcrumbItem>
-      </BBreadcrumb>
-    </div>
+  <div>
+    <BBreadcrumb class="flex-nowrap">
+      <template #prepend><span class="mx-2">Você está em:</span></template>
+      <BBreadcrumbItem
+        v-for="(breadcrumb, index) in breadcrumbs"
+        :href="breadcrumb.path"
+        :active="index == breadcrumbs.length - 1"
+      >
+        {{ breadcrumb.name }}
+      </BBreadcrumbItem>
+    </BBreadcrumb>
   </div>
 </template>
-
-<style lang="css" scoped>
-.breadcrumb-container {
-  display: flex;
-  font-size: 21px;
-}
-.breadcrumb-label {
-  padding-right: 10px;
-}
-</style>

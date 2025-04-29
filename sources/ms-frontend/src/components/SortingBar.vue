@@ -51,51 +51,45 @@ const exibitionOptions: Record<string, unknown>[] = [
 
 <template>
   <div class="d-flex align-items-center gap-5">
-    <BForm class="d-inline-flex flex-nowrap align-items-center">
+    <!-- Form -->
+    <BForm class="d-inline-flex flex-nowrap align-items-center w-75">
+      <!-- Sorting icon -->
       <IBiArrowDownUp class="text-primary" style="font-size: 64px" />
-      <label class="col-form-label" for="sorting-select">Ordenar:</label>
+
+      <!-- Sorting selection -->
+      <label class="col-form-label ms-2" for="sorting-select">Ordenar:</label>
       <BFormSelect
         id="sorting-select"
+        class="ms-2"
         v-model="sortingOption"
         :options="sortingOptions"
       />
 
-      <label class="col-form-label" for="exibition-select">Exibir:</label>
+      <!-- Exibition quantity selection -->
+      <label class="col-form-label ms-2" for="exibition-select">Exibir:</label>
       <BFormSelect
         id="exibition-select"
+        class="ms-2"
         v-model="exibitionOption"
         :options="exibitionOptions"
       />
     </BForm>
-    <div class="d-inline">
-      <span
+
+    <!-- Number of products -->
+    <div class="mx-auto">
+      <span class="text-nowrap"
         ><b>{{ numberOfProducts }}</b> produtos</span
       >
     </div>
 
-    <div class="d-inline">
-      <IBiListUl class="text-primary" /><IBiGrid class="text-primary" />
+    <!-- Exibition mode selection -->
+    <div class="d-inline-flex">
+      <div class="d-inline mx-2" role="button" @click="console.log('jooj')">
+        <IBiListUl class="text-primary fs-2" />
+      </div>
+      <div class="d-inline mx-2" role="button" @click="console.log('juuj')">
+        <IBiGrid class="text-primary fs-2" />
+      </div>
     </div>
   </div>
-  <!--div class="container-fluid">
-        <div class="row align-items-center">
-            <div class="col">
-                <BForm class="d-flex align-items-center">
-                    <IBiArrowDownUp class="text-primary"/>
-                        <label class="col-form-label ms-3" for="sorting-select">Ordenar:</label>
-                        <div class="col-lg-3 me-2 ms-2 my-2">
-                            <BFormSelect id="sorting-select" v-model="sortingOption" :options="sortingOptions"/>
-                        </div>
-
-                        <label class="col-form-label" for="exibition-select">Exibir:</label>
-                        <div class="col-lg-3 me-2 my-2 ms-2">
-                            <BFormSelect id="exibition-select" v-model="exibitionOption" :options="exibitionOptions"/>
-                        </div>
-                </BForm>
-            </div>
-            <div class="col"><span><b>{{numberOfProducts}}</b> produtos</span></div>
-
-            <div class="col"><IBiListUl class="text-primary"/><IBiGrid class="text-primary"/></div>
-        </div>
-    </div-->
 </template>
