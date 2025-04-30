@@ -6,7 +6,7 @@ import { BNavbarBrand } from "bootstrap-vue-next";
 import { BNavForm } from "bootstrap-vue-next";
 import { BFormInput } from "bootstrap-vue-next";
 import { BOffcanvas } from "bootstrap-vue-next";
-
+import { BAvatar } from "bootstrap-vue-next";
 import { type Ref, ref } from "vue";
 
 import HotlinkBar from "./HotlinkBar.vue";
@@ -27,13 +27,68 @@ function toggleLateralMenu() {
           <div class="menu-icon" @click="toggleLateralMenu">
             <IBiList style="font-size: 42px; color: white" />
           </div>
-          <BOffcanvas
-            v-model="isLateralPanelOpen"
-            title="Olá acesse sua conta."
-          >
-            Texto secreto
+          <BOffcanvas v-model="isLateralPanelOpen">
+            <template #title>
+              <div class="d-flex">
+                <BAvatar class="me-2" size="md" />
+                <b class="align-self-center">Olá. Acesse sua conta.</b>
+              </div>
+            </template>
+            <ul>
+              <div>
+                <li>
+                  <RouterLink to="/account">Minha conta.</RouterLink>
+                </li>
+              </div>
+              <div>
+                <li>
+                  <RouterLink to="/personal-info">Meus dados.</RouterLink>
+                </li>
+              </div>
+              <div>
+                <li>
+                  <RouterLink to="/orders">Meus pedidos.</RouterLink>
+                </li>
+              </div>
+              <div>
+                <li>
+                  <RouterLink to="/wallet">Carteira.</RouterLink>
+                </li>
+              </div>
+              <div>
+                <li>
+                  <RouterLink to="/ratings">Avaliações.</RouterLink>
+                </li>
+              </div>
+              <div>
+                <li>
+                  <RouterLink to="/customer-service"
+                    >Atendimento ao cliente.</RouterLink
+                  >
+                </li>
+              </div>
+              <div>
+                <li>
+                  <RouterLink to="/protocolos">Protocolos.</RouterLink>
+                </li>
+              </div>
+              <div>
+                <li>
+                  <RouterLink to="/favorites">Favoritos.</RouterLink>
+                </li>
+              </div>
+              <div>
+                <li>
+                  <RouterLink to="/raffles">Sorteio.</RouterLink>
+                </li>
+              </div>
+              <div>
+                <li>
+                  <RouterLink to="/notifications">Notificações.</RouterLink>
+                </li>
+              </div>
+            </ul>
           </BOffcanvas>
-
           <img
             style="padding-left: 20px"
             src="../assets/img/logo.svg"

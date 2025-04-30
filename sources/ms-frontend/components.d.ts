@@ -17,6 +17,7 @@ declare module 'vue' {
     IBiArrowDownUp: typeof import('~icons/bi/arrow-down-up')['default']
     IBiCartPlusFill: typeof import('~icons/bi/cart-plus-fill')['default']
     IBiGrid: typeof import('~icons/bi/grid')['default']
+    IBiHouseFill: typeof import('~icons/bi/house-fill')['default']
     IBiList: typeof import('~icons/bi/list')['default']
     IBiListStars: typeof import('~icons/bi/list-stars')['default']
     IBiListUl: typeof import('~icons/bi/list-ul')['default']

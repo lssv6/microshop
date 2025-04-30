@@ -2,7 +2,7 @@
 import { BButton } from "bootstrap-vue-next";
 import { FormatMoney } from "format-money-js";
 
-import { computed, watchEffect, type ComputedRef, type WatchHandle } from "vue";
+import { computed, type ComputedRef } from "vue";
 
 const props = defineProps<{ product: Product }>();
 
