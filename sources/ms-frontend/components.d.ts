@@ -22,6 +22,8 @@ declare module 'vue' {
     IBiListStars: typeof import('~icons/bi/list-stars')['default']
     IBiListUl: typeof import('~icons/bi/list-ul')['default']
     IBiPersonCircle: typeof import("~icons/bi/person-circle")["default"]
+    IBiPersonWorkspace: typeof import('~icons/bi/person-workspace')['default']
+    IBiQuestionOctagonFill: typeof import('~icons/bi/question-octagon-fill')['default']
     IBiSearch: typeof import("~icons/bi/search")["default"]
     ProductBox: typeof import('./src/components/ProductBox.vue')['default']
     ProductShelf: typeof import('./src/components/ProductShelf.vue')['default']

@@ -23,10 +23,14 @@ function toggleLateralMenu() {
   <div class="ms-colored-background">
     <BNavbar class="container-xxl">
       <BNavbarNav>
+        <div
+          class="menu-icon"
+          @click="toggleLateralMenu"
+          style="cursor: pointer"
+        >
+          <IBiList style="font-size: 42px; color: white" />
+        </div>
         <BNavbarBrand style="display: flex; flex-direction: row" to="/">
-          <div class="menu-icon" @click="toggleLateralMenu">
-            <IBiList style="font-size: 42px; color: white" />
-          </div>
           <BOffcanvas v-model="isLateralPanelOpen">
             <template #title>
               <div class="d-flex">

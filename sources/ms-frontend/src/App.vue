@@ -9,6 +9,5 @@ import { RouterView } from "vue-router";
   </header>
   <main class="container-xxl">
     <RouterView></RouterView>
-    <h1>Here's how to code in Vue</h1>
   </main>
 </template>
