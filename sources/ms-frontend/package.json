@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "axios": "^1.9.0",
     "bootstrap": "^5.3.5",
     "bootstrap-vue-next": "^0.28.5",
     "format-money-js": "^1.6.3",
