@@ -10,6 +10,8 @@ import com.microshop.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -63,5 +65,24 @@ public class CategoryServiceImpl implements CategoryService {
         Category savedCategory = categoryRepository.save(toSave);
 
         return mapper.toDTO(savedCategory);
+    }
+
+    @Override
+    public List<CategoryDTO> getBreadcrumb(Long id) {
+        List<CategoryDTO> breadcrumb = new ArrayList<>();
+        Long parentId;
+        do {
+            Optional<CategoryDTO> category = findById(id);
+            if (category.isEmpty()) {
+                break;
+            }
+            parentId = category.get().getParentId();
+            breadcrumb.add(category.get());
+
+        } while (parentId != null);
+        if (breadcrumb.isEmpty()) {
+            throw new NoSuchElementException("Could'nt find the first category");
+        }
+        return breadcrumb.reversed();
     }
 }

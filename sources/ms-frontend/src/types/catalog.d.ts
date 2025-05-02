@@ -13,3 +13,13 @@ type Product = {
   img: string;
   version: number;
 };
+
+type Category = {
+  id: number;
+  name: string;
+  fullName: string;
+  path: string;
+  fullPath: string;
+  parentId: string;
+  version: number;
+};
