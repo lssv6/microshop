@@ -1,20 +1,24 @@
 from typing import Callable
 from pprint import pprint
 import urllib.parse
+from logging import getLogger
 import requests
 import sys
 import json
 import pathlib
+from tqdm import tqdm
+
+logger = getLogger()
 
 
 def get_category_by_fullname(fullCategoryName: str):
-    print(len(fullCategoryName), fullCategoryName)
+    logger.debug(len(fullCategoryName), fullCategoryName)
     if not fullCategoryName:
         return None
     fullCategoryName = urllib.parse.urlencode({"full-name": fullCategoryName})
     res = requests.get(f"http://localhost:8080/categories?{fullCategoryName}")
     if not res.ok:
-        print(f"Failed to query for {fullCategoryName=}")
+        logger.debug(f"Failed to query for {fullCategoryName=}")
         return None
     return res.json()
 
@@ -25,7 +29,7 @@ def get_manufacturer(name):
     manufacturer = urllib.parse.urlencode({"name": name})
     res = requests.get(f"http://localhost:8080/manufacturers?{manufacturer}")
     if not res.ok:
-        print(f"Failed to query for manufacturer {name=}")
+        logger.debug(f"Failed to query for manufacturer {name=}")
         return None
     return res.json()
 
@@ -36,7 +40,7 @@ def get_seller(name):
     seller = urllib.parse.urlencode({"name": name})
     res = requests.get(f"http://localhost:8080/sellers?{seller}")
     if not res.ok:
-        print(f"Failed to query for seller {name=}")
+        logger.debug(f"Failed to query for seller {name=}")
         return None
     return res.json()
 
@@ -73,9 +77,21 @@ def extract_products(products):
     return map(extract_product, products)
 
 
+def count_files(path, one_cat_page=False):
+    directories = pathlib.Path(path).iterdir()
+    # logger.debug([*directories])
+    result = 0
+    for d in directories:
+        for _ in d.iterdir():
+            result += 1
+            if one_cat_page:
+                break
+    return result
+
+
 def get_files(path, one_cat_page=False):
     directories = pathlib.Path(path).iterdir()
-    # pprint([*directories])
+    # plogger.debug([*directories])
     for d in directories:
         for f in d.iterdir():
             yield f
@@ -84,7 +100,9 @@ def get_files(path, one_cat_page=False):
 
 
 def process_files(path, *callbacks: Callable, one_cat_page=False):
-    for f in get_files(path, one_cat_page=one_cat_page):
+    files = get_files(path, one_cat_page=one_cat_page)
+    fileCount = count_files(path, one_cat_page=one_cat_page)
+    for f in tqdm(files, total=fileCount):
         with open(f) as file:
             data = json.load(file)
             for cb in callbacks:
@@ -101,10 +119,12 @@ def save_sellers(data):
         seller = {"name": product["sellerName"]}
         req = requests.post("http://localhost:8080/sellers", json=seller)
         if not req.ok:
-            print(f"Error while saving seller with {seller["name"]=}", req.json())
+            logger.debug(
+                f"Error while saving seller with {seller["name"]=}", req.json()
+            )
             continue
 
-        print(f"Sucessfully saved seller with name={req.json()['name']}")
+        logger.debug(f"Sucessfully saved seller with name={req.json()['name']}")
 
 
 def save_manufacturers(data):
@@ -116,12 +136,12 @@ def save_manufacturers(data):
         }
         req = requests.post("http://localhost:8080/manufacturers", json=manufacturer)
         if not req.ok:
-            print(
+            logger.debug(
                 f"Error while saving manufacturer with {manufacturer["name"]=}",
                 req.json(),
             )
             continue
-        print(f"Sucessfully saved manufacturer with name={req.json()['name']}")
+        logger.debug(f"Sucessfully saved manufacturer with name={req.json()['name']}")
 
 
 def save_products(data):
@@ -129,13 +149,15 @@ def save_products(data):
     for product in extract_products(products):
         if product is None:
             continue
-        pprint(product, sort_dicts=False)
+        plogger.debug(product, sort_dicts=False)
         req = requests.post("http://localhost:8080/products", json=product)
         if not req.ok:
-            print(f"Error while saving product with {product["name"]=}", req.json())
+            logger.debug(
+                f"Error while saving product with {product["name"]=}", req.json()
+            )
             continue
 
-        print(f"Sucessfully saved product with name={req.json()['name']}")
+        logger.debug(f"Sucessfully saved product with name={req.json()['name']}")
 
 
 def get_category(id):
@@ -150,9 +172,9 @@ def get_category(id):
 def save_category(cat):
     res = requests.post(f"http://localhost:8080/categories", json=cat)
     if not res.ok:
-        print(f"Error while saving category with {cat["name"]=}", res.json())
+        logger.debug(f"Error while saving category with {cat["name"]=}", res.json())
         return None
-    print(f"Sucessfully saved category with name={res.json()['name']}")
+    logger.debug(f"Sucessfully saved category with name={res.json()['name']}")
 
     saved_category = res.json()
     return saved_category
@@ -169,11 +191,11 @@ def save_categories(data):
 
     parent_id = None
     for bread in breadcrumbs:
-        print("\n" * 3)
+        logger.debug("\n" * 3)
         fullCategoryName = bread["fullCategoryName"]
         already_exists = get_category_by_fullname(fullCategoryName)
         if already_exists:
-            print(f"{already_exists=}")
+            logger.debug(f"{already_exists=}")
             parent_id = already_exists["id"]
             continue
         cat = {
@@ -181,15 +203,15 @@ def save_categories(data):
             "path": bread["path"],
             "parentId": parent_id,
         }
-        print(cat)
+        logger.debug(cat)
         saved = save_category(cat)
         if saved is not None:
             parent_id = saved["id"]
-        print("saved=", saved)
+        logger.debug("saved=", saved)
 
 
 if __name__ == "__main__":
     # Can be slow
-    # process_files(sys.argv[1], save_sellers, save_manufacturers)
-    # process_files(sys.argv[1], save_categories, one_cat_page=True)
-    process_files(sys.argv[1], save_products)
+    process_files(sys.argv[1], save_sellers, save_manufacturers)
+    process_files(sys.argv[1], save_categories, one_cat_page=True)
+    # process_files(sys.argv[1], save_products)

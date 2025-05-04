@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
@@ -31,6 +33,12 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {
         return ResponseEntity.of(categoryService.findById(id));
+    }
+
+    @GetMapping("/{id}/breadcrumb")
+    public ResponseEntity<List<CategoryDTO>> getBreadcrumbs(@PathVariable Long id) {
+        List<CategoryDTO> breadcrumb = categoryService.getBreadcrumb(id);
+        return ResponseEntity.ofNullable(breadcrumb);
     }
 
     @PostMapping

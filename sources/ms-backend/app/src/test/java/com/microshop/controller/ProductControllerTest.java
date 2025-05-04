@@ -1,6 +1,7 @@
 package com.microshop.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -17,10 +18,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @WebMvcTest(controllers = ProductController.class)
@@ -101,5 +106,24 @@ public class ProductControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(666))
                 .andExpect(jsonPath("$.price").value(3981));
+    }
+
+    @Test
+    void testFindProductByCategory() throws Exception {
+        List<ProductDTO> productList = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setName("Product %d".formatted(i));
+            productList.add(productDTO);
+        }
+
+        Page<ProductDTO> products = new PageImpl<>(productList);
+        given(productService.findByCategoryId(eq(2L), any())).willReturn(products);
+
+        mvc.perform(get("/products/by-category/2?page_number=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].name").value("Product 0"));
     }
 }
