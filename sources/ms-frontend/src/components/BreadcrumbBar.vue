@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { BBreadcrumb, BBreadcrumbItem } from "bootstrap-vue-next";
 const props = defineProps<{
-  categories: Category[];
+  breadcrumb: Category[];
 }>();
 </script>
 
 <template>
   <div>
     <BBreadcrumb class="flex-nowrap">
-      <template #prepend><span class="mx-2">Você está em:</span></template>
+      <template #prepend>
+        <span class="mx-2">Você está em:</span>
+      </template>
       <BBreadcrumbItem
-        v-for="(category, index) in props.categories"
+        v-for="(category, index) in props.breadcrumb"
         :href="category.fullPath"
-        :active="index == props.categories.length - 1"
+        :active="index == props.breadcrumb.length - 1"
       >
         {{ category.name }}
       </BBreadcrumbItem>

@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useExibitionModeStore } from "@/stores/catalogExibitionPreferences";
 import { BForm, BFormSelect } from "bootstrap-vue-next";
 import { ref } from "vue";
 
-const numberOfProducts = ref(1928);
-const sortingOption = ref(null);
-const exibitionOption = ref(20);
+const props = defineProps<{ productCount: number }>();
+
+const exibitionModeStore = useExibitionModeStore();
+
 const sortingOptions: Record<string, unknown>[] = [
   {
     value: null,
@@ -39,6 +41,10 @@ const sortingOptions: Record<string, unknown>[] = [
     text: "Promoções",
   },
 ];
+
+const sortingOption = ref(null);
+
+const exibitionOption = ref(20);
 
 const exibitionOptions: Record<string, unknown>[] = [
   { value: 20, text: "20 por página" },
@@ -78,16 +84,24 @@ const exibitionOptions: Record<string, unknown>[] = [
     <!-- Number of products -->
     <div class="mx-auto">
       <span class="text-nowrap"
-        ><b>{{ numberOfProducts }}</b> produtos</span
+        ><b>{{ props.productCount }}</b> produtos</span
       >
     </div>
 
     <!-- Exibition mode selection -->
     <div class="d-inline-flex">
-      <div class="d-inline mx-2" role="button" @click="console.log('jooj')">
+      <div
+        class="d-inline mx-2"
+        role="button"
+        @click="exibitionModeStore.setListing"
+      >
         <IBiListUl class="text-primary fs-2" />
       </div>
-      <div class="d-inline mx-2" role="button" @click="console.log('juuj')">
+      <div
+        class="d-inline mx-2"
+        role="button"
+        @click="exibitionModeStore.setBoxes"
+      >
         <IBiGrid class="text-primary fs-2" />
       </div>
     </div>
