@@ -39,7 +39,11 @@ class ManufacturerControllerTest {
         manufacturer.setName("Bic Inc.");
         manufacturer.setImg("https://sdfkhj.com/img.png");
 
-        given(manufacturerService.save(manufacturer)).willReturn(manufacturer);
+        ManufacturerDTO manufacturerDTO = new ManufacturerDTO();
+        manufacturerDTO.setName("Bic Inc.");
+        manufacturerDTO.setImg("https://sdfkhj.com/img.png");
+
+        given(manufacturerService.save(manufacturer)).willReturn(manufacturerDTO);
 
         String postBody = objectMapper.writeValueAsString(manufacturer);
 

@@ -15,6 +15,8 @@ import com.microshop.repository.SellerRepository;
 import com.microshop.service.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -58,5 +60,10 @@ public class ProductServiceImpl implements ProductService {
 
         Product saved = productRepository.save(product);
         return mapper.toDTO(saved);
+    }
+
+    @Override
+    public Page<ProductDTO> findByCategoryId(Long id, Pageable pageable) {
+        return productRepository.findByCategoryId(id, pageable).map(p -> mapper.toDTO(p));
     }
 }

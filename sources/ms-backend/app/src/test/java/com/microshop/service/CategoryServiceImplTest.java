@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -91,5 +92,42 @@ class CategoryServiceImplTest {
         assertEquals("Computadores/Notebooks", saved.getFullName());
         assertEquals("/computadores/notebooks", saved.getFullPath());
         assertEquals(10L, saved.getParentId());
+    }
+
+    @Test
+    void testBreadcrumb() {
+        // Given
+        Category cat1 = new Category();
+        cat1.setId(100L);
+        cat1.setName("cat1");
+
+        Category cat2 = new Category();
+        cat2.setId(200L);
+        cat2.setName("cat2");
+        cat2.setParent(cat1);
+
+        Category cat3 = new Category();
+        cat3.setId(300L);
+        cat3.setName("cat3");
+        cat3.setParent(cat2);
+
+        given(categoryRepository.findById(100L)).willReturn(Optional.of(cat1));
+        given(categoryRepository.findById(200L)).willReturn(Optional.of(cat2));
+        given(categoryRepository.findById(300L)).willReturn(Optional.of(cat3));
+
+        // When
+        // CategoryDTO category = new CategoryDTO();
+        // category.setId(300L);
+        // category.setName("cat3");
+
+        List<CategoryDTO> breadcrumb = categoryService.getBreadcrumb(300L);
+
+        // Then
+        assertNotNull(breadcrumb);
+        assertEquals(breadcrumb.size(), 3);
+        assertEquals(breadcrumb.get(0).getId(), 100L);
+        assertEquals(breadcrumb.get(1).getId(), 200L);
+        assertEquals(breadcrumb.get(2).getId(), 300L);
+        assertEquals(breadcrumb.getLast().getName(), "cat3");
     }
 }

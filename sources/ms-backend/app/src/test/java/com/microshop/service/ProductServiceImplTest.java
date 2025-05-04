@@ -3,6 +3,7 @@ package com.microshop.service;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 import com.github.slugify.Slugify;
@@ -139,14 +140,14 @@ class ProductServiceImplTest {
             products.add(p);
         }
 
-        PageImpl<Product> page = new PageImpl<>(products);
-        given(productRepository.findByCategoryId(99L, any(Pageable.class)))
-                .willReturn((Page<Product>) page);
+        PageImpl<Product> pageReturned = new PageImpl<>(products);
+        given(productRepository.findByCategoryId(eq(99L), any()))
+                .willReturn((Page<Product>) pageReturned);
 
         Pageable pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("name")));
-        Page<Product> page = productService.findByCategoryId(99L, pageRequest);
+        Page<ProductDTO> page = productService.findByCategoryId(99L, pageRequest);
 
-        List<Product> pageProducts = page.getContent();
+        List<ProductDTO> pageProducts = page.getContent();
 
         assertNotNull(pageProducts);
         assertEquals("Prod 0", pageProducts.get(0).getName());

@@ -7,6 +7,8 @@ import com.microshop.model.Category;
 import com.microshop.repository.CategoryRepository;
 import com.microshop.service.CategoryService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+    public static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
+
     @Autowired private CategoryMapper mapper;
 
     @Autowired private CategoryRepository categoryRepository;
@@ -69,20 +74,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDTO> getBreadcrumb(Long id) {
-        List<CategoryDTO> breadcrumb = new ArrayList<>();
-        Long parentId;
-        do {
-            Optional<CategoryDTO> category = findById(id);
-            if (category.isEmpty()) {
-                break;
-            }
-            parentId = category.get().getParentId();
-            breadcrumb.add(category.get());
-
-        } while (parentId != null);
-        if (breadcrumb.isEmpty()) {
-            throw new NoSuchElementException("Could'nt find the first category");
+        List<Category> breadcrumb = new ArrayList<>();
+        Category category = categoryRepository.findById(id).orElseThrow();
+        while (category != null) {
+            breadcrumb.addFirst(category);
+            category = category.getParent();
         }
-        return breadcrumb.reversed();
+        List<CategoryDTO> breadcrumbDTO =
+                breadcrumb.stream().map(c -> mapper.toDTO(c)).collect(Collectors.toList());
+
+        return breadcrumbDTO;
     }
 }

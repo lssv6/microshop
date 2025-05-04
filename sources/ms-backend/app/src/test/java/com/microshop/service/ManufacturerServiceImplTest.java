@@ -32,7 +32,7 @@ class ManufacturerServiceImplTest {
 
     @BeforeEach
     void setup() {
-        Manufacturer manufacturer = new Manufacturer();
+        manufacturer = new Manufacturer();
         manufacturer.setId(88L);
         manufacturer.setName("Apple Inc.");
         manufacturer.setImg("aaa.png");
@@ -64,6 +64,6 @@ class ManufacturerServiceImplTest {
         // Assert
         assertNotNull(manufacturerDTO);
         assertEquals("Apple Inc.", manufacturerDTO.getName());
-        assertEquals("aaa.png", manufacturerDTO.getName());
+        assertEquals("aaa.png", manufacturerDTO.getImg());
     }
 }

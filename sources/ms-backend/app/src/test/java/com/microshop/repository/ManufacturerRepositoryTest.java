@@ -31,13 +31,11 @@ class ManufacturerRepositoryTest {
         Manufacturer manufacturer = new Manufacturer();
         manufacturer.setName("BIC");
         manufacturer.setImg("https://www.example.com/mLogo.png");
-        manufacturerRepository.save(manufacturer);
-        manufacturerRepository.save(manufacturer);
-        manufacturerRepository.save(manufacturer);
-        manufacturerRepository.save(manufacturer);
-        manufacturerRepository.save(manufacturer);
         assertThrows(
                 DataIntegrityViolationException.class,
-                () -> manufacturerRepository.save(manufacturer));
+                () -> {
+                    manufacturerRepository.saveAndFlush(manufacturer);
+                    manufacturerRepository.saveAndFlush(manufacturer);
+                });
     }
 }
