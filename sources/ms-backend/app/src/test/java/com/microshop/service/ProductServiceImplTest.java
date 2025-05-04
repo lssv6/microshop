@@ -133,6 +133,7 @@ class ProductServiceImplTest {
 
     @Test
     void testGetPageOfProducts() {
+        // Arrange
         List<Product> products = new ArrayList<Product>();
         for (int i = 0; i < 50; i++) {
             Product p = new Product();
@@ -144,11 +145,13 @@ class ProductServiceImplTest {
         given(productRepository.findByCategoryId(eq(99L), any()))
                 .willReturn((Page<Product>) pageReturned);
 
+        // Act
         Pageable pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("name")));
         Page<ProductDTO> page = productService.findByCategoryId(99L, pageRequest);
 
         List<ProductDTO> pageProducts = page.getContent();
 
+        // Assert
         assertNotNull(pageProducts);
         assertEquals("Prod 0", pageProducts.get(0).getName());
         assertEquals("Prod 1", pageProducts.get(1).getName());
