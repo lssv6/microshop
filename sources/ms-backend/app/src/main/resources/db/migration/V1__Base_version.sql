@@ -29,8 +29,8 @@ create sequence manufacturer_seq as bigint increment by 50 start with 1;
 create table product(
     id bigint primary key,
     name varchar(255),
-    description varchar(50000),
-    tag_description varchar(50000),
+    description text,
+    tag_description text,
     friendly_name varchar(255),
     price bigint,
     old_price bigint,

@@ -26,6 +26,9 @@ dependencies {
 
     // Needed to create friendly names.
     implementation 'com.github.slugify:slugify:3.0.7'
+
+    // Database migration
+    implementation 'org.flywaydb:flyway-mysql:11.8.1'
     implementation 'org.flywaydb:flyway-core:11.5.0'
 
     // IN ORDER TO THE ANNOTATIONS TO WORK, THE LOMBOK AND MAPSTRUCT MUST BE PLACED IN ORDER.
@@ -57,9 +60,9 @@ dependencies {
 }
 
 flyway {
-    url = 'jdbc:h2:file:./database'
-    user = 'sa'
-    password = 'password'
+    url = 'jdbc:mariadb://localhost:3306/microshop'
+    user = 'microshop'
+    password = 'microshop'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
