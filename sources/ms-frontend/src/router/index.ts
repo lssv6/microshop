@@ -5,11 +5,11 @@ import ToImplementView from "@/views/ToImplementView.vue";
 import { createWebHistory, createRouter, type Router } from "vue-router";
 
 const routes = [
-  { path: "/", component: StartView },
-  { path: "/login", component: ToImplementView },
-  { path: "/signup", component: ToImplementView },
-  { path: "/product/:id", component: ProductView },
-  { path: "/:categoryPath", component: CategoryView },
+  { path: "/", name: "start", component: StartView },
+  { path: "/login", name: "login", component: ToImplementView },
+  { path: "/signup", name: "signup", component: ToImplementView },
+  { path: "/product/:id", name: "product", component: ProductView },
+  { path: "/:categoryPath", name: "category", component: CategoryView },
 ];
 
 const router: Router = createRouter({

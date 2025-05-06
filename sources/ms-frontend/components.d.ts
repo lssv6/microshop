@@ -32,5 +32,6 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import("./src/components/SearchBar.vue")["default"]
     SortingBar: typeof import('./src/components/SortingBar.vue')['default']
+    SubcategoryListing: typeof import('./src/components/SubcategoryListing.vue')['default']
   }
 }

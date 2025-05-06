@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+
+import { BOverlay } from "bootstrap-vue-next";
 
 import BreadcrumbBar from "@/components/BreadcrumbBar.vue";
 import CategoryHeader from "@/components/CategoryHeader.vue";
@@ -16,12 +18,15 @@ import {
 } from "@/services/categoryService";
 
 const route = useRoute();
+const router = useRouter();
 const props = defineProps<{ categoryPath: string }>(); // Grabs value from router automatically
 
 const products: Ref<Product[]> = ref([]);
 const category: Ref<Category | undefined> = ref();
 const breadcrumb: Ref<Category[]> = ref([]);
 const subcategories: Ref<Category[]> = ref([]);
+
+const isLoading: Ref<boolean> = ref(true);
 
 async function loadProducts(category: Category) {
   const pageNumberStr: string = route.query["page-number"]?.toString() ?? "1";
@@ -39,7 +44,15 @@ async function loadSubcategories(category: Category) {
 }
 
 onMounted(async () => {
-  category.value = await getCategoryByFullPath(props.categoryPath);
+  await getCategoryByFullPath(props.categoryPath)
+    .then((data) => (category.value = data))
+    .catch(() => {
+      router.push({ name: "start" });
+    });
+
+  if (!category.value) {
+    return;
+  }
 
   Promise.all([
     loadProducts(category.value),
@@ -49,11 +62,11 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <template v-if="category">
+  <BOverlay :show="isLoading">
     <BreadcrumbBar :breadcrumb="breadcrumb"></BreadcrumbBar>
     <CategoryHeader :title="category?.name ?? '...'"></CategoryHeader>
     <SortingBar :productCount="products.length"></SortingBar>
     <SubcategoryListing :subcategories="subcategories"></SubcategoryListing>
     <ProductShelf :products="products"></ProductShelf>
-  </template>
+  </BOverlay>
 </template>

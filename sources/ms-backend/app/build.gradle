@@ -42,8 +42,9 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.1'
 
+    // Database engine for running the application
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.5.3")
     // Database engine for testing jpa
-    implementation 'com.h2database:h2:2.3.232'
     testImplementation 'com.h2database:h2:2.3.232'
 
     // Use JUnit Jupiter for testing.
