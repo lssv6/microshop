@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     public Optional<Category> findByFullName(String fullName);
+
+    public Optional<Category> findByFullPath(String fullPath);
 }

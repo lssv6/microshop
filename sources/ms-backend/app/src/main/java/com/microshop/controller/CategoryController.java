@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,8 +27,27 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<CategoryDTO> findByFullName(
-            @RequestParam(name = "full-name", required = true) String fullName) {
-        return ResponseEntity.of(categoryService.findByFullName(fullName));
+            @RequestParam(name = "full-name") String fullName,
+            @RequestParam(name = "full-path") String fullPath) {
+        boolean onlyOneParameterIsBlank = fullName.isBlank() ^ fullPath.isBlank();
+        if (onlyOneParameterIsBlank) {
+            if (!fullPath.isBlank()) {
+                return ResponseEntity.of(categoryService.findByFullPath(fullPath));
+            }
+            return ResponseEntity.of(categoryService.findByFullName(fullName));
+        }
+        return ResponseEntity.of(
+                        ProblemDetail.forStatusAndDetail(
+                                HttpStatus.BAD_REQUEST,
+                                "Must provide one of the avaliable filtering parameters: full-name"
+                                        + " or full-path"))
+                .build();
+    }
+
+    @GetMapping
+    public ResponseEntity<CategoryDTO> findByFullPath(
+            @RequestParam(name = "full-path", required = true) String fullPath) {
+        return ResponseEntity.of(categoryService.findByFullPath(fullPath));
     }
 
     @GetMapping("/{id}")

@@ -85,4 +85,9 @@ public class CategoryServiceImpl implements CategoryService {
 
         return breadcrumbDTO;
     }
+
+    @Override
+    public Optional<CategoryDTO> findByFullPath(String fullPath) {
+        return categoryRepository.findByFullPath(fullPath).map(c -> mapper.toDTO(c));
+    }
 }

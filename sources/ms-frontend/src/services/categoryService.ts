@@ -6,10 +6,13 @@ export async function getCategoryByFullPath(
   return api
     .get("/category", {
       params: {
-        "full-name": categoryFullPath,
+        "full-path": categoryFullPath,
       },
     })
-    .then((res) => res.data)
+    .then((res) => {
+      console.log(res.data);
+      return res.data;
+    })
     .catch((error) => {
       throw error;
     });

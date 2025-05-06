@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
-import { BOverlay } from "bootstrap-vue-next";
+import { BOverlay, BButton } from "bootstrap-vue-next";
 
 import BreadcrumbBar from "@/components/BreadcrumbBar.vue";
 import CategoryHeader from "@/components/CategoryHeader.vue";
@@ -18,13 +18,14 @@ import {
 } from "@/services/categoryService";
 
 const route = useRoute();
-const router = useRouter();
-const props = defineProps<{ categoryPath: string }>(); // Grabs value from router automatically
+const props = defineProps<{ categoryPath: string[] }>(); // Grabs value from router automatically
 
 const products: Ref<Product[]> = ref([]);
 const category: Ref<Category | undefined> = ref();
 const breadcrumb: Ref<Category[]> = ref([]);
 const subcategories: Ref<Category[]> = ref([]);
+
+const failedToRetrieveCategory: Ref<boolean> = ref(false);
 
 const isLoading: Ref<boolean> = ref(true);
 
@@ -44,10 +45,13 @@ async function loadSubcategories(category: Category) {
 }
 
 onMounted(async () => {
-  await getCategoryByFullPath(props.categoryPath)
-    .then((data) => (category.value = data))
-    .catch(() => {
-      router.push({ name: "start" });
+  await getCategoryByFullPath("/" + props.categoryPath.join("/"))
+    .then((data) => {
+      category.value = data;
+      console.log(data);
+    })
+    .catch((error) => {
+      failedToRetrieveCategory.value = true;
     });
 
   if (!category.value) {
@@ -62,11 +66,29 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <BOverlay :show="isLoading">
-    <BreadcrumbBar :breadcrumb="breadcrumb"></BreadcrumbBar>
-    <CategoryHeader :title="category?.name ?? '...'"></CategoryHeader>
-    <SortingBar :productCount="products.length"></SortingBar>
-    <SubcategoryListing :subcategories="subcategories"></SubcategoryListing>
-    <ProductShelf :products="products"></ProductShelf>
-  </BOverlay>
+  <template v-if="failedToRetrieveCategory">
+    <div class="text-center">
+      <h1>
+        Categoria não encontrada.<IBiPersonWorkspace
+          class="text-primary ms-3"
+        />
+      </h1>
+      <h2>
+        Isso mesmo. Tente acessar a nossa página principal pelo botão abaixo:
+      </h2>
+      <IBiSignDeadEnd class="text-primary my-5" style="font-size: 100px" />
+      <BButton class="d-block mx-auto w-25 text-white" to="/" variant="primary"
+        >Ir para página principal</BButton
+      >
+    </div>
+  </template>
+  <template v-else>
+    <BOverlay :show="isLoading">
+      <BreadcrumbBar :breadcrumb="breadcrumb"></BreadcrumbBar>
+      <CategoryHeader :title="category?.name ?? '...'"></CategoryHeader>
+      <SortingBar :productCount="products.length"></SortingBar>
+      <SubcategoryListing :subcategories="subcategories"></SubcategoryListing>
+      <ProductShelf :products="products"></ProductShelf>
+    </BOverlay>
+  </template>
 </template>

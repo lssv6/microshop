@@ -12,6 +12,8 @@ public interface CategoryService {
 
     public Optional<CategoryDTO> findByFullName(String fullName);
 
+    public Optional<CategoryDTO> findByFullPath(String fullPath);
+
     public CategoryDTO save(NewCategory newCategory) throws NoSuchElementException;
 
     public List<CategoryDTO> getBreadcrumb(Long id);

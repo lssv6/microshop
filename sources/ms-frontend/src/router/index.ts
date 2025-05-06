@@ -9,7 +9,12 @@ const routes = [
   { path: "/login", name: "login", component: ToImplementView },
   { path: "/signup", name: "signup", component: ToImplementView },
   { path: "/product/:id", name: "product", component: ProductView },
-  { path: "/:categoryPath", name: "category", component: CategoryView },
+  {
+    path: "/:categoryPath+",
+    name: "category",
+    component: CategoryView,
+    props: true,
+  },
 ];
 
 const router: Router = createRouter({

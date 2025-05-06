@@ -212,6 +212,6 @@ def save_categories(data):
 
 if __name__ == "__main__":
     # Can be slow
-    # process_files(sys.argv[1], save_sellers, save_manufacturers)
-    # process_files(sys.argv[1], save_categories, one_cat_page=True)
+    process_files(sys.argv[1], save_sellers, save_manufacturers)
+    process_files(sys.argv[1], save_categories, one_cat_page=True)
     process_files(sys.argv[1], save_products)
