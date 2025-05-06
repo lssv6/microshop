@@ -28,7 +28,7 @@ dependencies {
     implementation 'com.github.slugify:slugify:3.0.7'
 
     // Database migration
-    implementation 'org.flywaydb:flyway-mysql:11.8.1'
+    implementation "org.flywaydb:flyway-mysql:11.8.0"
     implementation 'org.flywaydb:flyway-core:11.5.0'
 
     // IN ORDER TO THE ANNOTATIONS TO WORK, THE LOMBOK AND MAPSTRUCT MUST BE PLACED IN ORDER.
