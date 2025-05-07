@@ -18,6 +18,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @SpringBootTest
 class CategoryServiceImplTest {
@@ -27,6 +28,7 @@ class CategoryServiceImplTest {
     @Autowired private CategoryService categoryService;
 
     private static Category category;
+    private static Category cat1, cat2, cat3;
 
     @BeforeEach
     void setUp() {
@@ -38,6 +40,20 @@ class CategoryServiceImplTest {
         category.setFullPath("/hardware");
         category.setParent(null);
         category.setVersion(9L);
+
+        cat1 = new Category();
+        cat1.setId(100L);
+        cat1.setName("cat1");
+
+        cat2 = new Category();
+        cat2.setId(200L);
+        cat2.setName("cat2");
+        cat2.setParent(cat1);
+
+        cat3 = new Category();
+        cat3.setId(300L);
+        cat3.setName("cat3");
+        cat3.setParent(cat2);
     }
 
     @Test
@@ -96,20 +112,6 @@ class CategoryServiceImplTest {
 
     @Test
     void testBreadcrumb() {
-        // Given
-        Category cat1 = new Category();
-        cat1.setId(100L);
-        cat1.setName("cat1");
-
-        Category cat2 = new Category();
-        cat2.setId(200L);
-        cat2.setName("cat2");
-        cat2.setParent(cat1);
-
-        Category cat3 = new Category();
-        cat3.setId(300L);
-        cat3.setName("cat3");
-        cat3.setParent(cat2);
 
         given(categoryRepository.findById(100L)).willReturn(Optional.of(cat1));
         given(categoryRepository.findById(200L)).willReturn(Optional.of(cat2));
@@ -129,5 +131,17 @@ class CategoryServiceImplTest {
         assertEquals(breadcrumb.get(1).getId(), 200L);
         assertEquals(breadcrumb.get(2).getId(), 300L);
         assertEquals(breadcrumb.getLast().getName(), "cat3");
+    }
+
+    @Test
+    void testGetChildrenDeeply() {
+        given(categoryRepository.findById(100L)).willReturn(Optional.of(cat1));
+        given(categoryRepository.findById(200L)).willReturn(Optional.of(cat2));
+        given(categoryRepository.findById(300L)).willReturn(Optional.of(cat3));
+
+        Set<CategoryDTO> cats = categoryService.getChildrenDeeply(100L);
+
+        assertNotNull(cats);
+        assertEquals(3, cats.size());
     }
 }

@@ -20,4 +20,6 @@ public interface CategoryService {
     public List<CategoryDTO> getBreadcrumb(Long id);
 
     public Set<CategoryDTO> getChildren(Long id);
+
+    public Set<CategoryDTO> getChildrenDeeply(Long id);
 }

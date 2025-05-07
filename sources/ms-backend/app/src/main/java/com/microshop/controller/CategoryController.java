@@ -62,6 +62,12 @@ public class CategoryController {
         return ResponseEntity.ofNullable(children);
     }
 
+    @GetMapping("/{id}/deep-children")
+    public ResponseEntity<Set<CategoryDTO>> getChildrenDeep(@PathVariable Long id) {
+        Set<CategoryDTO> children = categoryService.getChildrenDeeply(id);
+        return ResponseEntity.ofNullable(children);
+    }
+
     @PostMapping
     public ResponseEntity<CategoryDTO> save(@Valid @RequestBody NewCategory newCategory) {
         CategoryDTO categoryDTO = categoryService.save(newCategory);

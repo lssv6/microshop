@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -95,6 +96,31 @@ public class CategoryServiceImpl implements CategoryService {
         }
         Set<Category> children = categoryRepository.findByParent(parent.get());
         return children.stream().map(c -> mapper.toDTO(c)).collect(Collectors.toSet());
+    }
+
+    private Set<Category> getChildrenDeeply(Category c) {
+        Set<Category> children = categoryRepository.findByParent(c);
+        if (children.isEmpty()) {
+            return Set.of();
+        }
+        Set<Category> result = new HashSet<>();
+        result.addAll(children);
+        for (Category category : children) {
+            result.addAll(getChildrenDeeply(category)); // Recursion is here
+        }
+        return result;
+    }
+
+    @Override
+    public Set<CategoryDTO> getChildrenDeeply(Long id) {
+        Optional<Category> parent = categoryRepository.findById(id);
+        if (parent.isEmpty()) {
+            throw new NoSuchElementException("Couldn't find the parent category");
+        }
+
+        return getChildrenDeeply(parent.get()).stream()
+                .map(c -> mapper.toDTO(c))
+                .collect(Collectors.toSet());
     }
 
     @Override
