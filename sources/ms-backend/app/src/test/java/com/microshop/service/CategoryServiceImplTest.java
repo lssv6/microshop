@@ -3,6 +3,7 @@ package com.microshop.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 import com.microshop.dto.CategoryDTO;
@@ -136,12 +137,12 @@ class CategoryServiceImplTest {
     @Test
     void testGetChildrenDeeply() {
         given(categoryRepository.findById(100L)).willReturn(Optional.of(cat1));
-        given(categoryRepository.findById(200L)).willReturn(Optional.of(cat2));
-        given(categoryRepository.findById(300L)).willReturn(Optional.of(cat3));
+        given(categoryRepository.findByParent(eq(cat1))).willReturn(Set.of(cat2));
+        given(categoryRepository.findByParent(eq(cat2))).willReturn(Set.of(cat3));
 
         Set<CategoryDTO> cats = categoryService.getChildrenDeeply(100L);
 
         assertNotNull(cats);
-        assertEquals(3, cats.size());
+        assertEquals(2, cats.size());
     }
 }
