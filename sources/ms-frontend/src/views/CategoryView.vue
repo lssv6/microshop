@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from "vue";
+import { ref, watchEffect, type Ref } from "vue";
 import { useRoute } from "vue-router";
 
 import { BOverlay, BButton } from "bootstrap-vue-next";
@@ -16,9 +16,14 @@ import {
   getProducts,
   getSubcategories,
 } from "@/services/categoryService";
+import { computed, type ComputedRef } from "@vue/reactivity";
 
 const route = useRoute();
 const props = defineProps<{ categoryPath: string[] }>(); // Grabs value from router automatically
+
+const stringCategoryPath: ComputedRef<string> = computed(
+  () => "/" + props.categoryPath.join("/"),
+);
 
 const products: Ref<Product[]> = ref([]);
 const category: Ref<Category | undefined> = ref();
@@ -43,27 +48,38 @@ async function loadBreadcrumbs(category: Category) {
 async function loadSubcategories(category: Category) {
   subcategories.value = await getSubcategories(category);
 }
+watchEffect(() => {
+  loadAllData(stringCategoryPath.value);
+  console.log("watchedEffected");
+});
+async function loadAllData(categoryPath: string) {
+  products.value = [];
+  category.value = undefined;
+  breadcrumb.value = [];
+  subcategories.value = [];
 
-onMounted(async () => {
-  await getCategoryByFullPath("/" + props.categoryPath.join("/"))
+  failedToRetrieveCategory.value = false;
+  isLoading.value = true;
+  console.log("loadingData");
+
+  await getCategoryByFullPath(categoryPath)
     .then((data) => {
       category.value = data;
-      console.log(data);
     })
-    .catch((error) => {
+    .catch(() => {
       failedToRetrieveCategory.value = true;
     });
 
   if (!category.value) {
     return;
   }
-
+  isLoading.value = false;
   Promise.all([
     loadProducts(category.value),
     loadBreadcrumbs(category.value),
     loadSubcategories(category.value),
   ]);
-});
+}
 </script>
 <template>
   <template v-if="failedToRetrieveCategory">

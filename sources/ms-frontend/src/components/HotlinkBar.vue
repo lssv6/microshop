@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { BNavItem, BNavbar, BNavbarNav } from "bootstrap-vue-next";
-
+import { useRouter, type Router } from "vue-router";
+const router: Router = useRouter();
 interface Hotlink {
   text: string;
   href: string;
@@ -44,7 +45,7 @@ const hotlinks: Hotlink[] = [
 <template>
   <BNavbar class="container-xxl" variant="primary">
     <BNavbarNav v-for="hl in hotlinks">
-      <BNavItem :to="hl.href"
+      <BNavItem @click="router.push(hl.href)"
         ><span class="hotlink-text">{{ hl.text }}</span></BNavItem
       >
     </BNavbarNav>

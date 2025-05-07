@@ -9,12 +9,12 @@ const props = defineProps<{ product: Product }>();
 const fm: FormatMoney = new FormatMoney({ decimals: 2, symbol: "R$ " });
 
 const formatedOldPrice: ComputedRef<string> = computed(() => {
-  let oldPriceObj = fm.from(props.product.oldPrice / 100);
+  let oldPriceObj = fm.from(props.product.oldPrice);
   return oldPriceObj?.toString() || "--";
 });
 
 const formatedPrice: ComputedRef<string> = computed(() => {
-  let price = fm.from(props.product.price / 100);
+  let price = fm.from(props.product.price);
   return price?.toString() || "--";
 });
 </script>

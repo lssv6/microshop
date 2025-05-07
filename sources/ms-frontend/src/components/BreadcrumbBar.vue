@@ -13,7 +13,7 @@ const props = defineProps<{
       </template>
       <BBreadcrumbItem
         v-for="(category, index) in props.breadcrumb"
-        :href="category.fullPath"
+        :to="category.fullPath"
         :active="index == props.breadcrumb.length - 1"
       >
         {{ category.name }}

@@ -4,13 +4,12 @@ export async function getCategoryByFullPath(
   categoryFullPath: string,
 ): Promise<Category> {
   return api
-    .get("/category", {
+    .get("/categories", {
       params: {
         "full-path": categoryFullPath,
       },
     })
     .then((res) => {
-      console.log(res.data);
       return res.data;
     })
     .catch((error) => {
@@ -20,7 +19,7 @@ export async function getCategoryByFullPath(
 
 export async function getCategoryInfo(category: Category): Promise<Category> {
   return api
-    .get(`/category/${category.id}`)
+    .get(`/categories/${category.id}`)
     .then((res) => res.data)
     .catch((error) => {
       throw error;
@@ -29,7 +28,7 @@ export async function getCategoryInfo(category: Category): Promise<Category> {
 
 export async function getBreadcrumbs(category: Category): Promise<Category[]> {
   return api
-    .get(`/category/${category.id}/breadcrumb`)
+    .get(`/categories/${category.id}/breadcrumb`)
     .then((res) => res.data)
     .catch((error) => {
       throw error;
@@ -41,7 +40,7 @@ export async function getProducts(
   pageNumber: number,
 ): Promise<Product[]> {
   return api
-    .get(`/category/${category.id}/products`, {
+    .get(`/products/by-category/${category.id}`, {
       params: {
         page_number: pageNumber,
       },
@@ -56,7 +55,7 @@ export async function getSubcategories(
   category: Category,
 ): Promise<Category[]> {
   return api
-    .get(`/category/${category.id}/subcategories`)
+    .get(`/categories/${category.id}/children`)
     .then((res) => res.data)
     .catch((error) => {
       throw error;
