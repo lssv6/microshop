@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,6 +85,16 @@ public class CategoryServiceImpl implements CategoryService {
                 breadcrumb.stream().map(c -> mapper.toDTO(c)).collect(Collectors.toList());
 
         return breadcrumbDTO;
+    }
+
+    @Override
+    public Set<CategoryDTO> getChildren(Long id) {
+        Optional<Category> parent = categoryRepository.findById(id);
+        if (parent.isEmpty()) {
+            throw new NoSuchElementException("Couldn't find the parent category");
+        }
+        Set<Category> children = categoryRepository.findByParent(parent.get());
+        return children.stream().map(c -> mapper.toDTO(c)).collect(Collectors.toSet());
     }
 
     @Override

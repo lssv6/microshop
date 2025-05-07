@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/categories")
@@ -26,12 +27,12 @@ public class CategoryController {
     @Autowired private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<CategoryDTO> findByFullName(
-            @RequestParam(name = "full-name") String fullName,
-            @RequestParam(name = "full-path") String fullPath) {
-        boolean onlyOneParameterIsBlank = fullName.isBlank() ^ fullPath.isBlank();
-        if (onlyOneParameterIsBlank) {
-            if (!fullPath.isBlank()) {
+    public ResponseEntity<CategoryDTO> findByFullNameOrFullPath(
+            @RequestParam(name = "full-name", required = false) String fullName,
+            @RequestParam(name = "full-path", required = false) String fullPath) {
+        boolean onlyOneIsNull = fullName == null ^ fullPath == null;
+        if (onlyOneIsNull) {
+            if (fullPath != null) {
                 return ResponseEntity.of(categoryService.findByFullPath(fullPath));
             }
             return ResponseEntity.of(categoryService.findByFullName(fullName));
@@ -39,15 +40,9 @@ public class CategoryController {
         return ResponseEntity.of(
                         ProblemDetail.forStatusAndDetail(
                                 HttpStatus.BAD_REQUEST,
-                                "Must provide one of the avaliable filtering parameters: full-name"
-                                        + " or full-path"))
+                                "Must provide only one of the avaliable filtering parameters:"
+                                        + " full-name or full-path"))
                 .build();
-    }
-
-    @GetMapping
-    public ResponseEntity<CategoryDTO> findByFullPath(
-            @RequestParam(name = "full-path", required = true) String fullPath) {
-        return ResponseEntity.of(categoryService.findByFullPath(fullPath));
     }
 
     @GetMapping("/{id}")
@@ -59,6 +54,12 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDTO>> getBreadcrumbs(@PathVariable Long id) {
         List<CategoryDTO> breadcrumb = categoryService.getBreadcrumb(id);
         return ResponseEntity.ofNullable(breadcrumb);
+    }
+
+    @GetMapping("/{id}/children")
+    public ResponseEntity<Set<CategoryDTO>> getChildren(@PathVariable Long id) {
+        Set<CategoryDTO> children = categoryService.getChildren(id);
+        return ResponseEntity.ofNullable(children);
     }
 
     @PostMapping
