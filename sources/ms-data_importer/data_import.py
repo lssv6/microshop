@@ -50,10 +50,12 @@ def extract_products(products):
         category = get_category_by_fullname(product["category"])
         category_id = category["id"] if category else None
 
-        price = product["price"]
-        old_price = product["oldPrice"]
+        price = product["price"]  # transform to integer, backend wants a integer
+        old_price = product["oldPrice"]  # also transform to integer
         if old_price == 0:
             old_price = None
+        else:
+            old_price *= 100
         seller = get_seller(product["sellerName"])
         if seller is None:
             return
