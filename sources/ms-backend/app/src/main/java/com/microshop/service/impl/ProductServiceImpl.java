@@ -16,10 +16,14 @@ import com.microshop.service.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -65,5 +69,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<ProductDTO> findByCategoryId(Long id, Pageable pageable) {
         return productRepository.findByCategoryId(id, pageable).map(p -> mapper.toDTO(p));
+    }
+
+    @Override
+    public Page<ProductDTO> findByCategoryIdNested(List<Long> ids, Pageable pageable) {
+        List<Category> categories =
+                ids.stream()
+                        .map(id -> categoryRepository.findById(id).get())
+                        .collect(Collectors.toList());
+
+        List<ProductDTO> result = new ArrayList<>();
+        for (Product p : productRepository.findByCategoryIdNested(categories, pageable)) {
+            result.add(mapper.toDTO(p));
+        }
+        return new PageImpl<>(result);
     }
 }

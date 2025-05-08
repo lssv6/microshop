@@ -1,5 +1,6 @@
 package com.microshop.repository;
 
+import com.microshop.model.Category;
 import com.microshop.model.Product;
 
 import org.springframework.data.domain.Page;
@@ -30,5 +31,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     @Query("SELECT p FROM Product p WHERE p.category IN :categories")
     public Page<Product> findByCategoryIdNested(
-            @Param("categories") List<Long> categories, Pageable pageable);
+            @Param("categories") List<Category> categories, Pageable pageable);
 }
