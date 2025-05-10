@@ -52,6 +52,10 @@ def extract_products(products):
 
         price = product["price"]  # transform to integer, backend wants a integer
         old_price = product["oldPrice"]  # also transform to integer
+        if price is None:
+            price = 0
+        else:
+            price *= 100
         if old_price == 0:
             old_price = None
         else:
@@ -214,6 +218,6 @@ def save_categories(data):
 
 if __name__ == "__main__":
     # Can be slow
-    process_files(sys.argv[1], save_sellers, save_manufacturers)
-    process_files(sys.argv[1], save_categories, one_cat_page=True)
+    # process_files(sys.argv[1], save_sellers, save_manufacturers)
+    # process_files(sys.argv[1], save_categories, one_cat_page=True)
     process_files(sys.argv[1], save_products)
