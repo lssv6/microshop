@@ -1,14 +1,17 @@
+import logging
 from typing import Callable
-from pprint import pprint
 import urllib.parse
 from logging import getLogger
 import requests
 import sys
 import json
 import pathlib
+from multiprocessing.pool import Pool
+from pprint import pprint
 from tqdm import tqdm
 
 logger = getLogger()
+# logger.setLevel(logging.DEBUG)
 
 
 def get_category_by_fullname(fullCategoryName: str):
@@ -52,14 +55,16 @@ def extract_products(products):
 
         price = product["price"]  # transform to integer, backend wants a integer
         old_price = product["oldPrice"]  # also transform to integer
+        if old_price == 0 or old_price == price:
+            old_price = None
+        else:
+            old_price *= 100
+
         if price is None:
             price = 0
         else:
             price *= 100
-        if old_price == 0:
-            old_price = None
-        else:
-            old_price *= 100
+
         seller = get_seller(product["sellerName"])
         if seller is None:
             return
@@ -95,24 +100,22 @@ def count_files(path, one_cat_page=False):
     return result
 
 
-def get_files(path, one_cat_page=False):
+def get_data(path, one_cat_page=False):
     directories = pathlib.Path(path).iterdir()
     # plogger.debug([*directories])
+    files = []
     for d in directories:
         for f in d.iterdir():
-            yield f
+            with open(f) as file:
+                x = json.load(file)
+            files.append(x)
+            if len(files) > 100:
+                yield files
+                files = []
             if one_cat_page:
                 break
 
-
-def process_files(path, *callbacks: Callable, one_cat_page=False):
-    files = get_files(path, one_cat_page=one_cat_page)
-    fileCount = count_files(path, one_cat_page=one_cat_page)
-    for f in tqdm(files, total=fileCount):
-        with open(f) as file:
-            data = json.load(file)
-            for cb in callbacks:
-                cb(data)
+    yield files
 
 
 def get_products(data):
@@ -134,6 +137,7 @@ def save_sellers(data):
 
 
 def save_manufacturers(data):
+    logger.debug("dbug")
     products = get_products(data)
     for product in products:
         manufacturer = {
@@ -216,8 +220,27 @@ def save_categories(data):
         logger.debug("saved=", saved)
 
 
+def get_dict(filepath):
+    with open(filepath) as f:
+        return json.load(f)
+
+
+def process_parallel(*funcs, filepath="", one_cat_page=False):
+    if filepath == "":
+        return
+    iterable = get_data(filepath, one_cat_page=one_cat_page)
+    iterable_size = count_files(filepath, one_cat_page=one_cat_page)
+
+    # So, I'm setting the function to load twice as many cores I have.
+    progress_bar = tqdm(total=iterable_size)
+    with Pool(24) as p:
+        for item in iterable:
+            for f in funcs:
+                p.map(f, item)
+            progress_bar.update(len(item))
+
+
 if __name__ == "__main__":
-    # Can be slow
-    # process_files(sys.argv[1], save_sellers, save_manufacturers)
-    # process_files(sys.argv[1], save_categories, one_cat_page=True)
-    process_files(sys.argv[1], save_products)
+    process_parallel(save_categories, filepath=sys.argv[1], one_cat_page=True)
+    process_parallel(save_manufacturers, save_sellers, filepath=sys.argv[1])
+    process_parallel(save_products, filepath=sys.argv[1])
