@@ -1,0 +1,35 @@
+name: microshop
+services:
+  frontend:
+    image: microshop/frontend
+    build: ./ms-frontend
+    cpu_count: 1
+    ports:
+      - "8080:80"
+    networks:
+      - front-tier
+      - back-tier
+
+  backend:
+    image: microshop/backend
+    build: ./ms-backend
+    cpu_count: 2
+    networks:
+      - back-tier
+
+  database:
+    image: mariadb:11-ubi
+    environment:
+      - MARIADB_USER=${DATABASE_USERNAME}
+      - MARIADB_PASSWORD=${DATABASE_PASSWORD}
+      - MARIADB_DATABASE=${DATABASE_NAME}
+      - MARIADB_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    cpu_count: 1
+    networks:
+      - back-tier
+
+networks:
+  back-tier:
+    driver: bridge
+  front-tier:
+    driver: bridge
