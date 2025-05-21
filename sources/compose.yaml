@@ -6,18 +6,29 @@ services:
     cpu_count: 1
     ports:
       - "8080:80"
+    depends_on:
+      - backend
+      - database
     networks:
-      - front-tier
-      - back-tier
+      - innernetwork
 
   backend:
+    hostname: backend
     image: microshop/backend
     build: ./ms-backend
     cpu_count: 2
+    environment:
+      - SPRING_DATASOURCE_URL=${DATABASE_CONNECTION_STRING}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+    depends_on:
+      database:
+        condition: service_healthy
     networks:
-      - back-tier
+      - innernetwork
 
   database:
+    hostname: msdatabase
     image: mariadb:11-ubi
     environment:
       - MARIADB_USER=${DATABASE_USERNAME}
@@ -25,11 +36,17 @@ services:
       - MARIADB_DATABASE=${DATABASE_NAME}
       - MARIADB_ROOT_PASSWORD=${DATABASE_PASSWORD}
     cpu_count: 1
+    ports:
+      - "3306:3306"
     networks:
-      - back-tier
+      - innernetwork
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 networks:
-  back-tier:
-    driver: bridge
-  front-tier:
+  innernetwork:
     driver: bridge

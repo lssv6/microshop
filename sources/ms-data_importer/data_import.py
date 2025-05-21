@@ -1,11 +1,13 @@
-import logging
-from typing import Callable
+import logging, time
+from typing import Callable, Optional
 import urllib.parse
 from logging import getLogger
 import requests
 import sys
 import json
 import pathlib
+import multiprocessing as mp
+import multiprocessing.connection as mpc
 from multiprocessing.pool import Pool
 from pprint import pprint
 from tqdm import tqdm
@@ -13,13 +15,17 @@ from tqdm import tqdm
 logger = getLogger()
 # logger.setLevel(logging.DEBUG)
 
+BASE_URL = "http://localhost:8080/api"
+
 
 def get_category_by_fullname(fullCategoryName: str):
     logger.debug(len(fullCategoryName), fullCategoryName)
     if not fullCategoryName:
         return None
     fullCategoryName = urllib.parse.urlencode({"full-name": fullCategoryName})
-    res = requests.get(f"http://localhost:8080/categories?{fullCategoryName}")
+    time.sleep(0.01)
+    res = requests.get(f"{BASE_URL}/categories?{fullCategoryName}")
+
     if not res.ok:
         logger.debug(f"Failed to query for {fullCategoryName=}")
         return None
@@ -30,7 +36,8 @@ def get_manufacturer(name):
     if not name:
         return None
     manufacturer = urllib.parse.urlencode({"name": name})
-    res = requests.get(f"http://localhost:8080/manufacturers?{manufacturer}")
+    time.sleep(0.01)
+    res = requests.get(f"{BASE_URL}/manufacturers?{manufacturer}")
     if not res.ok:
         logger.debug(f"Failed to query for manufacturer {name=}")
         return None
@@ -41,7 +48,8 @@ def get_seller(name):
     if not name:
         return None
     seller = urllib.parse.urlencode({"name": name})
-    res = requests.get(f"http://localhost:8080/sellers?{seller}")
+    time.sleep(0.01)
+    res = requests.get(f"{BASE_URL}/sellers?{seller}")
     if not res.ok:
         logger.debug(f"Failed to query for seller {name=}")
         return None
@@ -108,10 +116,7 @@ def get_data(path, one_cat_page=False):
         for f in d.iterdir():
             with open(f) as file:
                 x = json.load(file)
-            files.append(x)
-            if len(files) > 100:
-                yield files
-                files = []
+            yield x
             if one_cat_page:
                 break
 
@@ -126,7 +131,8 @@ def save_sellers(data):
     products = get_products(data)
     for product in products:
         seller = {"name": product["sellerName"]}
-        req = requests.post("http://localhost:8080/sellers", json=seller)
+        time.sleep(0.01)
+        req = requests.post(f"{BASE_URL}/sellers", json=seller)
         if not req.ok:
             logger.debug(
                 f"Error while saving seller with {seller["name"]=}", req.json()
@@ -144,7 +150,8 @@ def save_manufacturers(data):
             "name": product["manufacturer"]["name"],
             "img": product["manufacturer"]["img"],
         }
-        req = requests.post("http://localhost:8080/manufacturers", json=manufacturer)
+        time.sleep(0.01)
+        req = requests.post(f"{BASE_URL}/manufacturers", json=manufacturer)
         if not req.ok:
             logger.debug(
                 f"Error while saving manufacturer with {manufacturer["name"]=}",
@@ -160,7 +167,8 @@ def save_products(data):
         if product is None:
             continue
         logger.debug(product)
-        req = requests.post("http://localhost:8080/products", json=product)
+        time.sleep(0.01)
+        req = requests.post(f"{BASE_URL}/products", json=product)
         if not req.ok:
             logger.debug(
                 f"Error while saving product with {product["name"]=}", req.json()
@@ -171,8 +179,9 @@ def save_products(data):
 
 
 def get_category(id):
+    time.sleep(0.01)
     res = requests.get(
-        f"http://localhost:8080/categories/{id}",
+        f"{BASE_URL}/categories/{id}",
     )
     if not res.ok:
         return None
@@ -180,7 +189,8 @@ def get_category(id):
 
 
 def save_category(cat):
-    res = requests.post(f"http://localhost:8080/categories", json=cat)
+    time.sleep(0.01)
+    res = requests.post(f"{BASE_URL}/categories", json=cat)
     if not res.ok:
         logger.debug(f"Error while saving category with {cat["name"]=}", res.json())
         return None
@@ -225,6 +235,48 @@ def get_dict(filepath):
         return json.load(f)
 
 
+class Worker(mp.Process):
+    def __init__(
+        self,
+        pconnection: Optional[mpc.Connection] = None,
+        filepath="",
+        one_cat_page=False,
+        *funcs,
+    ):
+        if filepath == "":
+            raise Exception("filepath should be not empty")
+        if pconnection is None:
+            raise Exception("filepath should be not None")
+
+        self.filepath = filepath
+        self.one_cat_page = one_cat_page
+        self.funcs = funcs
+        self.pconnection = pconnection
+
+    def start(self):
+        iterable = get_data(self.filepath, one_cat_page=self.one_cat_page)
+
+        for item in iterable:
+            for f in self.funcs:
+                f(item)
+                self.pconnection.send({"status_update": "did"})
+
+
+class Manager(mp.Process):
+    def __init__(self, n_process, filepath, one_cat_page, funcs):
+        self.connOfTheManager, self.connOfWorkers = mp.Pipe(True)
+        self.filepath = filepath
+        self.one_cat_page = one_cat_page
+        self.funcs = funcs
+        # self.processes = [Worker(pconnection=self.connOfWorkers, filepath=filepath, one_cat_page=one_cat_page, funcs) for _ in range(n_process)]
+
+    def start(self):
+        for p in self.processes:
+            p.start()
+        iterable_size = count_files(self.filepath, one_cat_page=self.one_cat_page)
+        progress_bar = tqdm()
+
+
 def process_parallel(*funcs, filepath="", one_cat_page=False):
     if filepath == "":
         return
@@ -233,7 +285,7 @@ def process_parallel(*funcs, filepath="", one_cat_page=False):
 
     # So, I'm setting the function to load twice as many cores I have.
     progress_bar = tqdm(total=iterable_size)
-    with Pool(24) as p:
+    with Pool() as p:
         for item in iterable:
             for f in funcs:
                 p.map(f, item)
